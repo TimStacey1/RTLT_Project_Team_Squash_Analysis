@@ -1,23 +1,23 @@
-import logo from './Squash-Australia-Positive-Logo.png';
-import './App.css';
+import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import MainMenu from './components/MainMenu';
+import AnnotationInterface from './components/AnnotationInterface';
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Navbar/>
+      <Router>
+        <Route path="/home">
+          <MainMenu/>
+        </Route>
+        <Route exact path="/">
+          <Redirect to="/home"></Redirect>
+        </Route>
+        <Route path="/annotate">
+          <AnnotationInterface/>
+        </Route>
+      </Router>
     </div>
   );
 }
