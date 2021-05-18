@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Navbar from './components/Navbar';
+import MainMenu from './components/MainMenu';
 
 import './index.css';
 import App from './App';
@@ -9,6 +10,7 @@ import reportWebVitals from './reportWebVitals';
 ReactDOM.render(
   <React.StrictMode>
     <Navbar />
+    <MainMenu />
   </React.StrictMode>,
   document.getElementById('root')
 );
