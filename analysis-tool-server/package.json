@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./scripts/start"
+    "start": "node ./scripts/start",
+    "test" : "echo \"Error: no test specifed.\" && exit 1"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
