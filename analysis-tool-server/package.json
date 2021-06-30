@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./scripts/start",
+    "start": "nodemon ./scripts/start",
     "test" : "echo \"Error: no test specifed.\" && exit 1"
   },
   "dependencies": {
