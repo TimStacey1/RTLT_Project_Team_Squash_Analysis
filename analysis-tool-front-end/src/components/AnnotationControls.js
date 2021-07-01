@@ -46,7 +46,7 @@ export default function AnnotationControls() {
   }
 
   const updateApproach = (selectedApproach) => {
-    if (approach !== selectedApproach) setApproach(selectedApproach);
+    if (hand && approach !== selectedApproach) setApproach(selectedApproach);
     else {
       setApproach('');
       setShot('');
@@ -54,7 +54,7 @@ export default function AnnotationControls() {
   }
 
   const updateShot = (selectedShot) => {
-    if (shot !== selectedShot) setShot(selectedShot);
+    if (hand && approach && shot !== selectedShot) setShot(selectedShot);
     else setShot('');
   }
 
