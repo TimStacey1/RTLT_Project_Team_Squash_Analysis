@@ -4,16 +4,20 @@
   "private": true,
   "scripts": {
     "start": "nodemon ./scripts/start",
-    "test" : "echo \"Error: no test specifed.\" && exit 1"
+    "test": "echo \"Error: no test specifed.\" && exit 1"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
+    "cors": "^2.8.5",
     "debug": "~2.6.9",
+    "dotenv": "^10.0.0",
     "express": "~4.16.1",
+    "helmet": "^4.6.0",
     "http-errors": "~1.6.3",
     "jade": "~1.11.0",
+    "mongoose": "^5.13.3",
     "morgan": "~1.9.1",
-    "swagger-ui-express": "^4.1.6",
-    "yamljs": "^0.3.0"
+    "nodemon": "^2.0.12",
+    "swagger-ui-express": "^4.1.6"
   }
 }
