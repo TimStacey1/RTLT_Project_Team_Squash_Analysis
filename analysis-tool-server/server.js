@@ -12,28 +12,29 @@ require('dotenv').config();
 
 var app = express();
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true })); 
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
-
-app.use(router);
-
 // middleware setup
 app.use(logger('dev'));
 app.use(helmet());
 app.use(cors());
 
+// db connection
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
 
-// catch 404 and forward to error handler 
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'jade');
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(router);
+
+// catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
 });

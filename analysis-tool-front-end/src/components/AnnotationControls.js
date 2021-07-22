@@ -1,7 +1,10 @@
 import { React, useState, useEffect } from 'react';
 import AnnotationButton from './AnnotationButton';
 
+const axios = require('axios').default;
+
 export default function AnnotationControls() {
+  const apiUrl = 'http://localhost:3001/annotate/60f9627bbae5d215f8b6922f/annotation'
   const [hand, setHand] = useState('');
   const [approach, setApproach] = useState('');
   const [shot, setShot] = useState('');
@@ -17,7 +20,7 @@ export default function AnnotationControls() {
   });
   const [shotButtons, setShotButtons] = useState([]);
   const numAdditionalButtons = 8;
-  const additionalButton = 
+  const additionalButton =
     [
     <li className="w-full h-full">
       <AnnotationButton name={'Additional Button'} disabled={true} selected={false} />
@@ -51,15 +54,41 @@ export default function AnnotationControls() {
       setApproach('');
       setShot('');
     };
+
   }
 
   const updateShot = (selectedShot) => {
-    if (hand && approach && shot !== selectedShot) setShot(selectedShot);
+    if (hand && approach && shot !== selectedShot) {
+      setShot(selectedShot);
+    }
     else setShot('');
+  }
+
+  const resetControls = () => {
+    setHand('');
+    setApproach('');
+    setShot('');
   }
 
   useEffect(() => {
     updateShotButtons();
+
+    if (hand !== '' && approach !== '' && shot !== '') {
+      axios.post(apiUrl, {
+        'annotation': {
+          timestamp: 1000,
+          playerNumber: 1,
+          movement: 'shot',
+          components: {
+            hand: hand,
+            approach: approach,
+            shot: shot
+          }
+        }
+      })
+      .then(res => console.log(res.data))
+      .then(resetControls());
+    }
   }, [hand, approach, shot]);
 
   return (
