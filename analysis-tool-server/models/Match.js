@@ -3,6 +3,10 @@ const { Schema, model } = require('mongoose');
 const annotationSchema = require('../models/Annotation');
 
 const matchSchema = new Schema({
+  title: {
+    type: String,
+    required: true
+  },
   players: {
     player1: {
       firstName: {
@@ -24,6 +28,9 @@ const matchSchema = new Schema({
         required: true
       }
     }
+  },
+  description: {
+    type: String
   },
   duration: {
     type: Number,

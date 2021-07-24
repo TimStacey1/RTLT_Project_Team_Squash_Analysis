@@ -4,7 +4,7 @@ import AnnotationButton from './AnnotationButton';
 const axios = require('axios').default;
 
 export default function AnnotationControls() {
-  const apiUrl = 'http://localhost:3001/annotate/60f9627bbae5d215f8b6922f/annotation'
+  const apiUrl = 'http://localhost:3001/annotate/60fbd9fc93c90bd2a9b15eb1/new'
   const [hand, setHand] = useState('');
   const [approach, setApproach] = useState('');
   const [shot, setShot] = useState('');
@@ -74,18 +74,17 @@ export default function AnnotationControls() {
     updateShotButtons();
 
     if (hand !== '' && approach !== '' && shot !== '') {
-      axios.post(apiUrl, {
-        'annotation': {
-          timestamp: 1000,
-          playerNumber: 1,
-          movement: 'shot',
-          components: {
-            hand: hand,
-            approach: approach,
-            shot: shot
-          }
+      const annotation = {
+        timestamp: 1000,
+        playerNumber: 1,
+        movement: 'shot',
+        components: {
+          hand: hand,
+          approach: approach,
+          shot: shot
         }
-      })
+      };
+      axios.post(apiUrl, annotation)
       .then(res => console.log(res.data))
       .then(resetControls());
     }
