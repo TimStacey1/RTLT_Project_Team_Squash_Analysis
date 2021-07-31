@@ -3,8 +3,8 @@ const router = require('express').Router();
 const Match = require('../models/Match');
 
 // route for creating a new annotation in a match
-router.post('/:id/new', (req, res, next) => {
-  const matchId = req.params.id;
+router.post('/:match_id/new', (req, res, next) => {
+  const matchId = req.params.match_id;
 
   // TODO: validate match id
 
@@ -35,8 +35,8 @@ router.post('/:id/new', (req, res, next) => {
 });
 
 // route for fetching annotations of an existing match
-router.get('/:id/all', (req, res, next) => {
-  const matchId = req.params.id;
+router.get('/:match_id/all', (req, res, next) => {
+  const matchId = req.params.match_id;
 
   // TODO: validate match id
 
@@ -57,6 +57,40 @@ router.get('/:id/all', (req, res, next) => {
     }
   }))
   .then(annotations => res.status(200).json(annotations))
+  .catch(err => res.status(400).json('Error: ' + err));
+});
+
+// route for editing an existing annotation of a match
+router.post('/:match_id/:annotation_id/edit', (req, res, next) => {
+  const matchId = req.params.match_id;
+  const annotationId = req.params.annotation_id;
+
+  // TODO: validate match id and annotation id
+
+  // add specific queries to be de-structured before the remaining queries
+  // eg: { shot, ...remainingQueries}
+  // const { ...remainingQueries } = req.params.query;
+
+  const timestamp = req.body.timestamp;
+  const playerNumber = req.body.timestamp;
+  const movement = req.body.movement;
+  const components = req.body.components;
+
+  // TODO: validate all body properties
+
+  const updatedAnnotation = {
+    _id: annotationId,
+    timestamp: timestamp,
+    playerNumber: playerNumber,
+    movement: movement,
+    components: components
+  };
+
+  Match.updateOne(
+    { _id: matchId, 'annotations._id': annotationId },
+    { $set: { 'annotations.$': updatedAnnotation } }
+  )
+  .then(res.status(200).json('Annotation updated!'))
   .catch(err => res.status(400).json('Error: ' + err));
 });
 
