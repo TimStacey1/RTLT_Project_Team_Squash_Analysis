@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import MainMenu from './components/MainMenu';
+import NewMatch from './components/NewMatch';
 import AnnotationInterface from './components/AnnotationInterface';
 
 function App() {
@@ -16,6 +17,9 @@ function App() {
         </Route>
         <Route path="/annotate">
           <AnnotationInterface/>
+        </Route>
+        <Route path="/new/match">
+          <NewMatch />
         </Route>
       </Router>
     </div>
