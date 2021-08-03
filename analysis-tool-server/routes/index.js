@@ -1,6 +1,6 @@
 const router = require('express').Router();
 
-const matchRouter = require('./match')
+const matchRouter = require('./match');
 const annotationRouter = require('./annotate');
 
 // match router
