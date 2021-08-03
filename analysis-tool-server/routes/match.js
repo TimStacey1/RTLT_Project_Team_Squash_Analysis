@@ -2,25 +2,29 @@ const router = require('express').Router();
 
 const Match = require('../models/Match');
 
+const validateRequest = require('./validators/validateRequest');
+
+const validateNewMatch = require('./validators/validateMatchRoutes').validateNewMatch;
+
+const { checkSchema } = require('express-validator');
+
 // route for the creation of a new match
-router.post('/new', (req, res, next) => {
+router.post('/new',
+    checkSchema(validateNewMatch),
+    validateRequest,
+    (req, res, next) => {
+
   const title = req.body.title;
   const players = req.body.players;
   const description = req.body.description;
   const duration = req.body.duration;
-
-  // TODO: validate all body properties
-
-  // add specific queries to be de-structured before the remaining queries
-  // eg: { shot, ...remainingQueries}
-  // const { ...remainingQueries } = req.params.query;
 
   const newMatch = new Match({
     title: title,
     players: players,
     description: description,
     duration: duration
-  });
+  });        
 
   // save the new match in the db
   newMatch.save()
@@ -32,9 +36,6 @@ router.post('/new', (req, res, next) => {
 
 // route for retrieving all matches
 router.get('/all', (req, res, next) => {
-  // add specific queries to be de-structured before the remaining queries
-  // eg: { shot, ...remainingQueries}
-  // const { ...remainingQueries } = req.params.query;
 
   // retrieve all annotations
   Match.find()

@@ -42,7 +42,7 @@ class NewMatch extends React.Component {
       .then((response) => {
         console.log(response);
       }, (error) => {
-        console.log(error);
+        console.log(error.response);
       });
 
     event.preventDefault();
