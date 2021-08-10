@@ -14,7 +14,7 @@ export default function Navbar({ fixed }) {
               className="text-sm font-bold leading-relaxed inline-block mr-4 py-2 whitespace-nowrap uppercase text-white"
               href="#"
             >
-              <img src={logo} className="h-20 mr-10" />
+              <img src={logo} className="h-16 mr-10" />
             </a>
             <button
               className="text-white cursor-pointer text-xl leading-none px-3 py-1 border border-solid border-transparent rounded bg-transparent block lg:hidden outline-none focus:outline-none"
@@ -26,8 +26,8 @@ export default function Navbar({ fixed }) {
           </div>
           <div
             className={
-              "lg:flex flex-initial items-center" +
-              (navbarOpen ? " flex" : " hidden")
+              'lg:flex flex-initial items-center' +
+              (navbarOpen ? ' flex' : ' hidden')
             }
             id="example-navbar-danger"
           >

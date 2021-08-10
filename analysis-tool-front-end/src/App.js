@@ -7,16 +7,16 @@ import AnnotationInterface from './components/AnnotationInterface';
 function App() {
   return (
     <div className="App">
-      <Navbar/>
+      <Navbar />
       <Router>
         <Route path="/home">
-          <MainMenu/>
+          <MainMenu />
         </Route>
         <Route exact path="/">
           <Redirect to="/home"></Redirect>
         </Route>
         <Route path="/annotate">
-          <AnnotationInterface/>
+          <AnnotationInterface />
         </Route>
         <Route path="/new/match">
           <NewMatch />

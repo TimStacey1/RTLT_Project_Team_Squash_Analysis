@@ -4,12 +4,19 @@ module.exports = {
   theme: {
     extend: {
       spacing: {
-        desktop: '41rem',
+        desktop: '84vh',
+        controls: '27rem'
       },
-    },
+      zIndex: {
+        100: 100
+      },
+      inset: {
+        84: '22rem'
+      }
+    }
   },
   variants: {
-    extend: {},
+    extend: {}
   },
-  plugins: [],
-}
+  plugins: []
+};

@@ -1,7 +1,6 @@
 import { React, useState, useEffect } from 'react';
 import NewMatch from './NewMatch';
-import { Link } from 'react-router-dom'
-
+import { Link } from 'react-router-dom';
 
 const axios = require('axios').default;
 
@@ -10,28 +9,26 @@ export default function MainMenu() {
   const [matches, setMatches] = useState([]);
 
   useEffect(() => {
-    axios.get(apiUrl)
-    .then(res => res.data)
-    .then(matches => setMatches(matches.reverse()));
+    axios
+      .get(apiUrl)
+      .then((res) => res.data)
+      .then((matches) => setMatches(matches.reverse()));
   }, []);
-  console.log(matches);
-
-
 
   return (
     <div className="container mx-auto mb-10">
       <div className="grid grid-cols-12">
         <div className="px-5 py-3 col-span-12">
-          <h2 class="text-2xl sm:text-3xl font-bold leading-7 text-gray-900">
+          <h2 className="text-2xl sm:text-3xl font-bold leading-7 text-gray-900">
             <span className="align-middle">Matches</span>
             <Link to="new/match/">
-            <button
-              className="
+              <button
+                className="
                 float-right text-xl hidden sm:block bg-green-700 hover:bg-green-600 text-white font-bold py-2 px-4 mx-1
               "
-            >
-              New Match
-            </button>
+              >
+                New Match
+              </button>
             </Link>
             <button
               className="
@@ -72,10 +69,10 @@ export default function MainMenu() {
                   </div>
                 </div>
               </div>
-            )
+            );
           })
         }
       </div>
     </div>
-  )
+  );
 }
