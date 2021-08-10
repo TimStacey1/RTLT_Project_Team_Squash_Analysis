@@ -1,5 +1,6 @@
 import React from 'react';
 import AnnotationList from './AnnotationList';
+import AnnotationVideo from './AnnotationVideo';
 import AnnotationControls from './AnnotationControls';
 
 const axios = require('axios').default;
@@ -50,7 +51,7 @@ class AnnotationInterface extends React.Component {
             <AnnotationList data={this.state} />
           </div>
           <div className="col-span-10 ml-1 mr-12 h-desktop">
-            Annotation Video goes here
+            <AnnotationVideo />
           </div>
           <div className="w-controls h-desktop transition-all -right-96 fixed transform hover:-translate-x-96">
             <AnnotationControls handler={this.handler} />
