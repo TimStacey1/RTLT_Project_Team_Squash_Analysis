@@ -34,6 +34,15 @@ class AnnotationList extends React.Component {
     }));
   };
 
+  convertSecondsToMS = (numSeconds) => {
+    numSeconds = Number(numSeconds);
+    const minutes = Math.floor(numSeconds % 3600 / 60);
+    const seconds = Math.floor(numSeconds % 3600 % 60);
+    const minutesDisplay = minutes > 0 ? minutes + "m" : "00m";
+    const secondsDisplay = seconds > 0 ? seconds + "s" : "00s";
+    return minutesDisplay + " " + secondsDisplay;
+  }
+
   render() {
     return (
       <>
@@ -108,7 +117,7 @@ class AnnotationList extends React.Component {
 
                       <td>
                         <a className="hover:text-blue-500" href="">
-                          {annotation.timestamp}
+                          {this.convertSecondsToMS(annotation.timestamp)}
                         </a>
                       </td>
                     </tr>
