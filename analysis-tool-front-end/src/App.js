@@ -21,6 +21,9 @@ function App() {
         <Route path="/new/match">
           <NewMatch />
         </Route>
+        <Route path="/match/:id">
+          <AnnotationInterface />
+        </Route>
       </Router>
     </div>
   );

@@ -35,6 +35,7 @@ class NewMatch extends React.Component {
       const title = this.state.title;
       const duration = this.state.duration;
       const description = this.state.description;
+      console.log(players);
 
       axios.post(apiUrl, {
         players, title, duration, description
