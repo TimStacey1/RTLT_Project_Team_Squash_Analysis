@@ -26,13 +26,14 @@ class AnnotationList extends React.Component {
   };
 
   onDeleteByIndex = (index) => {
-    const newCountries = [...this.state.annotations];
-    newCountries.splice(index, 1);
+    const newAnnotations = this.props.data.annotations;
+    newAnnotations.splice(index, 1);
+    console.log(newAnnotations);
 
-    this.setState((state) => ({
-      annotations: newCountries
+    this.setState(state => ({
+        annotations: newAnnotations
     }));
-  };
+};
 
   convertSecondsToMS = (numSeconds) => {
     numSeconds = Number(numSeconds);
