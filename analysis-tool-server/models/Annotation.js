@@ -11,14 +11,19 @@ const annotationSchema = new Schema({
     min: 1,
     max: 2,
   },
-  movement: {
-    type: String,
-    required: true
-  },
-  components: {
-    hand: String,
-    approach: String,
-    shot: String,
+  shot: {
+    id: {
+      type: String,
+      required: true
+    },
+    hand: {
+      type: String,
+      required: true
+    },
+    approach: {
+      type: String,
+      required: true
+    }
   }
 })
 

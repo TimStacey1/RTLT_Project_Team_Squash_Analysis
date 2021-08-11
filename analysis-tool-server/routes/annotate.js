@@ -13,17 +13,15 @@ router.post('/:match_id/new', (req, res, next) => {
   // const { ...remainingQueries } = req.params.query;
 
   const timestamp = req.body.timestamp;
-  const playerNumber = req.body.timestamp;
-  const movement = req.body.movement;
-  const components = req.body.components;
+  const playerNumber = req.body.playerNumber;
+  const shot = req.body.shot;
 
   // TODO: validate all body properties
 
   const annotation = {
     timestamp: timestamp,
     playerNumber: playerNumber,
-    movement: movement,
-    components: components
+    shot: shot
   };
 
   // find the match using the provided id and update its annotations
@@ -52,8 +50,7 @@ router.get('/:match_id/all', (req, res, next) => {
       id: annotation._id,
       timestamp: annotation.timestamp,
       playerNumber: annotation.playerNumber,
-      movement: annotation.movement,
-      components: annotation.components
+      shot: annotation.shot
     }
   }))
   .then(annotations => res.status(200).json(annotations))
@@ -72,9 +69,8 @@ router.post('/:match_id/:annotation_id/edit', (req, res, next) => {
   // const { ...remainingQueries } = req.params.query;
 
   const timestamp = req.body.timestamp;
-  const playerNumber = req.body.timestamp;
-  const movement = req.body.movement;
-  const components = req.body.components;
+  const playerNumber = req.body.playerNumber;
+  const shot = req.body.shot;
 
   // TODO: validate all body properties
 
@@ -82,8 +78,7 @@ router.post('/:match_id/:annotation_id/edit', (req, res, next) => {
     _id: annotationId,
     timestamp: timestamp,
     playerNumber: playerNumber,
-    movement: movement,
-    components: components
+    shot: shot
   };
 
   // find the match using the provided id, find the annotation using

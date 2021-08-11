@@ -24,7 +24,7 @@ router.post('/new',
     players: players,
     description: description,
     duration: duration
-  });        
+  });
 
   // save the new match in the db
   newMatch.save()
