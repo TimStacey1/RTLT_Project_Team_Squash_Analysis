@@ -4,13 +4,12 @@ const Match = require('../models/Match');
 
 const validateRequest = require('./validators/validateRequest');
 
-const validateNewMatch = require('./validators/validateMatchRoutes').validateNewMatch;
+const { validateMatch }= require('./validators/matchValidators');
 
-const { checkSchema } = require('express-validator');
 
 // route for the creation of a new match
 router.post('/new',
-    checkSchema(validateNewMatch),
+    validateMatch(),
     validateRequest,
     (req, res, next) => {
 
