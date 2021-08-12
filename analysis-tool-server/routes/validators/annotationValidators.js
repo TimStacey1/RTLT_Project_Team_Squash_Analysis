@@ -3,7 +3,8 @@ const { Match } = require('../../models/Match');
 
 const { check } = require('express-validator');
 
-
+// Essentially the same as match validator, abstract out to seperate functionality
+// Create reusable model functions for route controllers anyways
 const validateAnnotationId = () => {
     return [
         check('annotation_id')
