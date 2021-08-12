@@ -6,11 +6,11 @@ const { check } = require('express-validator');
 const validateMatchId = () => {
     return [
         check('match_id')
-            .isMongoId().withMessage('The match id does not exist.').bail()
+            //.isMongoId().withMessage('The match id does not exist.').bail()
             .custom((value) => {
                 return Match.exists({ _id: value })
                     .then(res => {
-                        return res.ok || Promise.reject('Invalid id.')
+                        return res || Promise.reject('Invalid id.');                                               
                     })
             })
     ];

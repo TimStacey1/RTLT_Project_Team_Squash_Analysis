@@ -2,21 +2,23 @@ const router = require('express').Router();
 
 const Match = require('../models/Match');
 
+const { validateMatchId } = require('./validators/matchValidators')
+
+const { validateAnnotationId, validateAnnotation } = require('./validators/annotationValidators')
+
+const validateRequest = require('./validators/validateRequest');
+
 // route for creating a new annotation in a match
-router.post('/:match_id/new', (req, res, next) => {
+router.post('/:match_id/new',
+    validateMatchId(),
+    validateAnnotation(),
+    validateRequest,
+    (req, res, next) => {
+
   const matchId = req.params.match_id;
-
-  // TODO: validate match id
-
-  // add specific queries to be de-structured before the remaining queries
-  // eg: { shot, ...remainingQueries}
-  // const { ...remainingQueries } = req.params.query;
-
   const timestamp = req.body.timestamp;
   const playerNumber = req.body.playerNumber;
   const shot = req.body.shot;
-
-  // TODO: validate all body properties
 
   const annotation = {
     timestamp: timestamp,
@@ -33,14 +35,12 @@ router.post('/:match_id/new', (req, res, next) => {
 });
 
 // route for fetching annotations of an existing match
-router.get('/:match_id/all', (req, res, next) => {
+router.get('/:match_id/all',
+    validateMatchId(),
+    validateRequest,
+    (req, res, next) => {
+
   const matchId = req.params.match_id;
-
-  // TODO: validate match id
-
-  // add specific queries to be de-structured before the remaining queries
-  // eg: { shot, ...remainingQueries}
-  // const { ...remainingQueries } = req.params.query;
 
   // find the match using the provided id and return its annotations
   Match.findOne({ _id: matchId })
@@ -58,21 +58,19 @@ router.get('/:match_id/all', (req, res, next) => {
 });
 
 // route for editing an existing annotation of a match
-router.post('/:match_id/:annotation_id/edit', (req, res, next) => {
+router.post('/:match_id/:annotation_id/edit',
+    validateMatchId(),
+    validateAnnotationId(),
+    validateAnnotation(),
+    validateRequest,
+    (req, res, next) => {
+
   const matchId = req.params.match_id;
   const annotationId = req.params.annotation_id;
-
-  // TODO: validate match id and annotation id
-
-  // add specific queries to be de-structured before the remaining queries
-  // eg: { shot, ...remainingQueries}
-  // const { ...remainingQueries } = req.params.query;
 
   const timestamp = req.body.timestamp;
   const playerNumber = req.body.playerNumber;
   const shot = req.body.shot;
-
-  // TODO: validate all body properties
 
   const updatedAnnotation = {
     _id: annotationId,
@@ -92,15 +90,14 @@ router.post('/:match_id/:annotation_id/edit', (req, res, next) => {
 });
 
 // route for removing an existing annotation of a match
-router.post('/:match_id/:annotation_id/remove', (req, res, next) => {
+router.post('/:match_id/:annotation_id/remove',
+    validateMatchId(),
+    validateAnnotationId(),
+    validateRequest,
+    (req, res, next) => {
+
   const matchId = req.params.match_id;
   const annotationId = req.params.annotation_id;
-
-  // TODO: validate match id and annotation id
-
-  // add specific queries to be de-structured before the remaining queries
-  // eg: { shot, ...remainingQueries}
-  // const { ...remainingQueries } = req.params.query;
 
   // find the match using the provided id, find the annotation using
   // the annotation id and discard it
