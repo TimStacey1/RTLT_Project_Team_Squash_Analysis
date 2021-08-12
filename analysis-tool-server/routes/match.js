@@ -1,6 +1,6 @@
 const router = require('express').Router();
 
-const Match = require('../models/Match');
+const { Match } = require('../models/Match');
 
 const validateRequest = require('./validators/validateRequest');
 

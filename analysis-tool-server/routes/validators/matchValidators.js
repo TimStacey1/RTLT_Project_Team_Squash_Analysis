@@ -1,4 +1,4 @@
-const Match = require('../../models/Match');
+const { Match } = require('../../models/Match');
 
 const { check } = require('express-validator');
 
@@ -6,7 +6,7 @@ const { check } = require('express-validator');
 const validateMatchId = () => {
     return [
         check('match_id')
-            //.isMongoId().withMessage('The match id does not exist.').bail()
+            .isMongoId().withMessage('The match id does not exist.').bail()
             .custom((value) => {
                 return Match.exists({ _id: value })
                     .then(res => {

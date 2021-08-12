@@ -1,6 +1,6 @@
 const { Schema, model } = require('mongoose');
 
-const annotationSchema = require('../models/Annotation');
+const { annotationSchema } = require('../models/Annotation');
 
 const matchSchema = new Schema({
   title: {
@@ -41,4 +41,7 @@ const matchSchema = new Schema({
 
 const Match = model('Match', matchSchema);
 
-module.exports = Match;
+module.exports = {
+    matchSchema,
+    Match
+}

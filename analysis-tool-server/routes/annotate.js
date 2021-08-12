@@ -1,6 +1,6 @@
 const router = require('express').Router();
 
-const Match = require('../models/Match');
+const { Match } = require('../models/Match');
 
 const { validateMatchId } = require('./validators/matchValidators')
 
@@ -43,18 +43,18 @@ router.get('/:match_id/all',
   const matchId = req.params.match_id;
 
   // find the match using the provided id and return its annotations
-  Match.findOne({ _id: matchId })
-  .then(match => match.annotations)
-  .then(annotations => annotations.map(annotation => {
-    return {
-      id: annotation._id,
-      timestamp: annotation.timestamp,
-      playerNumber: annotation.playerNumber,
-      shot: annotation.shot
-    }
-  }))
-  .then(annotations => res.status(200).json(annotations))
-  .catch(err => res.status(400).json('Error: ' + err));
+    Match.findOne({ _id: matchId })
+        .then(match => match.annotations)
+        .then(annotations => annotations.map(annotation => {
+            return {
+                id: annotation._id,
+                timestamp: annotation.timestamp,
+                playerNumber: annotation.playerNumber,
+                shot: annotation.shot
+            }
+        }))
+        .then(annotations => res.status(200).json(annotations))
+        .catch(err => res.status(400).json('Error: ' + err));
 });
 
 // route for editing an existing annotation of a match
