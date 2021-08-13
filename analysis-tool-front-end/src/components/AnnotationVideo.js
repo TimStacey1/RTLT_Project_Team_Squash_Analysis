@@ -7,9 +7,11 @@ import {
   CurrentTimeDisplay,
   TimeDivider,
   PlaybackRateMenuButton,
-  VolumeMenuButton
+  VolumeMenuButton,
+  BigPlayButton
 } from 'video-react';
 import 'video-react/dist/video-react.css';
+import test1 from '../assets/test1.mp4';
 
 export default function AnnotationVideo() {
   const playerRef = useRef();
@@ -24,8 +26,10 @@ export default function AnnotationVideo() {
 
   return (
     <div className="w-full h-full">
-      <Player ref={playerRef} fluid={false} width={'100%'} height={'100%'}>
-        <source src="http://peach.themazzone.com/durian/movies/sintel-1024-surround.mp4" />
+      <Player ref={playerRef} fluid={false} width={'100%'} height={'100%'} preload={'auto'}>
+        <source src={test1} />
+
+        <BigPlayButton position="center" />
 
         <ControlBar>
           <ReplayControl seconds={10} order={1.1} />
