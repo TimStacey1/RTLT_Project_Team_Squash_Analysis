@@ -52,19 +52,19 @@ const all = (req, res, next) => {
 
 //POST '/remove'
 const remove = (req, res, next) => {
-	res.send('NOT IMPLEMENTED: REMOVE MATCH');
+	res.status(400).json('NOT IMPLEMENTED: REMOVE MATCH');
 };
 
 
 //POST '/update'
 const update = (req, res, next) => {
-	res.send('NOT IMPLEMENTED: UPDATE MATCH');
+	res.status(400).json('NOT IMPLEMENTED: UPDATE MATCH');
 };
 
 
 //POST '/get'
 const get = (req, res, next) => {
-	res.send('NOT IMPLEMENTED: GET MATCH');
+	res.status(400).json('NOT IMPLEMENTED: GET MATCH');
 };
 
 
