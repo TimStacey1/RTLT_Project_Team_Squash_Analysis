@@ -10,7 +10,7 @@ const { Match } = require('../models/Match');
 
 
 //POST '/new'
-const createNewMatch = (req, res, next) => {
+const create = (req, res, next) => {
 	const newMatch = new Match({
 		title: req.body.title,
 		players: req.body.players,
@@ -28,7 +28,7 @@ const createNewMatch = (req, res, next) => {
 
 
 //GET '/all'
-const getAllMatches = (req, res, next) => {
+const all = (req, res, next) => {
 	// retrieve all annotations
 	Match.find()
 		.then(matches => matches.map(match => {
@@ -50,21 +50,28 @@ const getAllMatches = (req, res, next) => {
 };
 
 
-//POST ''
-const removeMatch = (req, res, next) => {
+//POST '/remove'
+const remove = (req, res, next) => {
 	res.send('NOT IMPLEMENTED: REMOVE MATCH');
 };
 
 
-//POST ''
-const updateMatch = (req, res, next) => {
+//POST '/update'
+const update = (req, res, next) => {
 	res.send('NOT IMPLEMENTED: UPDATE MATCH');
 };
 
 
+//POST '/get'
+const get = (req, res, next) => {
+	res.send('NOT IMPLEMENTED: GET MATCH');
+};
+
+
 module.exports = {
-	createNewMatch,
-	getAllMatches,
-	removeMatch,
-	updateMatch
+	create,
+	all,
+	remove,
+	update,
+	get
 };
