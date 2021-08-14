@@ -12,7 +12,7 @@ const { Match } = require('../models/Match');
 
 
 //POST '/:match_id/new'
-const createNewAnnotation = (req, res, next) => {
+const create = (req, res, next) => {
     const matchId = req.params.match_id;
 
     const annotation = {
@@ -31,7 +31,7 @@ const createNewAnnotation = (req, res, next) => {
 
 
 //GET '/:match_id/all'
-const getAllAnnotations = (req, res, next) => {
+const all = (req, res, next) => {
     const matchId = req.params.match_id;
 
     // find the match using the provided id and return its annotations
@@ -46,19 +46,22 @@ const getAllAnnotations = (req, res, next) => {
             }
         }))
         .then(annotations => res.status(200).json(annotations))
-        .catch(err => res.status(400).json('Error: ' + err));
+        .catch(err => {
+            res.status(400).json('Error: ' + err);
+        });
 };
 
 
 //POST '/:match_id/:annotation_id/edit'
-const editAnnotation = (req, res, next) => {
+const edit = (req, res, next) => {
     const matchId = req.params.match_id;
+    const annotationId = req.params.annotation_id; 
 
     const updatedAnnotation = {
-        _id: req.params.annotation_id,
-        timestamp: timestamp,
-        playerNumber: playerNumber,
-        shot: shot
+        _id: annotationId,
+        timestamp: req.body.timestamp,
+        playerNumber: req.body.playerNumber,
+        shot: req.body.shot
     };
 
     // find the match using the provided id, find the annotation using
@@ -73,7 +76,7 @@ const editAnnotation = (req, res, next) => {
 
 
 //POST '/:match_id/:annotation_id/remove'
-const removeAnnotation = (req, res, next) => {
+const remove = (req, res, next) => {
     const matchId = req.params.match_id;
     const annotationId = req.params.annotation_id;
 
@@ -89,8 +92,8 @@ const removeAnnotation = (req, res, next) => {
 
 
 module.exports = {
-    createNewAnnotation,
-    getAllAnnotations,
-    editAnnotation,
-    removeAnnotation    
+    create,
+    all,
+    edit,
+    remove    
 };
