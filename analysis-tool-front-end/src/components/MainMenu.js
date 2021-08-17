@@ -1,6 +1,6 @@
 import { React, useState, useEffect } from 'react';
-import NewMatch from './NewMatch';
 import { Link } from 'react-router-dom';
+import test1 from '../assets/test1.mp4';
 
 const axios = require('axios').default;
 
@@ -40,38 +40,36 @@ export default function MainMenu() {
           </h2>
         </div>
 
-        {
-          matches.map(match => {
-            return(
-              <div className="p-5 col-span-12 sm:col-span-6 lg:col-span-4">
-                <div className="overflow-hidden shadow-lg">
-                  <div className="p-4">
-                    <div className="font-bold text-xl mb-3">{match.title}</div>
-                    <iframe src="https://www.youtube.com/embed/IzfAI4QRv-k" frameborder="0" allowfullscreen
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-                    </iframe>
-                    <p className="text-gray-700 mt-2 text-base">
-                      <strong>{match.players.player1} vs {match.players.player2}</strong>
-                    </p>
-                    <p>{match.description}</p>
-                    <div className="pt-3 pb-2">
-                      <a href={"/match/"+match.id}>
-                        <button className="bg-green-700 hover:bg-green-600 text-white font-bold py-2 px-4 mx-1">
-                          View
-                        </button>
-                      </a>
-                      <a href="/edit_this">
-                        <button className="bg-blue-700 hover:bg-blue-600 text-white font-bold py-2 px-4 mx-1">
-                          Edit
-                        </button>
-                      </a>
-                    </div>
+        {matches.map((match) => {
+          return (
+            <div className="p-5 col-span-12 sm:col-span-6 lg:col-span-4">
+              <div className="overflow-hidden shadow-lg">
+                <div className="p-4">
+                  <div className="font-bold text-xl mb-3">{match.title}</div>
+                  <video src={test1} autoPlay muted preload={'auto'}></video>
+                  <p className="text-gray-700 mt-2 text-base">
+                    <strong>
+                      {match.players.player1} vs {match.players.player2}
+                    </strong>
+                  </p>
+                  <p>{match.description}</p>
+                  <div className="pt-3 pb-2">
+                    <a href={''}>
+                      <button className="bg-green-700 hover:bg-green-600 text-white font-bold py-2 px-4 mx-1">
+                        View
+                      </button>
+                    </a>
+                    <a href={'/match/' + match.id}>
+                      <button className="bg-blue-700 hover:bg-blue-600 text-white font-bold py-2 px-4 mx-1">
+                        Edit
+                      </button>
+                    </a>
                   </div>
                 </div>
               </div>
-            );
-          })
-        }
+            </div>
+          );
+        })}
       </div>
     </div>
   );

@@ -2,107 +2,49 @@ import { React, useState, useEffect } from 'react';
 import AnnotationButton from './AnnotationButton';
 
 const axios = require('axios').default;
-const match_id = window.location.pathname.substring(7);
 
 export default function AnnotationControls(props) {
-  const apiUrl = 'http://localhost:3001/annotate/' + match_id + '/new';
-  const [hand, setHand] = useState('');
-  const [approach, setApproach] = useState('');
-  const [shot, setShot] = useState('');
-  const HandEnum = Object.freeze({
-    forehand: 'Forehand',
-    backhand: 'Backhand'
-  });
-  const ApproachEnum = Object.freeze({ volley: 'Volley', bounce: 'Bounce' });
-  const ShotEnum = Object.freeze({
-    straightDrive: 'Straight Drive',
-    crossCourt: 'Cross-Court',
-    lob: 'Lob',
-    drop: 'Drop',
-    nick: 'Nick',
-    kill: 'Kill',
-    boast: 'Boast'
-  });
-  const [shotButtons, setShotButtons] = useState([]);
-  const numAdditionalButtons = 9;
-  const additionalButton = [
-    <li className="w-full h-full">
-      <AnnotationButton
-        name={'Additional Button'}
-        disabled={true}
-        selected={false}
-      />
-    </li>
+  const { baseUrl, matchId, updateAnnotations, getAnnotationTimestamp } = props;
+  const apiUrl = baseUrl + '/annotate/' + matchId + '/new';
+  const shots = [
+    { id: 'BH Drive', hand: 'Backhand', approach: '' },
+    { id: 'FH Drive', hand: 'ForeHand', approach: '' },
+    { id: 'BH X-Court', hand: 'Backhand', approach: '' },
+    { id: 'FH X-Court', hand: 'ForeHand', approach: '' },
+    { id: 'BH Boast', hand: 'Backhand', approach: '' },
+    { id: 'FH Boast', hand: 'ForeHand', approach: '' },
+    { id: 'BH Drop', hand: 'Backhand', approach: '' },
+    { id: 'FH Drop', hand: 'ForeHand', approach: '' },
+    { id: 'BH Volley Drop', hand: 'Backhand', approach: 'Volley' },
+    { id: 'FH Volley Drop', hand: 'ForeHand', approach: 'Volley' },
+    { id: 'BH Kill', hand: 'Backhand', approach: '' },
+    { id: 'FH Kill', hand: 'ForeHand', approach: '' }
   ];
-  const additionalButtons = Array(numAdditionalButtons).fill(additionalButton);
+  const [selectedAnnotation, setSelectedAnnotation] = useState({});
+  const numAdditionalButtons = 8;
 
-  const updateShotButtons = () => {
-    let buttons = [];
-    Object.values(ShotEnum).forEach((value) => {
-      buttons.push(
-        <li className="w-full h-full" onClick={() => updateShot(value)}>
-          <AnnotationButton
-            key={value}
-            name={value}
-            disabled={approach === ''}
-            selected={shot === value}
-          />
-        </li>
-      );
-    });
-    setShotButtons(buttons);
-  };
-
-  const updateHand = (selectedHand) => {
-    if (hand !== selectedHand) setHand(selectedHand);
-    else {
-      setHand('');
-      setApproach('');
-      setShot('');
+  const updateSelectedAnnotation = (selectedShot) => {
+    if (Object.entries(selectedShot).length > 0) {
+      let annotationTimeStamp = getAnnotationTimestamp();
+      annotationTimeStamp =
+        annotationTimeStamp > 4 ? annotationTimeStamp - 4 : 1;
+      setSelectedAnnotation({
+        timestamp: annotationTimeStamp,
+        playerNumber: 1,
+        shot: selectedShot
+      });
     }
-  };
-
-  const updateApproach = (selectedApproach) => {
-    if (hand && approach !== selectedApproach) setApproach(selectedApproach);
-    else {
-      setApproach('');
-      setShot('');
-    }
-  };
-
-  const updateShot = (selectedShot) => {
-    if (hand && approach && shot !== selectedShot) {
-      setShot(selectedShot);
-    } else setShot('');
-  };
-
-  const resetControls = () => {
-    setHand('');
-    setApproach('');
-    setShot('');
   };
 
   useEffect(() => {
-    updateShotButtons();
-
-    if (hand !== '' && approach !== '' && shot !== '') {
-      const annotation = {
-        timestamp: 1000,
-        playerNumber: 1,
-        movement: 'shot',
-        components: {
-          hand: hand,
-          approach: approach,
-          shot: shot
-        }
-      };
+    if (Object.entries(selectedAnnotation).length > 0) {
+      console.log(selectedAnnotation);
       axios
-        .post(apiUrl, annotation)
-        .then((res) => console.log(res.data))
-        .then(resetControls());
-      props.handler(annotation);
+        .post(apiUrl, selectedAnnotation)
+        .then((res) => console.log(res.data.message))
+        .then(updateAnnotations());
     }
-  }, [hand, approach, shot]);
+  }, [selectedAnnotation]);
 
   return (
     <>
@@ -113,48 +55,30 @@ export default function AnnotationControls(props) {
           </div>
         </div>
         <ul className="w-full grid grid-cols-2 grid-rows-9 mx-2 py-4 gap-x-3 gap-y-4 h-full place-items-center">
-          <li
-            className="w-full h-full"
-            onClick={() => updateHand(HandEnum.forehand)}
-          >
-            <AnnotationButton
-              name={HandEnum.forehand}
-              disabled={false}
-              selected={hand === HandEnum.forehand}
-            />
-          </li>
-          <li
-            className="w-full h-full"
-            onClick={() => updateHand(HandEnum.backhand)}
-          >
-            <AnnotationButton
-              name={HandEnum.backhand}
-              disabled={false}
-              selected={hand === HandEnum.backhand}
-            />
-          </li>
-          <li
-            className="w-full h-full"
-            onClick={() => updateApproach(ApproachEnum.volley)}
-          >
-            <AnnotationButton
-              name={ApproachEnum.volley}
-              disabled={hand === ''}
-              selected={approach === ApproachEnum.volley}
-            />
-          </li>
-          <li
-            className="w-full h-full"
-            onClick={() => updateApproach(ApproachEnum.bounce)}
-          >
-            <AnnotationButton
-              name={ApproachEnum.bounce}
-              disabled={hand === ''}
-              selected={approach === ApproachEnum.bounce}
-            />
-          </li>
-          {shotButtons}
-          {additionalButtons}
+          {shots.map((shot) => (
+            <li
+              className="w-full h-full"
+              onClick={() => updateSelectedAnnotation(shot)}
+            >
+              <AnnotationButton
+                key={shot.id}
+                name={shot.id}
+                selected={selectedAnnotation.id === shot.id}
+                disabled={false}
+              />
+            </li>
+          ))}
+          {Array(numAdditionalButtons)
+            .fill()
+            .map(() => (
+              <li className="w-full h-full">
+                <AnnotationButton
+                  name={'Additional Button'}
+                  disabled={true}
+                  selected={false}
+                />
+              </li>
+            ))}
         </ul>
       </div>
     </>

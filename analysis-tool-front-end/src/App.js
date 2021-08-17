@@ -5,6 +5,8 @@ import NewMatch from './components/NewMatch';
 import AnnotationInterface from './components/AnnotationInterface';
 
 function App() {
+  const baseUrl = 'http://localhost:3001';
+
   return (
     <div className="App">
       <Navbar />
@@ -22,7 +24,7 @@ function App() {
           <NewMatch />
         </Route>
         <Route path="/match/:id">
-          <AnnotationInterface />
+          <AnnotationInterface baseUrl={baseUrl} />
         </Route>
       </Router>
     </div>

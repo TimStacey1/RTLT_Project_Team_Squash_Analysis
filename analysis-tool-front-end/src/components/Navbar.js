@@ -1,5 +1,5 @@
 import React from 'react';
-import logo from '../Squash-Australia-Positive-Logo.png';
+import logo from '../assets/Squash-Australia-Positive-Logo.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 
@@ -12,7 +12,7 @@ export default function Navbar({ fixed }) {
           <div className="w-full relative flex justify-between lg:w-auto lg:static lg:block lg:justify-start">
             <a
               className="text-sm font-bold leading-relaxed inline-block mr-4 py-2 whitespace-nowrap uppercase text-white"
-              href="#"
+              href="/"
             >
               <img src={logo} className="h-16 mr-10" />
             </a>

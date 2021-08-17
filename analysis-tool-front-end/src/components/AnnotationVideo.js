@@ -13,16 +13,33 @@ import {
 import 'video-react/dist/video-react.css';
 import test1 from '../assets/test1.mp4';
 
-export default function AnnotationVideo() {
+export default function AnnotationVideo(props) {
+  const {
+    seekTime,
+    updateCurrentVideoTime,
+    updateCurrentPausedState,
+    pausedState,
+    videoPaused
+  } = props;
   const playerRef = useRef();
 
-  function handleStateChange(state, prevState) {}
-
   useEffect(() => {
+    console.log(videoPaused, pausedState);
+    if (videoPaused) {
+      playerRef.current.actions.pause();
+    } else if (videoPaused !== null) {
+      playerRef.current.actions.seek(seekTime);
+      playerRef.current.actions.play();
+    }
     playerRef.current.subscribeToStateChange(handleStateChange);
     // overload video player full screen toggle to disable fullscreen
     playerRef.current.actions.toggleFullscreen = () => {};
-  }, []);
+  }, [seekTime, videoPaused]);
+
+  const handleStateChange = (state, prevState) => {
+    updateCurrentVideoTime(state.currentTime);
+    updateCurrentPausedState(state.paused);
+  };
 
   return (
     <div className="w-full h-full">

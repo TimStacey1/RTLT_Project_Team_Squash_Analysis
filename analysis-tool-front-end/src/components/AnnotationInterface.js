@@ -1,65 +1,95 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import AnnotationList from './AnnotationList';
 import AnnotationVideo from './AnnotationVideo';
 import AnnotationControls from './AnnotationControls';
 
 const axios = require('axios').default;
-const match_id = window.location.pathname.substring(7);
+const matchId = window.location.pathname.substring(7);
 
-class AnnotationInterface extends React.Component {
-  constructor(props) {
-    super(props);
+export default function AnnotationInterface(props) {
+  const { baseUrl } = props;
+  const [annotationsChanged, setAnnotationsChanged] = useState(true);
+  const [match, setMatch] = useState({});
+  const [seekTime, setSeekTime] = useState(0);
+  const [currentVideoTime, setCurrentVideoTime] = useState(0);
+  const [pausedState, setCurrentPausedState] = useState(true);
+  const [videoPaused, setVideoPaused] = useState(null);
 
-    this.state = {
-      annotations: [],
-      match_details: [],
-      show: false,
-      shotMsg: ' ',
-      timeMsg: ' ',
-      title: 'Edit Annotation'
-    };
-  }
+  useEffect(() => {
+    if (annotationsChanged) {
+      axios
+        .get(baseUrl + '/match/all')
+        .then((res) => res.data)
+        .then((matches) => {
+          setMatch(matches.filter((match) => match.id === matchId)[0]);
+        })
+        .then(updateAnnotations);
+    }
+  }, [annotationsChanged]);
 
-  componentDidMount = () => {
-    axios
-      .get('http://localhost:3001/annotate/' + match_id + '/all')
-      .then((res) => {
-        const annotations = res.data;
-        this.setState({ annotations });
-      });
-
-    axios.get('http://localhost:3001/match/all').then((res) => {
-      const obj = res.data.filter((item) => item.id === match_id);
-      const match_details = obj[0];
-
-      this.setState({ match_details });
-    });
-  };
-  handler = (annotation) => {
-    this.state.annotations.push(annotation);
-    this.setState((state) => ({
-      ...state,
-      annotations: this.state.annotations
-    }));
+  const updateAnnotations = () => {
+    setAnnotationsChanged(!annotationsChanged);
   };
 
-  render() {
-    return (
-      <>
-        <div className="grid grid-cols-12 mx-2 w-full h-full">
-          <div className="col-span-2 mr-1 h-desktop">
-            <AnnotationList data={this.state} />
-          </div>
-          <div className="col-span-10 ml-1 mr-12 h-desktop">
-            <AnnotationVideo />
-          </div>
-          <div className="w-controls h-desktop transition-all -right-96 fixed transform hover:-translate-x-96">
-            <AnnotationControls handler={this.handler} />
-          </div>
+  const jumpToAnnotation = (annotationTimeStamp) => {
+    setVideoPaused(false);
+    setSeekTime(annotationTimeStamp);
+  };
+
+  const getAnnotationTimestamp = () => {
+    return currentVideoTime;
+  };
+
+  const updateCurrentVideoTime = (time) => {
+    setCurrentVideoTime(Math.round(time));
+  };
+
+  const updateCurrentPausedState = (state) => {
+    setCurrentPausedState(state);
+  };
+
+  const updateControlsOpen = (controlsAreOpen) => {
+    if (controlsAreOpen && !pausedState) {
+      setVideoPaused(true);
+    } else if (!controlsAreOpen && videoPaused) {
+      setSeekTime(currentVideoTime);
+      setVideoPaused(false);
+    }
+  };
+
+  return (
+    <>
+      <div className="grid grid-cols-16 mx-2 w-full h-full">
+        <div className="col-span-3 mr-1 h-desktop">
+          <AnnotationList
+            baseUrl={baseUrl}
+            match={match}
+            updateAnnotations={updateAnnotations}
+            jumpToAnnotation={jumpToAnnotation}
+          />
         </div>
-      </>
-    );
-  }
+        <div className="col-span-13 ml-1 mr-16 h-desktop">
+          <AnnotationVideo
+            seekTime={seekTime}
+            updateCurrentVideoTime={updateCurrentVideoTime}
+            updateCurrentPausedState={updateCurrentPausedState}
+            pausedState={pausedState}
+            videoPaused={videoPaused}
+          />
+        </div>
+        <div
+          className="w-controls h-desktop transition-all -right-96 fixed transform hover:-translate-x-96"
+          onMouseEnter={() => updateControlsOpen(true)}
+          onMouseLeave={() => updateControlsOpen(false)}
+        >
+          <AnnotationControls
+            baseUrl={baseUrl}
+            matchId={matchId}
+            updateAnnotations={updateAnnotations}
+            getAnnotationTimestamp={getAnnotationTimestamp}
+          />
+        </div>
+      </div>
+    </>
+  );
 }
-
-export default AnnotationInterface;
