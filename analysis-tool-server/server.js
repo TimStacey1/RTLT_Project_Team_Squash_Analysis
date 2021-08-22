@@ -18,6 +18,7 @@ app.use(helmet());
 app.use(cors());
 
 // db connection
+mongoose.set('useFindAndModify', false);
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true

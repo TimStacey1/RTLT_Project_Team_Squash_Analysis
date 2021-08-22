@@ -39,7 +39,9 @@ const matchSchema = new Schema({
   annotations: [annotationSchema]
 });
 
+
 const Match = model('Match', matchSchema);
+
 
 module.exports = {
     matchSchema,

@@ -1,46 +1,48 @@
 const router = require('express').Router();
 
-const matchValidator = require('./validators/matchValidators');
+const { validateAnnotationId, validateNewAnnotation, validateUpdatedAnnotation} = require('./validators/annotationValidators');
 
-const annotationValidator = require('./validators/annotationValidators');
-
-const validateRequest = require('./validators/validateRequest');
+const { validateMatchId } = require('./validators/matchValidators');
 
 const annotationController = require('../controllers/annotate.controllers');
 
 
 // route for creating a new annotation in a match
 router.post('/:match_id/new',
-    matchValidator.validateMatchId(),
-    annotationValidator.validateAnnotation(),
-    validateRequest,
+    validateMatchId,
+    validateNewAnnotation,
     annotationController.create
 );
 
 
 // route for fetching annotations of an existing match
 router.get('/:match_id/all',
-    matchValidator.validateMatchId(),
-    validateRequest,
-    annotationController.all
+    validateMatchId,
+    annotationController.getAll
+);
+
+
+// route for fetching a single annotation of an existing match
+router.get('/:match_id/:annotation_id/get',
+    validateMatchId,
+    validateAnnotationId,
+    annotationController.get
 );
 
 
 // route for editing an existing annotation of a match
 router.post('/:match_id/:annotation_id/edit',
-    matchValidator.validateMatchId(),
-    annotationValidator.validateAnnotationId(),
-    annotationValidator.validateAnnotation(),
-    validateRequest,
+    validateMatchId,
+    validateAnnotationId,
+    validateUpdatedAnnotation,
     annotationController.edit
 );
 
 
 // route for removing an existing annotation of a match
 router.post('/:match_id/:annotation_id/remove',
-    matchValidator.validateMatchId(),
-    annotationValidator.validateAnnotationId(),
-    validateRequest,
+    validateMatchId,
+    validateAnnotationId,
     annotationController.remove
 );
 

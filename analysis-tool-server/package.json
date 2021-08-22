@@ -5,7 +5,7 @@
   "scripts": {
     "prestart": "node ./scripts/reset",
     "start": "nodemon ./scripts/start",
-    "test": "echo \"Error: no test specifed.\" && exit 1"
+    "poststart": "mocha --recursive"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
@@ -13,13 +13,19 @@
     "debug": "~2.6.9",
     "dotenv": "^10.0.0",
     "express": "~4.16.1",
-    "express-validator": "^6.12.1",
     "helmet": "^4.6.0",
     "http-errors": "^1.6.3",
     "jade": "~1.11.0",
+    "joi": "^17.4.2",
+    "joi-oid": "^1.1.2",
     "mongoose": "^5.13.3",
     "morgan": "~1.9.1",
     "nodemon": "^2.0.12",
     "swagger-ui-express": "^4.1.6"
+  },
+  "devDependencies": {
+    "chai": "^4.3.4",
+    "mocha": "^9.0.3",
+    "mocha-param": "^2.0.1"
   }
 }

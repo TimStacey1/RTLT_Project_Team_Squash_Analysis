@@ -1,99 +1,91 @@
 
+
 const { Match } = require('../models/Match');
 
+const { Annotation } = require('../models/Annotation');
 
-//TODO: Seperate model queries into seperate reusable functions 
-//  - for both controllers and validators 
-
-//TODO: Implement centralised error handling 
-//  next(err) -> server.js errHandler function
-//  custom errors 
-
+const util = require('./util');
 
 
 //POST '/:match_id/new'
-const create = (req, res, next) => {
-    const matchId = req.params.match_id;
+const create = async (req, res, next) => {
+    const _new = new Annotation(req.body); 
 
-    const annotation = {
-        timestamp: req.body.timestamp,
-        playerNumber: req.body.playerNumber,
-        shot: req.body.shot
-    };
+    const [result, err] = await util.handle(Match.updateOne(       
+        { _id: req.params.match_id },
+        { $push: { annotations: _new } })
+    );            
 
-    // find the match using the provided id and update its annotations
-    Match.updateOne({ _id: matchId }, { $push: { annotations: annotation } })
-        .then(res.status(200).json({
-            message: 'New annotation added!'
-        }))
-        .catch(err => res.status(400).json('Error: ' + err));
+    if (err || result.nModified === 0) return res.status(400).json('Failed to create annotation.');
+
+    return res.status(200).json(_new._id);
+};
+
+
+//POST '/get'
+const get = async (req, res, next) => {
+    const [result, err] = await util.handle(Match.findById(        
+        { _id: req.params.match_id, annotations: { _id: req.params.annotation_id } }
+    ));    
+
+    if (err || !result) return res.status(400).json('Failed to get annotation.');
+
+    const annotation = util.transformAnnotations([result])[0]; 
+
+    return res.status(200).json(annotation);
 };
 
 
 //GET '/:match_id/all'
-const all = (req, res, next) => {
-    const matchId = req.params.match_id;
+const getAll = async (req, res, next) => {
+    const [result, err] = await util.handle(Match.findById(
+        { _id: req.params.match_id, annotations: { _id: req.params.annotation_id } }
+    ));                
 
-    // find the match using the provided id and return its annotations
-    Match.findOne({ _id: matchId })
-        .then(match => match.annotations)
-        .then(annotations => annotations.map(annotation => {
-            return {
-                id: annotation._id,
-                timestamp: annotation.timestamp,
-                playerNumber: annotation.playerNumber,
-                shot: annotation.shot
-            }
-        }))
-        .then(annotations => res.status(200).json(annotations))
-        .catch(err => {
-            res.status(400).json('Error: ' + err);
-        });
+    if (err || !result) return res.status(400).json('Failed to get annotations.');
+
+    const annotations = util.tranformAnnotations(result.annotations);
+
+    return res.status(200).json(annotations);
 };
 
 
 //POST '/:match_id/:annotation_id/edit'
-const edit = (req, res, next) => {
-    const matchId = req.params.match_id;
-    const annotationId = req.params.annotation_id; 
+const edit = async (req, res, next) => {
+    const [result, err] = await util.handle(Match.updateOne(        
+        { _id: req.params.match_id, 'annotations._id': req.params.annotation_id },
+        {
+            $set: {
+                'annotations.$.timestamp': req.body.timestamp,
+                'annotations.$.playerNumber': req.body.playerNumber,
+                'annotations.$.shot': req.body.shot
+            }
+        }
+    ).setOptions({ omitUndefined: true }));
 
-    const updatedAnnotation = {
-        _id: annotationId,
-        timestamp: req.body.timestamp,
-        playerNumber: req.body.playerNumber,
-        shot: req.body.shot
-    };
+    if (err || result.nModified === 0) return res.status(400).json('Failed to update annotation.');
 
-    // find the match using the provided id, find the annotation using
-    // the annotation id and update its contents
-    Match.updateOne(
-        { _id: matchId, 'annotations._id': annotationId },
-        { $set: { 'annotations.$': updatedAnnotation } }
-    )
-        .then(res.status(200).json('Annotation updated!'))
-        .catch(err => res.status(400).json('Error: ' + err));
+    return res.status(200).json('Successfully updated the annotation.');  
 };
 
 
 //POST '/:match_id/:annotation_id/remove'
-const remove = (req, res, next) => {
-    const matchId = req.params.match_id;
-    const annotationId = req.params.annotation_id;
+const remove = async (req, res, next) => {
+    const [result, err] = await util.handle(Match.updateOne(        
+        { _id: req.params.match_id },
+        { $pull: { annotations: { _id: req.params.annotation_id } } }
+    ));
 
-    // find the match using the provided id, find the annotation using
-    // the annotation id and discard it
-    Match.updateOne(
-        { _id: matchId },
-        { $pull: { annotations: { _id: annotationId } } }
-    )
-        .then(res.status(200).json('Annotation removed!'))
-        .catch(err => res.status(400).json('Error: ' + err));
+    if (err || result.nModified === 0) return res.status(400).json('Failed to remove annotation.');
+
+    return res.status(200).json('Successfully removed the annotation.');
 };
 
 
 module.exports = {
     create,
-    all,
-    edit,
+    getAll,
+    get,
+    edit,   
     remove    
 };

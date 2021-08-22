@@ -1,43 +1,44 @@
 
-const { Match } = require('../../models/Match');
 
-const { check } = require('express-validator');
-
-// Essentially the same as match validator, abstract out to seperate functionality
-// Create reusable model functions for route controllers anyways
-const validateAnnotationId = () => {
-    return [
-        check('annotation_id')
-            .isMongoId().withMessage('The annotation id does not exist.').bail()
-            .custom((value) => {
-                return Match.exists({ 'annotations._id' : value })
-                    .then(res => {
-                        return res || Promise.reject('Invalid id.');                         
-                    })
-            })
-    ];
-}
+const { objectIdSchema } = require('./objectId.schema');
+const { createAnnotationSchema, updateAnnotationSchema } = require('./annotation.schemas');
 
 
-const validateAnnotation = () => {
-    return [
-        check(['shot.hand', 'shot.id'])
-            .exists({ checkFalsy: true }).withMessage('Field required.').bail(),
-        check('shot.approach')
-            .optional().isIn(['Bounce','Volley', ""]).withMessage('Invalid approach type.').bail(),
-        check('timestamp')
-            .exists({ checkFalsy: true }).withMessage('Field required.').bail()
-            .custom(value => {
-                return !isNaN(Date.parse(value)) || Promise.reject('Timestamp is incorrect.');
-            }),
-        check('playerNumber')
-            .exists({ checkFalsy: true }).withMessage('Field required.').bail()
-            .isInt({ min: 1, max: 2 }).withMessage('Input is outside the value range.')
-    ];
-}
+function validateAnnotationId(req, res, next) {
+    const result = objectIdSchema.validate({ _id: req.params.annotation_id });
+
+    if (result.error) {
+        return res.status(400).json(result.error.message);
+    }
+
+    next();
+};
+
+
+function validateNewAnnotation(req, res, next) {
+    const result = createAnnotationSchema.validate(req.body);
+
+    if (result.error) {
+        return res.status(400).json(result.error.message);
+    }
+
+    next();
+};
+
+
+function validateUpdatedAnnotation(req, res, next) {
+    const result = updateAnnotationSchema.validate(req.body); 
+
+    if (result.error) {
+        return res.status(400).json(result.error.message);
+    }
+
+    next();
+};
 
 
 module.exports = {
     validateAnnotationId,
-    validateAnnotation
+    validateNewAnnotation,    
+    validateUpdatedAnnotation
 }
