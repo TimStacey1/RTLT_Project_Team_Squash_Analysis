@@ -43,7 +43,13 @@ export default function AnnotationVideo(props) {
 
   return (
     <div className="w-full h-full">
-      <Player ref={playerRef} fluid={false} width={'100%'} height={'100%'} preload={'auto'}>
+      <Player
+        ref={playerRef}
+        fluid={false}
+        width={'100%'}
+        height={'100%'}
+        preload={'auto'}
+      >
         <source src={test1} />
 
         <BigPlayButton position="center" />

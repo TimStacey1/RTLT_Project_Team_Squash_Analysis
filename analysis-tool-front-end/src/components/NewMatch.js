@@ -16,7 +16,8 @@ class NewMatch extends React.Component {
       player2LName: '',
 
       title: '',
-      duration: '',
+      hours: '',
+      minutes: '',
       description: ''
     };
     this.handleChange = this.handleChange.bind(this);
@@ -40,7 +41,10 @@ class NewMatch extends React.Component {
       }
     };
     const title = this.state.title;
-    const duration = this.state.duration;
+    const duration = this.convertHMToSeconds(
+      this.state.hours,
+      this.state.minutes
+    );
     const description = this.state.description;
 
     axios
@@ -63,6 +67,10 @@ class NewMatch extends React.Component {
     this.props.history.push('/home');
   };
 
+  convertHMToSeconds = (numHours, numMinutes) => {
+    return numHours * 60 * 60 + numMinutes * 60;
+  };
+
   render() {
     return (
       <>
@@ -83,10 +91,16 @@ class NewMatch extends React.Component {
 
               <div className="w-full">
                 <label
+                  className="block uppercase tracking-wide text-gray-700 text-s font-bold mb-2"
+                  for="grid-first-name"
+                >
+                  Player 1:
+                </label>
+                <label
                   className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
                   for="grid-first-name"
                 >
-                  Player 1: First Name
+                  First Name
                 </label>
                 <input
                   className="appearance-none block w-full bg-gray-200 text-gray-700 border py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
@@ -102,7 +116,7 @@ class NewMatch extends React.Component {
                   className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
                   for="grid-last-name"
                 >
-                  Player 1: Last Name
+                  Last Name
                 </label>
                 <input
                   className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 py-3 px-4 mb-3  leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
@@ -116,10 +130,16 @@ class NewMatch extends React.Component {
 
               <div className="w-full ">
                 <label
+                  className="block uppercase tracking-wide text-gray-700 text-s font-bold mb-2"
+                  for="grid-first-name"
+                >
+                  Player 2:
+                </label>
+                <label
                   className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
                   for="grid-first-name"
                 >
-                  Player 2: First Name
+                  First Name
                 </label>
                 <input
                   className="appearance-none block w-full bg-gray-200 text-gray-700 border py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
@@ -135,7 +155,7 @@ class NewMatch extends React.Component {
                   className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
                   for="grid-last-name"
                 >
-                  Player 2: Last Name
+                  Last Name
                 </label>
                 <input
                   className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
@@ -194,16 +214,28 @@ class NewMatch extends React.Component {
                   className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
                   for="grid-password"
                 >
-                  Match Duration <span className="lowercase">(s)</span>:
+                  Match Duration:
                 </label>
-                <input
-                  className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                  id="grid-password"
-                  type="text"
-                  value={this.state.duration}
-                  name="duration"
-                  onChange={(event) => this.handleChange(event, 'duration')}
-                />
+                <div className="flex">
+                  <input
+                    className="appearance-none block w-1/2 bg-gray-200 text-gray-700 border border-gray-200 py-3 px-4 mb-3 mr-1 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                    id="grid-password"
+                    type="number"
+                    value={this.state.hours}
+                    name="hours"
+                    onChange={(event) => this.handleChange(event, 'hours')}
+                    placeholder="hours"
+                  />
+                  <input
+                    className="appearance-none block w-1/2 bg-gray-200 text-gray-700 border border-gray-200 py-3 px-4 mb-3 ml-1 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                    id="grid-password"
+                    type="number"
+                    value={this.state.minutes}
+                    name="minutes"
+                    onChange={(event) => this.handleChange(event, 'minutes')}
+                    placeholder="minutes"
+                  />
+                </div>
               </div>
             </div>
             <div className="col-span-12 sm:col-span-6 pr-2 ml-2 sm:ml-4">
