@@ -10,7 +10,7 @@ export default class Modal extends React.Component {
     }
     return (
       <div className="modal" id="modal">
-        <h2>{this.props.title}</h2>
+        <h2 className="text-center">{this.props.title}</h2>
         <div className="content">{this.props.children}</div>
         <div className="actions">
           <button
