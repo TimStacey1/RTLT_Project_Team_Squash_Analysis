@@ -18,10 +18,10 @@ export default function AnnotationInterface(props) {
   useEffect(() => {
     if (annotationsChanged) {
       axios
-        .get(baseUrl + '/match/all')
+        .get(baseUrl + '/match/' + matchId + '/get')
         .then((res) => res.data)
-        .then((matches) => {
-          setMatch(matches.filter((match) => match.id === matchId)[0]);
+        .then((match) => {
+          setMatch(match);
         })
         .then(updateAnnotations);
     }
