@@ -4,9 +4,9 @@ const { shots } = require('../../models/Annotation')
 
 
 const annotationSchema = Joi.object({
-    shot         : Joi.valid(...shots).error(new Error('Invalid shot component')),
-    timestamp    : Joi.date().timestamp('javascript'),
-    playerNumber : Joi.number().integer().min(1).max(2)
+    shot: Joi.valid(...shots).error(new Error('Invalid shot component.')),
+    timestamp: Joi.date().timestamp('javascript'),
+    playerNumber: Joi.number().integer().min(1).max(2)
 }).min(1);
 
 

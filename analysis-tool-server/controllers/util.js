@@ -1,5 +1,8 @@
 
 
+const fs = require("fs");
+
+
 const handle = (promise) => {
 	return promise
 		.then(result => ([result, undefined]))
@@ -18,7 +21,7 @@ const transformMatches = (matches) => {
 			},
 			description: match.description,
 			duration: match.duration
-		};		
+		};
 	});
 };
 
@@ -33,10 +36,36 @@ const tranformAnnotations = (annotaions) => {
 		};
 	});
 };
- 
+
+
+const handleFileUpload = (_file, path) => {
+	return handle(
+		new Promise((resolve, reject) => {
+			_file.mv(path, function (err) {
+				if (err) reject(new Error('Failed to upload file.'));
+				else resolve('File successfully uploaded.');
+			})
+		})
+	);
+};
+
+
+const handleFileRemoval = (path) => {
+	return handle(
+		new Promise((resolve, reject) => {
+			fs.unlink(path, function (err) {
+				if (err) reject(new Error('Failed to remove file.'));
+				else resolve('File successfully removed.');
+			})
+		})
+	);
+};
+
 
 module.exports = {
 	handle,
 	transformMatches,
-	tranformAnnotations
+	tranformAnnotations,
+	handleFileUpload,
+	handleFileRemoval
 };

@@ -7,12 +7,23 @@ const helmet = require('helmet');
 const cors = require('cors');
 const router = require('./routes/index');
 const mongoose = require('mongoose');
+const fileUpload = require('express-fileupload');
 
 require('dotenv').config();
 
 var app = express();
 
 // middleware setup
+app.use(
+    fileUpload({
+        createParentPath: true,
+        limits: {
+            fileSize: 1024 * 1024 * 1024 // ~1.07 Gb
+        },
+        abortOnLimit: true,
+        responseOnLimit: 'File size is too large.'
+    })
+);
 app.use(logger('dev'));
 app.use(helmet());
 app.use(cors());
