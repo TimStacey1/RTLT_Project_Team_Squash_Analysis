@@ -1,5 +1,3 @@
-
-
 const fs = require("fs");
 
 
@@ -26,8 +24,8 @@ const transformMatches = (matches) => {
 };
 
 
-const tranformAnnotations = (annotaions) => {
-	return annotaions.map(annotation => {
+const transformAnnotations = (annotations) => {
+	return annotations.map(annotation => {
 		return {
 			id: annotation._id,
 			timestamp: annotation.timestamp,
@@ -65,7 +63,7 @@ const handleFileRemoval = (path) => {
 module.exports = {
 	handle,
 	transformMatches,
-	tranformAnnotations,
+	transformAnnotations,
 	handleFileUpload,
 	handleFileRemoval
 };

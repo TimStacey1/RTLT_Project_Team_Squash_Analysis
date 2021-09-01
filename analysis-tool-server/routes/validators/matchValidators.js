@@ -35,7 +35,7 @@ function validateMatchVideo(req, res, next) {
     if (req.files && Object.keys(req.files).length > 0) {
         const _file = req.files.video;
 
-        _file.name = req.params.match_id; // Use the match_id as a reference to the file. 
+        _file.name = req.params.match_id; // Use the match_id as a reference to the file.
 
         const validMimetypes = ['video/mp4'];
 

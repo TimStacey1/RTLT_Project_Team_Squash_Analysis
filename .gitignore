@@ -103,5 +103,9 @@ dist
 # TernJS port file
 .tern-port
 
+# Miscellaneous
 .DS_Store
 /.vs
+
+# Match Videos
+/analysis-tool-server/videos/

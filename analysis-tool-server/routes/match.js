@@ -3,17 +3,15 @@ const router = require('express').Router();
 const {
     validateMatchId,
     validateNewMatch,
-    validateUpdatedMatch,
-    validateMatchVideo
+    validateUpdatedMatch
 } = require('./validators/matchValidators');
 
-const matchController = require('../controllers/match.controllers');
+const matchController = require('../controllers/match.controller');
 
 
 // route for the creation of a new match
 router.post('/new',
     validateNewMatch,
-    validateMatchVideo,
     matchController.create
 );
 
@@ -25,20 +23,13 @@ router.get('/:match_id/get',
 );
 
 
-// route for getting a single match video
-router.get('/:video_id/video',
-    validateMatchId,
-    matchController.getVideo
-);
-
-
 // route for retrieving all matches
 router.get('/all',
     matchController.getAll
 );
 
 
-// route for updating an existing match 
+// route for updating an existing match
 router.post('/:match_id/update',
     validateMatchId,
     validateUpdatedMatch,

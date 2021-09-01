@@ -4,7 +4,7 @@ const { validateAnnotationId, validateNewAnnotation, validateUpdatedAnnotation} 
 
 const { validateMatchId } = require('./validators/matchValidators');
 
-const annotationController = require('../controllers/annotate.controllers');
+const annotationController = require('../controllers/annotate.controller');
 
 
 // route for creating a new annotation in a match
