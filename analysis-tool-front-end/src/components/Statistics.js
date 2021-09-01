@@ -130,5 +130,4 @@ export default function Statistics(props) {
       </div>
     </div>
   );
-
 }

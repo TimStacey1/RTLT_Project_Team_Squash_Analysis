@@ -18,7 +18,8 @@ class NewMatch extends React.Component {
       title: '',
       hours: '',
       minutes: '',
-      description: ''
+      description: '',
+      selectedFile: ''
     };
     this.handleChange = this.handleChange.bind(this);
   }
@@ -27,8 +28,12 @@ class NewMatch extends React.Component {
     this.setState({ [field]: event.target.value });
   };
 
+  onFileChange = (event) => {
+    this.setState({ selectedFile: event.target.files[0] });
+  };
+
   handleSubmit = (event) => {
-    const apiUrl = 'http://localhost:3001/match/new';
+    event.preventDefault();
 
     const players = {
       player1: {
@@ -47,24 +52,23 @@ class NewMatch extends React.Component {
     );
     const description = this.state.description;
 
+    const formData = new FormData();
+    formData.append('video', this.state.selectedFile);
+
     axios
-      .post(apiUrl, {
+      .post(this.props.baseUrl + '/match/new', {
         players,
         title,
         duration,
         description
       })
-      .then(
-        (response) => {
-          console.log(response.data);
-        },
-        (error) => {
-          console.log(error.response);
-        }
-      );
-
-    event.preventDefault();
-    this.props.history.push('/home');
+      .then((response) => {
+        axios.post(
+          this.props.baseUrl + '/video/' + response.data.match_id + '/upload',
+          formData
+        );
+      })
+      .then(this.props.history.push('/home'));
   };
 
   convertHMToSeconds = (numHours, numMinutes) => {
@@ -256,8 +260,19 @@ class NewMatch extends React.Component {
                   </h5>
                   <h5 className="block uppercase text-white bg-gray-700 px-3 py-1 hover:bg-gray-900 cursor-pointer text-xs text-center font-bold mb-1">
                     {' '}
-                    <FontAwesomeIcon icon={faUpload} />
-                    <span className="pl-1"> Click to Upload </span>{' '}
+                    <div>
+                      <label className="cursor-pointer" for="upload">
+                        <FontAwesomeIcon icon={faUpload} />
+                        <span className="pl-2">Click to Upload</span>
+                      </label>
+                      <input
+                        id="upload"
+                        className="hidden"
+                        type="file"
+                        accept="video/mp4"
+                        onChange={this.onFileChange}
+                      />
+                    </div>
                   </h5>
                 </div>
               </div>

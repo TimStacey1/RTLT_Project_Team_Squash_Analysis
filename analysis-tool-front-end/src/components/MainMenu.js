@@ -1,16 +1,15 @@
 import { React, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import test1 from '../assets/test1.mp4';
 
 const axios = require('axios').default;
 
-export default function MainMenu() {
-  const apiUrl = 'http://localhost:3001/match/all';
+export default function MainMenu(props) {
+  const { baseUrl } = props;
   const [matches, setMatches] = useState([]);
 
   useEffect(() => {
     axios
-      .get(apiUrl)
+      .get(baseUrl + '/match/all')
       .then((res) => res.data)
       .then((matches) => setMatches(matches.reverse()));
   }, []);
@@ -46,7 +45,11 @@ export default function MainMenu() {
               <div className="overflow-hidden shadow-lg">
                 <div className="p-4">
                   <div className="font-bold text-xl mb-3">{match.title}</div>
-                  <video src={test1} autoPlay muted preload={'auto'}></video>
+                  <video
+                    src={baseUrl + '/video/' + match.id + '/stream'}
+                    muted
+                    preload={'auto'}
+                  ></video>
                   <p className="text-gray-700 mt-2 text-base">
                     <strong>
                       {match.players.player1} vs {match.players.player2}

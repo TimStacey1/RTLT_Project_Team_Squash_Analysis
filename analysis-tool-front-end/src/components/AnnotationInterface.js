@@ -14,6 +14,7 @@ export default function AnnotationInterface(props) {
   const [currentVideoTime, setCurrentVideoTime] = useState(0);
   const [pausedState, setCurrentPausedState] = useState(true);
   const [videoPaused, setVideoPaused] = useState(null);
+  const [videoUrl, setVideoUrl] = useState('');
 
   useEffect(() => {
     if (annotationsChanged) {
@@ -22,6 +23,7 @@ export default function AnnotationInterface(props) {
         .then((res) => res.data)
         .then((match) => {
           setMatch(match);
+          setVideoUrl(baseUrl + '/video/' + matchId + '/stream');
         })
         .then(updateAnnotations);
     }
@@ -70,10 +72,10 @@ export default function AnnotationInterface(props) {
         </div>
         <div className="col-span-13 ml-1 mr-16 h-desktop">
           <AnnotationVideo
+            videoUrl={videoUrl}
             seekTime={seekTime}
             updateCurrentVideoTime={updateCurrentVideoTime}
             updateCurrentPausedState={updateCurrentPausedState}
-            pausedState={pausedState}
             videoPaused={videoPaused}
           />
         </div>

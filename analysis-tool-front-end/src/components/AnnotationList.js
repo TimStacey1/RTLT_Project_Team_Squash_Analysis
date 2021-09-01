@@ -34,7 +34,6 @@ export default function AnnotationList(props) {
             '/remove'
         )
         .then((res) => {
-          console.log(res.data);
           setAnnotationToRemove({});
           updateAnnotations();
         });
@@ -81,7 +80,6 @@ export default function AnnotationList(props) {
       unique.includes(item.shot.id)
     );
 
-    console.log(newAnnotations);
     setFilterAnnotations(newAnnotations);
 
     setCheckedState(updatedCheckedState);
@@ -119,7 +117,6 @@ export default function AnnotationList(props) {
   };
 
   const handleTimeChange = (newTimeValue) => {
-    console.log(newTimeValue);
     setModalContent({
       shotText: modalContent.shotText,
       timeText: newTimeValue
@@ -323,21 +320,20 @@ export default function AnnotationList(props) {
           </tbody>
         </table>
       </div>
-      
+
       <div className="w-full mt-1">
-      <button
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold border-r-4 border-white py-2 px-4 w-1/2"
-        onClick={toggleFilter}
-      >
-        {' '}
-        Filter{' '}
-      </button>
-      <a href={'/stats/' + match.id}>
+        <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold border-r-4 border-white py-2 px-4 w-1/2"
+          onClick={toggleFilter}
+        >
+          {' '}
+          Filter{' '}
+        </button>
+        <a href={'/stats/' + match.id}>
           <button className="bg-green-700 hover:bg-green-600 text-white font-bold py-2 px-4 w-1/2">
             Statistics
           </button>
         </a>
-
       </div>
       {showFilter ? <Filter /> : null}
     </>

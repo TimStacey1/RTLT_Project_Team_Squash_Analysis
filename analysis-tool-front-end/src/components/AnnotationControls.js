@@ -5,7 +5,6 @@ const axios = require('axios').default;
 
 export default function AnnotationControls(props) {
   const { baseUrl, matchId, updateAnnotations, getAnnotationTimestamp } = props;
-  const apiUrl = baseUrl + '/annotate/' + matchId + '/new';
   const shots = [
     { id: 'BH Drive', hand: 'Backhand', approach: '' },
     { id: 'FH Drive', hand: 'ForeHand', approach: '' },
@@ -38,10 +37,8 @@ export default function AnnotationControls(props) {
 
   useEffect(() => {
     if (Object.entries(selectedAnnotation).length > 0) {
-      console.log(selectedAnnotation);
       axios
-        .post(apiUrl, selectedAnnotation)
-        .then((res) => console.log(res.data.message))
+        .post(baseUrl + '/annotate/' + matchId + '/new', selectedAnnotation)
         .then(updateAnnotations());
     }
   }, [selectedAnnotation]);

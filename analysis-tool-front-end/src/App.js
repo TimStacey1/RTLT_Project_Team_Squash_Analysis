@@ -13,16 +13,13 @@ function App() {
       <Navbar />
       <Router>
         <Route path="/home">
-          <MainMenu />
+          <MainMenu baseUrl={baseUrl} />
         </Route>
         <Route exact path="/">
           <Redirect to="/home"></Redirect>
         </Route>
-        <Route path="/annotate">
-          <AnnotationInterface />
-        </Route>
         <Route path="/new/match">
-          <NewMatch />
+          <NewMatch baseUrl={baseUrl} />
         </Route>
         <Route path="/match/:id">
           <AnnotationInterface baseUrl={baseUrl} />

@@ -11,20 +11,18 @@ import {
   BigPlayButton
 } from 'video-react';
 import 'video-react/dist/video-react.css';
-import test1 from '../assets/test1.mp4';
 
 export default function AnnotationVideo(props) {
   const {
+    videoUrl,
     seekTime,
     updateCurrentVideoTime,
     updateCurrentPausedState,
-    pausedState,
     videoPaused
   } = props;
   const playerRef = useRef();
 
   useEffect(() => {
-    console.log(videoPaused, pausedState);
     if (videoPaused) {
       playerRef.current.actions.pause();
     } else if (videoPaused !== null) {
@@ -49,9 +47,8 @@ export default function AnnotationVideo(props) {
         width={'100%'}
         height={'100%'}
         preload={'auto'}
+        src={videoUrl}
       >
-        <source src={test1} />
-
         <BigPlayButton position="center" />
 
         <ControlBar>
