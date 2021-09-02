@@ -256,86 +256,93 @@ export default function AnnotationList(props) {
 
   return (
     <>
-      <div className="overflow-y-auto h-full p-1 border-2 border-gray-500">
-        <h1 className="text-center text-lg font-bold mb-1">{match.title}</h1>
-        <table className="table-fixed w-full">
-          <thead>
-            <tr>
-              <th className="w-6/8">Annotation </th>
-              <th className="w-2/8">Time</th>
-            </tr>
-          </thead>
-          <tbody>
-            <Modal onClose={showModal} show={show} title={'Edit Annotation'}>
-              {' '}
-              Shot: {modalContent.shotText} <br /> Time:{' '}
-              <input
-                type="number"
-                onChange={(event) => handleTimeChange(event.target.value)}
-                value={modalContent.timeText}
-              />
-            </Modal>
-            {filterAnnotations.map((annotation) => {
-              return (
-                <>
-                  <tr className="text-center border-t-2 border-fuchsia-600">
-                    <div className="has-tooltip">
-                      <span className="tooltip shadow-lg px-3 py-1 bg-blue-600 text-white -mt-8">
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            showModal(annotation.shot.id, annotation.timestamp);
-                          }}
-                        >
-                          <FontAwesomeIcon className="pr-1" icon={faEdit} />
-                          Edit{' '}
-                        </button>{' '}
-                        |
-                        <button
-                          type="button"
-                          className="pl-2"
-                          onClick={() => removeAnnotation(annotation)}
-                        >
-                          <FontAwesomeIcon icon={faTrash} /> Remove
-                        </button>
-                      </span>
-                      <td className="">
-                        <span className="grid place-items-center overflow-x-hidden w-full px-2">
-                          {annotation.shot.id}
+      <div className="h-full flex flex-col">
+        <div className="flex-grow w-full p-1 border-2 border-gray-500">
+          <h1 className="text-center text-lg font-bold mb-1">{match.title}</h1>
+          <table className="table-fixed w-full">
+            <thead>
+              <tr>
+                <th className="w-6/8">Annotation </th>
+                <th className="w-2/8">Time</th>
+              </tr>
+            </thead>
+            <tbody>
+              <Modal onClose={showModal} show={show} title={'Edit Annotation'}>
+                {' '}
+                Shot: {modalContent.shotText} <br /> Time:{' '}
+                <input
+                  type="number"
+                  onChange={(event) => handleTimeChange(event.target.value)}
+                  value={modalContent.timeText}
+                />
+              </Modal>
+              {filterAnnotations.map((annotation) => {
+                return (
+                  <>
+                    <tr className="text-center border-t-2 border-fuchsia-600">
+                      <div className="has-tooltip">
+                        <span className="tooltip shadow-lg px-3 py-1 bg-blue-600 text-white -mt-8">
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              showModal(
+                                annotation.shot.id,
+                                annotation.timestamp
+                              );
+                            }}
+                          >
+                            <FontAwesomeIcon className="pr-1" icon={faEdit} />
+                            Edit{' '}
+                          </button>{' '}
+                          |
+                          <button
+                            type="button"
+                            className="pl-2"
+                            onClick={() => removeAnnotation(annotation)}
+                          >
+                            <FontAwesomeIcon icon={faTrash} /> Remove
+                          </button>
                         </span>
+                        <td className="">
+                          <span className="grid place-items-center overflow-x-hidden w-full px-2">
+                            {annotation.shot.id}
+                          </span>
+                        </td>
+                      </div>
+                      <td>
+                        <button
+                          className="hover:text-blue-500"
+                          onClick={() => jumpToAnnotation(annotation.timestamp)}
+                        >
+                          {convertSecondsToMS(annotation.timestamp)}
+                        </button>
                       </td>
-                    </div>
-                    <td>
-                      <button
-                        className="hover:text-blue-500"
-                        onClick={() => jumpToAnnotation(annotation.timestamp)}
-                      >
-                        {convertSecondsToMS(annotation.timestamp)}
-                      </button>
-                    </td>
-                  </tr>
-                </>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
+                    </tr>
+                  </>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
 
-      <div className="w-full mt-1">
-        <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold border-r-4 border-white py-2 px-4 w-1/2"
-          onClick={toggleFilter}
-        >
-          {' '}
-          Filter{' '}
-        </button>
-        <a href={'/stats/' + match.id}>
-          <button className="bg-green-700 hover:bg-green-600 text-white font-bold py-2 px-4 w-1/2">
-            Statistics
-          </button>
-        </a>
+        <div className="w-full mt-auto">
+          <div className="mt-1">
+            <button
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold border-r-4 border-white py-2 px-4 w-1/2"
+              onClick={toggleFilter}
+            >
+              {' '}
+              Filter{' '}
+            </button>
+            <a href={'/stats/' + match.id}>
+              <button className="bg-green-700 hover:bg-green-600 text-white font-bold py-2 px-4 w-1/2">
+                Statistics
+              </button>
+            </a>
+          </div>
+        </div>
+        {showFilter ? <Filter /> : null}
       </div>
-      {showFilter ? <Filter /> : null}
     </>
   );
 }
