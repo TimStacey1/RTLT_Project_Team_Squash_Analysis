@@ -13,13 +13,21 @@ const upload = async (req, res, next) => {
 
 // stream video
 const stream = async (req, res, next) => {
+  // ensure there is a range given for the video
+  const range = req.headers.range;
+
+  if (!range) {
+    res.status(400).send("Requires Range header");
+  }
+
   const videoPath = path.join(__dirname + '../../videos/' + req.params.match_id + '.mp4');
 
+  // ensure that the video file exists
   fs.stat(videoPath, (err, stat) => {
+
     // file exists
     if (err == null) {
       const videoSize = fs.statSync(videoPath).size;
-      const range = 'bytes=0-'
 
       // parse range
       const CHUNK_SIZE = 10 ** 6; // 1MB
