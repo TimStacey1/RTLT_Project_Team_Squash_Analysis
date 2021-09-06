@@ -1,48 +1,66 @@
 const router = require('express').Router();
 
-const { validateAnnotationId, validateNewAnnotation, validateUpdatedAnnotation} = require('./validators/annotationValidators');
+const handle = require('./validators/handle');
 
-const { validateMatchId } = require('./validators/matchValidators');
+const {
+    annotationIdSchema,
+    createAnnotationSchema,
+    updateAnnotationSchema
+} = require('./validators/annotation.schemas');
+
+const validate = require('./validators/validate');
+
+const { matchIdSchema } = require('./validators/match.schemas');
 
 const annotationController = require('../controllers/annotate.controller');
 
 
 // route for creating a new annotation in a match
 router.post('/:match_id/new',
-    validateMatchId,
-    validateNewAnnotation,
+    handle(
+        validate.params(matchIdSchema),
+        validate.body(createAnnotationSchema)
+    ),
     annotationController.create
 );
 
 
 // route for fetching annotations of an existing match
 router.get('/:match_id/all',
-    validateMatchId,
+    handle(
+        validate.params(matchIdSchema)
+    ),
     annotationController.getAll
 );
 
 
 // route for fetching a single annotation of an existing match
 router.get('/:match_id/:annotation_id/get',
-    validateMatchId,
-    validateAnnotationId,
+    handle(
+        validate.params(matchIdSchema),
+        validate.params(annotationIdSchema)
+    ),
     annotationController.get
 );
 
 
 // route for editing an existing annotation of a match
 router.post('/:match_id/:annotation_id/edit',
-    validateMatchId,
-    validateAnnotationId,
-    validateUpdatedAnnotation,
+    handle(
+        validate.params(matchIdSchema),
+        validate.params(annotationIdSchema),
+        validate.body(updateAnnotationSchema)
+    ),
     annotationController.edit
 );
 
 
 // route for removing an existing annotation of a match
 router.post('/:match_id/:annotation_id/remove',
-    validateMatchId,
-    validateAnnotationId,
+    handle(
+        validate.params(matchIdSchema),
+        validate.params(annotationIdSchema)
+    ),
     annotationController.remove
 );
 

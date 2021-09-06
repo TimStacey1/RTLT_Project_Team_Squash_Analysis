@@ -1,23 +1,27 @@
 const router = require('express').Router();
 
-const {
-  validateMatchId,
-  validateMatchVideo
-} = require('./validators/matchValidators');
+const validate = require('./validators/validate');
+
+const handle = require('./validators/handle');
+
+const { matchIdSchema } = require('./validators/match.schemas');
 
 const videoController = require('../controllers/video.controller');
 
 // route for uploading a single match video
 router.post('/:match_id/upload',
-  validateMatchId,
-  // validateMatchVideo,
-  videoController.upload
+    handle(
+        validate.params(matchIdSchema)
+    ),
+    videoController.upload
 );
 
 // route for getting a single match video
 router.get('/:match_id/stream',
-  validateMatchId,
-  videoController.stream
+    handle(
+        validate.params(matchIdSchema)
+    ),
+    videoController.stream
 );
 
 module.exports = router;

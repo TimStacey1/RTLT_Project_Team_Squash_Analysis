@@ -1,24 +1,33 @@
+
 const router = require('express').Router();
 
 const {
-    validateMatchId,
-    validateNewMatch,
-    validateUpdatedMatch
-} = require('./validators/matchValidators');
+    createMatchSchema,
+    updateMatchSchema,
+    matchIdSchema
+} = require('./validators/match.schemas');
+
+const handle = require('./validators/handle');
+
+const validate = require('./validators/validate');
 
 const matchController = require('../controllers/match.controller');
 
 
 // route for the creation of a new match
 router.post('/new',
-    validateNewMatch,
+    handle(
+        validate.body(createMatchSchema)
+    ),
     matchController.create
 );
 
 
 // route for getting a single match
 router.get('/:match_id/get',
-    validateMatchId,
+    handle(
+        validate.params(matchIdSchema)
+    ),
     matchController.get
 );
 
@@ -31,15 +40,19 @@ router.get('/all',
 
 // route for updating an existing match
 router.post('/:match_id/update',
-    validateMatchId,
-    validateUpdatedMatch,
+    handle(
+        validate.params(matchIdSchema),
+        validate.body(updateMatchSchema)
+    ),
     matchController.update
 );
 
 
 // route for removing an existing match
 router.post('/:match_id/remove',
-    validateMatchId,
+    handle(
+        validate.params(matchIdSchema)
+    ),
     matchController.remove
 );
 
