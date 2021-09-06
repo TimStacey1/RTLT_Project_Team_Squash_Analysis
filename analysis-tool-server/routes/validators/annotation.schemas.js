@@ -8,7 +8,9 @@ const annotationSchema = Joi.object({
   playerNumber: Joi.number().integer().min(1).max(2).optional()
 }).options({ stripUnknown: true, abortEarly: false }).min(1);
 
-const annotationIdSchema = Joi.object({ annotation_id: joi.objectId().required() });
+const annotationIdSchema = Joi.object({ annotation_id: joi.objectId().required() })
+    .options({ stripUnknown: true });
+    
 
 const createAnnotationSchema = annotationSchema.options({ presence: 'required' });
 

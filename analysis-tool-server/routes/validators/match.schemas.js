@@ -20,8 +20,8 @@ const matchSchema = Joi.object({
 }).options({ stripUnknown: true, abortEarly: false }).min(1);
 
 
-const matchIdSchema = Joi.object({ match_id: joi.objectId().required() });
-
+const matchIdSchema = Joi.object({ match_id: joi.objectId().required() })
+    .options({ stripUnknown: true });
 
 const createMatchSchema = matchSchema.options({ presence: 'required' });
 
