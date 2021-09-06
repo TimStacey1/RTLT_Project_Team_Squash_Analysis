@@ -1,23 +1,19 @@
-
 const Joi = require('joi');
-const { shots } = require('../../models/Annotation')
 
+const { annotationComponents } = require('../../models/Annotation');
 
 const annotationSchema = Joi.object({
-    shot: Joi.valid(...shots).error(new Error('Invalid shot component.')),
-    timestamp: Joi.date().timestamp('javascript'),
-    playerNumber: Joi.number().integer().min(1).max(2)
+  components: Joi.valid(...annotationComponents).error(new Error('Invalid annotation component.')).required(),
+  timestamp: Joi.date().timestamp('javascript').required(),
+  playerNumber: Joi.number().integer().min(1).max(2).optional()
 }).min(1);
 
-
-const createAnnotationSchema = annotationSchema.options({ presence: 'required' });
-
+const createAnnotationSchema = annotationSchema;
 
 const updateAnnotationSchema = annotationSchema.options({ presence: 'optional' }).empty('', null).default(undefined);
 
-
 module.exports = {
-    annotationSchema,
-    createAnnotationSchema,
-    updateAnnotationSchema
+  annotationSchema,
+  createAnnotationSchema,
+  updateAnnotationSchema
 };

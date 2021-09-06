@@ -25,12 +25,12 @@ const transformMatches = (matches) => {
 
 
 const transformAnnotations = (annotations) => {
-	return annotations.map(annotation => {
+	return annotations.map(item => {
 		return {
-			id: annotation._id,
-			timestamp: annotation.timestamp,
-			playerNumber: annotation.playerNumber,
-			shot: annotation.shot
+			id: item._id,
+			timestamp: item.timestamp,
+			playerNumber: item.playerNumber,
+			components: item.components
 		};
 	});
 };

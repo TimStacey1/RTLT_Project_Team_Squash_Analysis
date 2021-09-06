@@ -4,8 +4,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faEdit } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 
-export default function AnnotationList(props) {
-  const { baseUrl, match, updateAnnotations, jumpToAnnotation } = props;
+export default function AnnotationList({
+  baseUrl,
+  match,
+  updateAnnotations,
+  jumpToAnnotation
+}) {
   const [annotations, setAnnotations] = useState([]);
   const [filterAnnotations, setFilterAnnotations] = useState([]);
   const [annotationToRemove, setAnnotationToRemove] = useState({});
@@ -18,9 +22,15 @@ export default function AnnotationList(props) {
     endTimeS: 0
   });
   const [checkedState, setCheckedState] = useState(new Array(12).fill(false));
-
   const [modalContent, setModalContent] = useState({});
-  var unique_shots = [...new Set(annotations.map((item) => item.shot.id))];
+
+  var unique_shots = [
+    ...new Set(
+      annotations
+        .filter((annotation) => annotation.components.type === 'shot')
+        .map((annotation) => annotation.components.id)
+    )
+  ];
 
   useEffect(() => {
     if (Object.entries(annotationToRemove).length !== 0) {
@@ -44,11 +54,11 @@ export default function AnnotationList(props) {
         .get(baseUrl + '/annotate/' + match.id + '/all')
         .then((res) => res.data)
         .then((annotations) => {
-          setAnnotations(annotations);
-          setFilterAnnotations(annotations);
+          setAnnotations(annotations.filter((annotation) => annotation.components.type === 'shot'));
+          setFilterAnnotations(annotations.filter((annotation) => annotation.components.type === 'shot'));
         });
     }
-  }, [annotationToRemove, props]);
+  }, [annotationToRemove, match]);
 
   const clearFilters = () => {
     const updatedCheckedState = new Array(12).fill(false);
@@ -77,7 +87,7 @@ export default function AnnotationList(props) {
     }
 
     let newAnnotations = annotations.filter((item) =>
-      unique.includes(item.shot.id)
+      unique.includes(item.components.id)
     );
 
     setFilterAnnotations(newAnnotations);
@@ -286,7 +296,7 @@ export default function AnnotationList(props) {
                             type="button"
                             onClick={(e) => {
                               showModal(
-                                annotation.shot.id,
+                                annotation.components.id,
                                 annotation.timestamp
                               );
                             }}
@@ -305,7 +315,7 @@ export default function AnnotationList(props) {
                         </span>
                         <td className="">
                           <span className="grid place-items-center overflow-x-hidden w-full px-2">
-                            {annotation.shot.id}
+                            {annotation.components.id}
                           </span>
                         </td>
                       </div>

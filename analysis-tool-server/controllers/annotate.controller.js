@@ -51,7 +51,7 @@ const edit = async (req, res, next) => {
       $set: {
         'annotations.$.timestamp': req.body.timestamp,
         'annotations.$.playerNumber': req.body.playerNumber,
-        'annotations.$.shot': req.body.shot
+        'annotations.$.components': req.body.components
       }
     }
   ).setOptions({ omitUndefined: true }));

@@ -8,7 +8,13 @@ export default function Statistics(props) {
   const matchId = window.location.pathname.substring(7);
   console.log(matchId);
   const [annotations, setAnnotations] = useState([]);
-  var unique_shots = [...new Set(annotations.map((item) => item.shot.id))];
+  var unique_shots = [
+    ...new Set(
+      annotations
+        .filter((annotation) => annotation.components.type === 'shot')
+        .map((annotation) => annotation.components.id)
+    )
+  ];
 
   useEffect(() => {
     axios
@@ -21,7 +27,7 @@ export default function Statistics(props) {
   let shotCount = [];
   for (var i = 0; i < unique_shots.length; i++) {
     shotCount[i] = annotations.filter(
-      (item) => item.shot.id === unique_shots[i]
+      (item) => item.components.id === unique_shots[i]
     ).length;
   }
 
@@ -29,7 +35,7 @@ export default function Statistics(props) {
   let handCount = [0, 0];
   for (var i = 0; i < handCount.length; i++) {
     handCount[i] = annotations.filter((item) =>
-      item.shot.id.includes(handLabels[i])
+      item.components.id.includes(handLabels[i])
     ).length;
   }
   const backgroundColors = [
