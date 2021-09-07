@@ -22,7 +22,6 @@ export default function Statistics(props) {
       .then((res) => res.data)
       .then((annotations) => setAnnotations(annotations));
   }, []);
-  console.log(annotations);
 
   let shotCount = [];
   for (var i = 0; i < unique_shots.length; i++) {
@@ -84,6 +83,79 @@ export default function Statistics(props) {
     title: 'Backhand vs Forehand'
   };
 
+  // Find the times where user clicked "New Game"
+  let newGameTimes = annotations
+    .filter((annotation) => annotation.components.type === 'game')
+    .map((annotation) => annotation.timestamp);
+
+  let shotGameData = [];
+  let labelData = [];
+
+  // Find all annotations within each game & create labels
+  for (var i = 0; i < newGameTimes.length + 1; i++) {
+    if (i == 0) {
+      shotGameData[i] = annotations
+        .filter(
+          (annotation) =>
+            (annotation.components.type === 'shot') &
+            (annotation.timestamp < newGameTimes[0])
+        )
+        .map((annotation) => annotation.components.id);
+    } else if (i == newGameTimes.length) {
+      shotGameData[i] = annotations
+        .filter(
+          (annotation) =>
+            (annotation.components.type === 'shot') &
+            (annotation.timestamp > newGameTimes[newGameTimes.length - 1])
+        )
+        .map((annotation) => annotation.components.id);
+    } else {
+      shotGameData[i] = annotations
+        .filter(
+          (annotation) =>
+            (annotation.components.type === 'shot') &
+            ((annotation.timestamp > newGameTimes[i - 1]) &
+              (annotation.timestamp < newGameTimes[i]))
+        )
+        .map((annotation) => annotation.components.id);
+    }
+    labelData.push('Game ' + (i + 1));
+  }
+
+  // Count how many times each shot type occured per game
+  const countOccurrences = (arr, val) => {
+    const array = arr.reduce((a, v) => (v === val ? a + 1 : a), 0);
+    return array;
+  };
+
+  let gameData = [];
+  let temp = [];
+  let fullGamesDataset = [];
+
+  // Create array full of the number of occurences in each shot
+  for (var i = 0; i < newGameTimes.length + 1; i++) {
+    for (var k = 0; k < unique_shots.length; k++) {
+      temp.push(countOccurrences(shotGameData[i], unique_shots[k]));
+    }
+  }
+
+  // Rearrange array so it can be passed into chartjs, puts all the shot occurrences for each shot across all games
+  for (var k = 0; k < unique_shots.length; k++) {
+    let temp2 = [];
+    for (var i = 0; i < newGameTimes.length + 1; i++) {
+      temp2.push(temp[k + i * unique_shots.length]);
+    }
+    gameData.push(temp2);
+    // Create datasets for each shot type, label them as the shot id
+    let data = {
+      label: unique_shots[k],
+      data: gameData[k],
+      backgroundColor: backgroundColors[k],
+      borderWidth: 0
+    };
+    fullGamesDataset.push(data);
+  }
+
   return (
     <div className="container mx-auto px-5 py-3">
       <h2 className="text-2xl sm:text-3xl font-bold leading-7 text-gray-900 mb-5">
@@ -129,6 +201,47 @@ export default function Statistics(props) {
                 display: true,
                 text: handCountChart.title,
                 fontSize: 18
+              }
+            }}
+          />
+        </div>
+
+        <div className="col-span-12 mt-10">
+          <Bar
+            data={{
+              labels: labelData,
+              datasets: fullGamesDataset
+            }}
+            options={{
+              title: {
+                display: true,
+                text: 'Shot per game',
+                fontSize: 18
+              },
+              scales: {
+                xAxes: [
+                  {
+                    display: true,
+                    gridLines: {
+                      display: true,
+                      color: 'red',
+                      lineWidth: 5,
+                      drawBorder: false
+                    },
+                    ticks: {
+                      padding: 5
+                    }
+                  }
+                ],
+                yAxes: [
+                  {
+                    ticks: {
+                      max: shotCount.maxY,
+                      min: 0,
+                      stepSize: 1
+                    }
+                  }
+                ]
               }
             }}
           />
