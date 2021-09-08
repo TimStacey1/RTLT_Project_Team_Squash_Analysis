@@ -43,14 +43,13 @@ export default function Statistics(props) {
     'rgb(27, 131, 190)',
     'rgb(128, 128, 128)',
     'rgb(255, 43, 43)',
-    'rgb(0, 111, 58)',
-    'rgb(255, 193, 7)',
-    'rgb(27, 131, 190)',
-    'rgb(128, 128, 128)',
-    'rgb(0, 111, 58)',
-    'rgb(255, 193, 7)',
-    'rgb(27, 131, 190)',
-    'rgb(128, 128, 128)'
+    'rgb(189, 93, 56)',
+    'rgb(254, 170, 169)',
+    'rgb(175, 195, 255))',
+    'rgb(13, 32, 47)',
+    'rgb(229, 226, 209)',
+    'rgb(193, 61, 229)',
+    'rgb(186, 252, 193)'
   ];
 
   const shotCountChart = {
@@ -69,7 +68,7 @@ export default function Statistics(props) {
   };
 
   const handCountChart = {
-    labels: handLabels,
+    labels: ['Backhand Shots', 'Forehand Shots'],
     datasets: [
       {
         label: 'No. of Shots',
@@ -215,7 +214,7 @@ export default function Statistics(props) {
             options={{
               title: {
                 display: true,
-                text: 'Shot per game',
+                text: 'Shot Count per Game',
                 fontSize: 18
               },
               scales: {

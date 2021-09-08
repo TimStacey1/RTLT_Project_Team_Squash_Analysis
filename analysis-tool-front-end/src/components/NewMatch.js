@@ -250,14 +250,6 @@ class NewMatch extends React.Component {
 
               <div className="border-2 border-gray-200 mr-2 mb-4 flex h-40 bg-gray-100">
                 <div className="m-auto">
-                  <h5 className="block uppercase text-gray-700 text-xs text-center font-bold mb-1">
-                    {' '}
-                    Drag and Drop Video{' '}
-                  </h5>
-                  <h5 className="block uppercase text-gray-700 text-xs text-center font-bold mb-1">
-                    {' '}
-                    or{' '}
-                  </h5>
                   <h5 className="block uppercase text-white bg-gray-700 px-3 py-1 hover:bg-gray-900 cursor-pointer text-xs text-center font-bold mb-1">
                     {' '}
                     <div>
@@ -274,11 +266,6 @@ class NewMatch extends React.Component {
                       />
                     </div>
                   </h5>
-                </div>
-              </div>
-              <div className="relative pt-1 mr-2">
-                <div className="overflow-hidden h-2 mb-4 text-xs flex bg-green-100">
-                  <div className="shadow-none w-4/12 flex flex-col text-center whitespace-nowrap text-white justify-center bg-green-700"></div>
                 </div>
               </div>
               <button
