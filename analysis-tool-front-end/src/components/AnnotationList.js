@@ -52,7 +52,7 @@ export default function AnnotationList({
     if (match.id) {
       axios
         .get(baseUrl + '/annotate/' + match.id + '/all')
-        .then((res) => res.data.sort((a, b) => a.timestamp - b.timestamp)))
+        .then((res) => res.data.sort((a, b) => a.timestamp - b.timestamp))
         .then((annotations) => {
           setAnnotations(annotations);
           setFilterAnnotations(annotations);
@@ -314,17 +314,16 @@ export default function AnnotationList({
                           </button>
                         </span>
                         <td className="">
-                          {annotation.components.id == "New Game" &&
+                          {annotation.components.id == 'New Game' && (
                             <span className="grid place-items-center text-red-600 font-bold overflow-x-hidden w-full px-2">
-                            {annotation.components.id}
-                          </span>
-                          }
-                          {annotation.components.id != "New Game" &&
-
-                          <span className="grid place-items-center overflow-x-hidden w-full px-2">
-                            {annotation.components.id}
-                          </span>
-                          }
+                              {annotation.components.id}
+                            </span>
+                          )}
+                          {annotation.components.id != 'New Game' && (
+                            <span className="grid place-items-center overflow-x-hidden w-full px-2">
+                              {annotation.components.id}
+                            </span>
+                          )}
                         </td>
                       </div>
                       <td>

@@ -46,7 +46,7 @@ export default function AnnotationControls({
     if (Object.entries(selectedAnnotationComponent).length > 0) {
       let annotationTimeStamp = getAnnotationTimestamp();
       annotationTimeStamp =
-        annotationTimeStamp > 4 ? annotationTimeStamp - 4 : 1;
+        annotationTimeStamp > 10 ? annotationTimeStamp - 10 : 1;
 
       if (selectedAnnotationComponent.type === 'shot') {
         setSelectedAnnotation({
