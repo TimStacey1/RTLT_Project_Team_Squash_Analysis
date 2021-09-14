@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import AnnotationList from './AnnotationList';
 import AnnotationVideo from './AnnotationVideo';
+import AnnotationBanner from './AnnotationBanner';
 import AnnotationControls from './AnnotationControls';
+import axios from 'axios';
 
-const axios = require('axios').default;
-const matchId = window.location.pathname.substring(7);
-
-export default function AnnotationInterface(props) {
-  const { baseUrl } = props;
+export default function AnnotationInterface({ baseUrl }) {
+  const matchId = window.location.pathname.substring(7);
   const [annotationsChanged, setAnnotationsChanged] = useState(true);
   const [match, setMatch] = useState({});
   const [seekTime, setSeekTime] = useState(0);
@@ -15,6 +14,8 @@ export default function AnnotationInterface(props) {
   const [pausedState, setCurrentPausedState] = useState(true);
   const [videoPaused, setVideoPaused] = useState(null);
   const [videoUrl, setVideoUrl] = useState('');
+  const [annotations, setAnnotations] = useState([]);
+  const annotationRange = 10;
 
   useEffect(() => {
     if (annotationsChanged) {
@@ -25,17 +26,29 @@ export default function AnnotationInterface(props) {
           setMatch(match);
           setVideoUrl(baseUrl + '/video/' + matchId + '/stream');
         })
-        .then(updateAnnotations);
+        .then(
+          axios
+            .get(baseUrl + '/annotate/' + matchId + '/all')
+            .then((res) => res.data.sort((a, b) => a.timestamp - b.timestamp))
+            .then((annotations) => {
+              setAnnotations(annotations);
+            })
+            .then(setAnnotationsChanged(!annotationsChanged))
+        );
     }
   }, [annotationsChanged]);
 
-  const updateAnnotations = () => {
+  const annotationsUpdated = () => {
     setAnnotationsChanged(!annotationsChanged);
   };
 
   const jumpToAnnotation = (annotationTimeStamp) => {
     setVideoPaused(false);
-    setSeekTime(annotationTimeStamp);
+    setSeekTime(
+      annotationTimeStamp > annotationRange
+        ? annotationTimeStamp - annotationRange
+        : 1
+    );
   };
 
   const getAnnotationTimestamp = () => {
@@ -66,11 +79,12 @@ export default function AnnotationInterface(props) {
           <AnnotationList
             baseUrl={baseUrl}
             match={match}
-            updateAnnotations={updateAnnotations}
+            annotations={annotations}
+            annotationsUpdated={annotationsUpdated}
             jumpToAnnotation={jumpToAnnotation}
           />
         </div>
-        <div className="col-span-12 ml-2 mr-2 h-desktop">
+        <div className="col-span-12 ml-2 mr-2 h-desktop relative">
           <AnnotationVideo
             videoUrl={videoUrl}
             seekTime={seekTime}
@@ -78,6 +92,14 @@ export default function AnnotationInterface(props) {
             updateCurrentPausedState={updateCurrentPausedState}
             videoPaused={videoPaused}
           />
+          <div className="absolute top-3 left-3">
+            <AnnotationBanner
+              match={match}
+              annotations={annotations}
+              currentVideoTime={currentVideoTime}
+              annotationRange={annotationRange}
+            />
+          </div>
         </div>
         <div
           className="w-controls h-desktop transition-all -right-96 fixed transform hover:-translate-x-96"
@@ -87,7 +109,7 @@ export default function AnnotationInterface(props) {
           <AnnotationControls
             baseUrl={baseUrl}
             matchId={matchId}
-            updateAnnotations={updateAnnotations}
+            annotationsUpdated={annotationsUpdated}
             getAnnotationTimestamp={getAnnotationTimestamp}
           />
         </div>

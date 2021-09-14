@@ -10,7 +10,7 @@ import AnnotationButton from './AnnotationButton';
 export default function AnnotationControls({
   baseUrl,
   matchId,
-  updateAnnotations,
+  annotationsUpdated,
   getAnnotationTimestamp
 }) {
   const annotationComponents = [
@@ -44,19 +44,15 @@ export default function AnnotationControls({
 
   const updateSelectedAnnotation = (selectedAnnotationComponent) => {
     if (Object.entries(selectedAnnotationComponent).length > 0) {
-      let annotationTimeStamp = getAnnotationTimestamp();
-      annotationTimeStamp =
-        annotationTimeStamp > 10 ? annotationTimeStamp - 10 : 1;
-
       if (selectedAnnotationComponent.type === 'shot') {
         setSelectedAnnotation({
-          timestamp: annotationTimeStamp,
+          timestamp: getAnnotationTimestamp(),
           playerNumber: 1,
           components: selectedAnnotationComponent
         });
       } else if (selectedAnnotationComponent.type === 'game') {
         setSelectedAnnotation({
-          timestamp: annotationTimeStamp,
+          timestamp: getAnnotationTimestamp(),
           components: selectedAnnotationComponent
         });
       }
@@ -67,7 +63,7 @@ export default function AnnotationControls({
     if (Object.entries(selectedAnnotation).length > 0) {
       axios
         .post(baseUrl + '/annotate/' + matchId + '/new', selectedAnnotation)
-        .then(updateAnnotations());
+        .then(annotationsUpdated());
     }
   }, [selectedAnnotation]);
 

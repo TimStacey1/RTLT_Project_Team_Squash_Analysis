@@ -7,10 +7,10 @@ import axios from 'axios';
 export default function AnnotationList({
   baseUrl,
   match,
-  updateAnnotations,
+  annotations,
+  annotationsUpdated,
   jumpToAnnotation
 }) {
-  const [annotations, setAnnotations] = useState([]);
   const [filterAnnotations, setFilterAnnotations] = useState([]);
   const [annotationToRemove, setAnnotationToRemove] = useState({});
   const [show, setShow] = useState(false);
@@ -33,6 +33,8 @@ export default function AnnotationList({
   ];
 
   useEffect(() => {
+    setFilterAnnotations(annotations);
+
     if (Object.entries(annotationToRemove).length !== 0) {
       axios
         .post(
@@ -45,20 +47,10 @@ export default function AnnotationList({
         )
         .then((res) => {
           setAnnotationToRemove({});
-          updateAnnotations();
+          annotationsUpdated();
         });
     }
-
-    if (match.id) {
-      axios
-        .get(baseUrl + '/annotate/' + match.id + '/all')
-        .then((res) => res.data.sort((a, b) => a.timestamp - b.timestamp))
-        .then((annotations) => {
-          setAnnotations(annotations);
-          setFilterAnnotations(annotations);
-        });
-    }
-  }, [annotationToRemove, match]);
+  }, [annotationToRemove, annotations]);
 
   const clearFilters = () => {
     const updatedCheckedState = new Array(12).fill(false);
