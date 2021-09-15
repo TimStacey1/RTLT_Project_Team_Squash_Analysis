@@ -402,13 +402,13 @@ export default function AnnotationList({
                             <FontAwesomeIcon icon={faTrash} /> Remove
                           </button>
                         </span>
-                        <td className="">
-                          {annotation.components.id == 'New Game' && (
+                        <td className="pl-3">
+                          {annotation.components.id === 'New Game' && (
                             <span className="grid place-items-center text-red-600 font-bold overflow-x-hidden w-full px-2">
                               {annotation.components.id}
                             </span>
                           )}
-                          {annotation.components.id != 'New Game' && (
+                          {annotation.components.id !== 'New Game' && (
                             <span className="grid place-items-center overflow-x-hidden w-full px-2">
                               {annotation.components.id}
                             </span>

@@ -77,21 +77,6 @@ export default function AnnotationControls({
         </div>
         <ul className="w-full grid grid-cols-2 grid-rows-9 mx-2 py-4 gap-x-3 gap-y-4 h-full place-items-center">
           {annotationComponents
-            .filter((component) => component.type === 'shot')
-            .map((shot) => (
-              <li
-                className="w-full h-full"
-                onClick={() => updateSelectedAnnotation(shot)}
-              >
-                <AnnotationButton
-                  key={shot.id}
-                  name={shot.id}
-                  selected={selectedAnnotation.id === shot.id}
-                  disabled={false}
-                />
-              </li>
-            ))}
-          {annotationComponents
             .filter((component) => component.type === 'game')
             .map((game) => (
               <li
@@ -102,6 +87,21 @@ export default function AnnotationControls({
                   key={game.id}
                   name={game.id}
                   selected={selectedAnnotation.id === game.id}
+                  disabled={false}
+                />
+              </li>
+            ))}
+          {annotationComponents
+            .filter((component) => component.type === 'shot')
+            .map((shot) => (
+              <li
+                className="w-full h-full"
+                onClick={() => updateSelectedAnnotation(shot)}
+              >
+                <AnnotationButton
+                  key={shot.id}
+                  name={shot.id}
+                  selected={selectedAnnotation.id === shot.id}
                   disabled={false}
                 />
               </li>

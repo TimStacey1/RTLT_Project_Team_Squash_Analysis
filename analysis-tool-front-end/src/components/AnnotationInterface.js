@@ -74,8 +74,8 @@ export default function AnnotationInterface({ baseUrl }) {
 
   return (
     <>
-      <div className="grid grid-cols-16 w-full h-full">
-        <div className="col-span-3 mr-1 h-desktop">
+      <div className="grid grid-cols-16 h-full mx-3 mt-1">
+        <div className="col-span-3 mr-3 h-desktop">
           <AnnotationList
             baseUrl={baseUrl}
             match={match}
@@ -84,7 +84,7 @@ export default function AnnotationInterface({ baseUrl }) {
             jumpToAnnotation={jumpToAnnotation}
           />
         </div>
-        <div className="col-span-12 ml-2 mr-2 h-desktop relative">
+        <div className="col-span-13 h-desktop relative mr-12">
           <AnnotationVideo
             videoUrl={videoUrl}
             seekTime={seekTime}
@@ -102,7 +102,7 @@ export default function AnnotationInterface({ baseUrl }) {
           </div>
         </div>
         <div
-          className="w-controls h-desktop transition-all -right-96 fixed transform hover:-translate-x-96"
+          className="w-controls h-desktop transition-all -right-96 fixed transform hover:-translate-x-96 z-10"
           onMouseEnter={() => updateControlsOpen(true)}
           onMouseLeave={() => updateControlsOpen(false)}
         >
