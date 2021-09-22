@@ -13,6 +13,7 @@ export default function AnnotationList({
 }) {
   const [filterAnnotations, setFilterAnnotations] = useState([]);
   const [annotationToRemove, setAnnotationToRemove] = useState({});
+  const [annotationToEdit, setAnnotationToEdit] = useState({});
   const [show, setShow] = useState(false);
   const [showFilter, setFilterShow] = useState(false);
   const [filterTime, setFilterTime] = useState({
@@ -50,7 +51,28 @@ export default function AnnotationList({
           annotationsUpdated();
         });
     }
-  }, [annotationToRemove, annotations]);
+    if (Object.entries(annotationToEdit).length !== 0) {
+      const timeinSecs =
+        Number(annotationToEdit.timeTextH) * 3600 +
+        Number(annotationToEdit.timeTextM) * 60 +
+        Number(annotationToEdit.timeTextS);
+      annotationToEdit.annotation.timestamp = timeinSecs;
+      axios
+        .post(
+          baseUrl +
+            '/annotate/' +
+            match.id +
+            '/' +
+            annotationToEdit.annotation.id +
+            '/edit',
+          annotationToEdit.annotation
+        )
+        .then((res) => {
+          setAnnotationToEdit({});
+          annotationsUpdated();
+        });
+    }
+  }, [annotationToRemove, annotationToEdit, annotations]);
 
   const clearFilters = () => {
     const updatedCheckedState = new Array(12).fill(false);
@@ -108,20 +130,34 @@ export default function AnnotationList({
 
   const toggleFilter = () => setFilterShow(!showFilter);
 
-  const showModal = (shotText, timeText) => {
+  const showModal = (shotText, timeText, annotation) => {
     if (shotText && timeText) {
+      const hours = Math.floor(timeText / 3600);
+      const minutes = Math.floor((timeText % 3600) / 60);
+      const seconds = Math.floor((timeText % 3600) % 60);
+
       setModalContent({
+        annotation: annotation,
         shotText: shotText,
-        timeText: timeText
+        timeTextH: hours,
+        timeTextM: minutes,
+        timeTextS: seconds
       });
     }
     setShow(!show);
+
   };
 
-  const handleTimeChange = (newTimeValue) => {
+  const handleTimeChange = (event, timeTextX) => {
+    let newTime = modalContent;
+    newTime[timeTextX] = event.target.value;
+
     setModalContent({
-      shotText: modalContent.shotText,
-      timeText: newTimeValue
+      annotation: newTime['annotation'],
+      shotText: newTime.shotText,
+      timeTextH: newTime.timeTextH,
+      timeTextM: newTime.timeTextM,
+      timeTextS: newTime.timeTextS
     });
   };
 
@@ -269,14 +305,74 @@ export default function AnnotationList({
               </tr>
             </thead>
             <tbody>
-              <Modal onClose={showModal} show={show} title={'Edit Annotation'}>
-                {' '}
-                Shot: {modalContent.shotText} <br /> Time:{' '}
-                <input
-                  type="number"
-                  onChange={(event) => handleTimeChange(event.target.value)}
-                  value={modalContent.timeText}
-                />
+            <Modal onClose={showModal} show={show} title={'Edit Annotation'}>
+                <div className="content">
+                  <div className="border-2 p-2">
+                    <h3 className="text-lg mb-1 inline">
+                      {' '}
+                      <span className="font-bold"> Annotation: </span>{' '}
+                      {modalContent.shotText}{' '}
+                    </h3>{' '}
+                    <br />
+                    <h3 className="font-bold text-lg mb-1 inline"> Time: </h3>
+                    <label className="inline">
+                      <span className="ml-2">H:</span>
+
+                      <input
+                        type="number"
+                        min="0"
+                        value={modalContent.timeTextH}
+                        onChange={(event) =>
+                          handleTimeChange(event, 'timeTextH')
+                        }
+                        className="w-1/5 ml-1 form-text border-2 pl-1"
+                      />
+                    </label>
+                    <label className="inline ml-2">
+                      <span className="">M:</span>
+
+                      <input
+                        type="number"
+                        min="0"
+                        value={modalContent.timeTextM}
+                        onChange={(event) =>
+                          handleTimeChange(event, 'timeTextM')
+                        }
+                        className="w-1/5 ml-1 form-text border-2 pl-1"
+                      />
+                    </label>
+                    <label className="inline ml-2">
+                      <span className="">S:</span>
+
+                      <input
+                        type="number"
+                        max="60"
+                        min="0"
+                        value={modalContent.timeTextS}
+                        onChange={(event) =>
+                          handleTimeChange(event, 'timeTextS')
+                        }
+                        className="w-1/5 ml-1 form-text border-2 pl-1"
+                      />
+                    </label>
+                  </div>
+                </div>
+                <div className="actions">
+                  <button
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mr-2"
+                    onClick={(e) => {
+                      setAnnotationToEdit(modalContent);
+                    }}
+                  >
+                    Save
+                  </button>
+                  <button
+                    className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4"
+                    onClick={showModal}
+                  >
+                    Close
+                  </button>
+                </div>
               </Modal>
               {filterAnnotations.map((annotation) => {
                 return (
@@ -289,7 +385,8 @@ export default function AnnotationList({
                             onClick={(e) => {
                               showModal(
                                 annotation.components.id,
-                                annotation.timestamp
+                                annotation.timestamp,
+                                annotation
                               );
                             }}
                           >
