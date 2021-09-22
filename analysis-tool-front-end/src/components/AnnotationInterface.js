@@ -108,7 +108,7 @@ export default function AnnotationInterface({ baseUrl }) {
         >
           <AnnotationControls
             baseUrl={baseUrl}
-            matchId={matchId}
+            match={match}
             annotationsUpdated={annotationsUpdated}
             getAnnotationTimestamp={getAnnotationTimestamp}
           />

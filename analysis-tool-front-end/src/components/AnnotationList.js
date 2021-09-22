@@ -9,7 +9,7 @@ export default function AnnotationList({
   match,
   annotations,
   annotationsUpdated,
-  jumpToAnnotation
+  jumpToAnnotation,
 }) {
   const [filterAnnotations, setFilterAnnotations] = useState([]);
   const [annotationToRemove, setAnnotationToRemove] = useState({});
@@ -20,7 +20,7 @@ export default function AnnotationList({
     startTimeM: 0,
     startTimeS: 0,
     endTimeM: 0,
-    endTimeS: 0
+    endTimeS: 0,
   });
   const [checkedState, setCheckedState] = useState(new Array(12).fill(false));
   const [modalContent, setModalContent] = useState({});
@@ -30,7 +30,7 @@ export default function AnnotationList({
       annotations
         .filter((annotation) => annotation.components.type === 'shot')
         .map((annotation) => annotation.components.id)
-    )
+    ),
   ];
 
   useEffect(() => {
@@ -82,7 +82,7 @@ export default function AnnotationList({
       startTimeM: 0,
       startTimeS: 0,
       endTimeM: 0,
-      endTimeS: 0
+      endTimeS: 0,
     });
   };
 
@@ -141,11 +141,10 @@ export default function AnnotationList({
         shotText: shotText,
         timeTextH: hours,
         timeTextM: minutes,
-        timeTextS: seconds
+        timeTextS: seconds,
       });
     }
     setShow(!show);
-
   };
 
   const handleTimeChange = (event, timeTextX) => {
@@ -157,7 +156,7 @@ export default function AnnotationList({
       shotText: newTime.shotText,
       timeTextH: newTime.timeTextH,
       timeTextM: newTime.timeTextM,
-      timeTextS: newTime.timeTextS
+      timeTextS: newTime.timeTextS,
     });
   };
 
@@ -295,7 +294,7 @@ export default function AnnotationList({
   return (
     <>
       <div className="h-full flex flex-col">
-        <div className="flex-grow w-full p-1 border-2 border-gray-500">
+        <div className="flex-grow w-full p-1 border-2 border-gray-500 overflow-auto">
           <h1 className="text-center text-lg font-bold mb-1">{match.title}</h1>
           <table className="table-fixed w-full">
             <thead>
@@ -305,7 +304,7 @@ export default function AnnotationList({
               </tr>
             </thead>
             <tbody>
-            <Modal onClose={showModal} show={show} title={'Edit Annotation'}>
+              <Modal onClose={showModal} show={show} title={'Edit Annotation'}>
                 <div className="content">
                   <div className="border-2 p-2">
                     <h3 className="text-lg mb-1 inline">
@@ -402,7 +401,7 @@ export default function AnnotationList({
                             <FontAwesomeIcon icon={faTrash} /> Remove
                           </button>
                         </span>
-                        <td className="pl-3">
+                        <td className="w-1/2">
                           {annotation.components.id === 'New Game' && (
                             <span className="grid place-items-center text-red-600 font-bold overflow-x-hidden w-full px-2">
                               {annotation.components.id}

@@ -9,11 +9,12 @@ import AnnotationButton from './AnnotationButton';
 
 export default function AnnotationControls({
   baseUrl,
-  matchId,
+  match,
   annotationsUpdated,
-  getAnnotationTimestamp
+  getAnnotationTimestamp,
 }) {
-  const annotationComponents = [
+  const [annotationComponents, setAnnotationComponents] = useState([
+    { type: 'game', id: 'New Game' },
     { type: 'shot', id: 'BH Drive', hand: 'Backhand' },
     { type: 'shot', id: 'FH Drive', hand: 'ForeHand' },
     { type: 'shot', id: 'BH X-Court', hand: 'Backhand' },
@@ -26,46 +27,80 @@ export default function AnnotationControls({
       type: 'shot',
       id: 'BH Volley Drop',
       hand: 'Backhand',
-      approach: 'Volley'
+      approach: 'Volley',
     },
     {
       type: 'shot',
       id: 'FH Volley Drop',
       hand: 'ForeHand',
-      approach: 'Volley'
+      approach: 'Volley',
     },
     { type: 'shot', id: 'BH Kill', hand: 'Backhand' },
     { type: 'shot', id: 'FH Kill', hand: 'ForeHand' },
-    { type: 'game', id: 'New Game' }
-  ];
-  const numAdditionalButtons = 6;
-
+  ]);
   const [selectedAnnotation, setSelectedAnnotation] = useState({});
+  const [selectedPlayer, setSelectedPlayer] = useState({});
 
   const updateSelectedAnnotation = (selectedAnnotationComponent) => {
-    if (Object.entries(selectedAnnotationComponent).length > 0) {
-      if (selectedAnnotationComponent.type === 'shot') {
-        setSelectedAnnotation({
-          timestamp: getAnnotationTimestamp(),
-          playerNumber: 1,
-          components: selectedAnnotationComponent
-        });
-      } else if (selectedAnnotationComponent.type === 'game') {
-        setSelectedAnnotation({
-          timestamp: getAnnotationTimestamp(),
-          components: selectedAnnotationComponent
-        });
+    if (
+      selectedAnnotationComponent.type === 'shot' &&
+      Object.entries(selectedPlayer).length > 0
+    ) {
+      setSelectedAnnotation({
+        timestamp: getAnnotationTimestamp(),
+        playerNumber: selectedPlayer.playerNumber,
+        components: selectedAnnotationComponent,
+      });
+    } else if (selectedAnnotationComponent.type === 'game') {
+      setSelectedAnnotation({
+        timestamp: getAnnotationTimestamp(),
+        components: selectedAnnotationComponent,
+      });
+    }
+  };
+
+  const updateSelectedPlayer = (player) => {
+    if (Object.entries(selectedPlayer).length > 0) {
+      if (selectedPlayer === player) {
+        setSelectedPlayer({});
+      } else {
+        setSelectedPlayer(player);
       }
+    } else {
+      setSelectedPlayer(player);
     }
   };
 
   useEffect(() => {
+    if (
+      Object.entries(match).length > 0 &&
+      annotationComponents.filter((component) => component.type === 'player')
+        .length === 0
+    ) {
+      setAnnotationComponents([
+        ...annotationComponents,
+        {
+          type: 'player',
+          id: 'Player 1',
+          text: `Player 1: ${match.players.player1}`,
+          playerNumber: 1,
+        },
+        {
+          type: 'player',
+          id: 'Player 2',
+          text: `Player 2: ${match.players.player2}`,
+          playerNumber: 2,
+        },
+      ]);
+    }
+
     if (Object.entries(selectedAnnotation).length > 0) {
       axios
-        .post(baseUrl + '/annotate/' + matchId + '/new', selectedAnnotation)
+        .post(baseUrl + '/annotate/' + match.id + '/new', selectedAnnotation)
+        .then(setSelectedAnnotation({}))
         .then(annotationsUpdated());
     }
-  }, [selectedAnnotation]);
+  }, [selectedAnnotation, match]);
 
   return (
     <>
@@ -86,7 +121,24 @@ export default function AnnotationControls({
                 <AnnotationButton
                   key={game.id}
                   name={game.id}
+                  type={game.type}
                   selected={selectedAnnotation.id === game.id}
+                  disabled={false}
+                />
+              </li>
+            ))}
+          {annotationComponents
+            .filter((component) => component.type === 'player')
+            .map((player) => (
+              <li
+                className="w-full h-full col-span-2"
+                onClick={() => updateSelectedPlayer(player)}
+              >
+                <AnnotationButton
+                  key={player.id}
+                  name={player.text}
+                  type={player.type}
+                  selected={selectedPlayer.id === player.id}
                   disabled={false}
                 />
               </li>
@@ -100,20 +152,10 @@ export default function AnnotationControls({
               >
                 <AnnotationButton
                   key={shot.id}
+                  type={shot.type}
                   name={shot.id}
                   selected={selectedAnnotation.id === shot.id}
-                  disabled={false}
-                />
-              </li>
-            ))}
-          {Array(numAdditionalButtons)
-            .fill()
-            .map(() => (
-              <li className="w-full h-full">
-                <AnnotationButton
-                  name={'Additional Button'}
-                  disabled={true}
-                  selected={false}
+                  disabled={!(Object.entries(selectedPlayer).length > 0)}
                 />
               </li>
             ))}
