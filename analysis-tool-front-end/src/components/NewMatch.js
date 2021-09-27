@@ -19,7 +19,16 @@ class NewMatch extends React.Component {
       hours: '',
       minutes: '',
       description: '',
-      selectedFile: ''
+      selectedFile: '',
+
+      player1FNameError: '',
+      player1LNameError: '',
+
+      player2FNameError: '',
+      player2LNameError: '',
+
+      titleError: '',
+      durationError: ''
     };
     this.handleChange = this.handleChange.bind(this);
   }
@@ -32,7 +41,94 @@ class NewMatch extends React.Component {
     this.setState({ selectedFile: event.target.files[0] });
   };
 
+  formValidation = () => {
+    var regex = /^[^\s][a-zA-Z\s]+$/;
+    var title_regex = /^[\w\-\s]+$/;
+    var error = false;
+
+    // Testing player names
+
+    if (!regex.test(this.state.player1FName)) {
+      this.setState({player1FNameError: "Invalid characters in name, please try again."});
+      error = true;
+    }
+
+    if ((this.state.player1FName.length > 30)) {
+      this.setState({player1FNameError: "Name is too long, please try again."});
+      error = true;
+    }
+
+    if (!regex.test(this.state.player1LName)) {
+      this.setState({player1LNameError: "Invalid characters in name, please try again."});
+      error = true;
+    }
+
+    if (this.state.player1LName.length > 30) {
+      this.setState({player1LNameError: "Name is too long, please try again."});
+      error = true;
+    }
+
+    if (!regex.test(this.state.player2FName)) {
+      this.setState({player2FNameError: "Invalid characters in name, please try again."});
+      error = true;
+    }
+
+    if (this.state.player2FName.length > 30) {
+      this.setState({player2FNameError: "Name is too long, please try again."});
+      error = true;
+    }
+
+    if (!regex.test(this.state.player2LName)) {
+      this.setState({player2LNameError: "Invalid characters in name, please try again."});
+      error = true;
+    }
+
+    if (this.state.player2LName.length > 30) {
+      this.setState({player2LNameError: "Name is too long, please try again."});
+      error = true;
+    }
+
+    // Testing match title
+
+    if (!title_regex.test(this.state.title)) {
+      this.setState({titleError: "Invalid characters in match title, please try again."});
+      error = true;
+    }
+
+    if (this.state.title.length > 30) {
+      this.setState({titleError: "Match title is too long, please try again."});
+      error = true;
+    }
+
+    if (this.state.title.length < 5) {
+      this.setState({titleError: "Match title is too short, please try again."});
+      error = true;
+    }
+
+    // Testing match duration
+
+    if (this.state.hours > 2 ) {
+      this.setState({durationError: "Match duration is too long, please try again."});
+      error = true;
+    }
+
+    if (this.state.minutes.length > 59) {
+      this.setState({durationError: "Invalid input for minutes, please try again."});
+      error = true;
+    }
+
+    return error;
+
+  }
+
   handleSubmit = (event) => {
+    this.setState({player1FNameError: '',
+    player1LNameError: '',
+    player2FNameError: '',
+    player2LNameError: '',
+    titleError: '',
+    durationError: ''
+    })
     event.preventDefault();
 
     const players = {
@@ -52,10 +148,12 @@ class NewMatch extends React.Component {
     );
     const description = this.state.description;
 
+    let form_error = this.formValidation();
     const formData = new FormData();
     formData.append('video', this.state.selectedFile);
 
-    axios
+    if (!form_error) {
+      axios
       .post(this.props.baseUrl + '/match/new', {
         players,
         title,
@@ -69,6 +167,7 @@ class NewMatch extends React.Component {
         );
       })
       .then(this.props.history.push('/home'));
+    }
   };
 
   convertHMToSeconds = (numHours, numMinutes) => {
@@ -106,6 +205,7 @@ class NewMatch extends React.Component {
                 >
                   First Name
                 </label>
+                <p className="text-xs text-red-700 mb-2">{this.state.player1FNameError}</p>
                 <input
                   className="appearance-none block w-full bg-gray-200 text-gray-700 border py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
                   id="grid-first-name"
@@ -122,6 +222,7 @@ class NewMatch extends React.Component {
                 >
                   Last Name
                 </label>
+                <p className="text-xs text-red-700 mb-2">{this.state.player1LNameError}</p>
                 <input
                   className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 py-3 px-4 mb-3  leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                   id="grid-last-name"
@@ -145,6 +246,7 @@ class NewMatch extends React.Component {
                 >
                   First Name
                 </label>
+                <p className="text-xs text-red-700 mb-2">{this.state.player2FNameError}</p>
                 <input
                   className="appearance-none block w-full bg-gray-200 text-gray-700 border py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
                   id="grid-first-name"
@@ -161,6 +263,7 @@ class NewMatch extends React.Component {
                 >
                   Last Name
                 </label>
+                <p className="text-xs text-red-700 mb-2">{this.state.player2LNameError}</p>
                 <input
                   className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                   id="grid-last-name"
@@ -183,6 +286,7 @@ class NewMatch extends React.Component {
                 >
                   Match Title:
                 </label>
+                <p className="text-xs text-red-700 mb-2">{this.state.titleError}</p>
                 <input
                   className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                   id="grid-password"
@@ -220,11 +324,14 @@ class NewMatch extends React.Component {
                 >
                   Match Duration:
                 </label>
+                <p className="text-xs text-red-700 mb-2">{this.state.durationError}</p>
                 <div className="flex">
                   <input
                     className="appearance-none block w-1/2 bg-gray-200 text-gray-700 border border-gray-200 py-3 px-4 mb-3 mr-1 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                     id="grid-password"
                     type="number"
+                    max="2"
+                    min="0"
                     value={this.state.hours}
                     name="hours"
                     onChange={(event) => this.handleChange(event, 'hours')}
@@ -234,6 +341,8 @@ class NewMatch extends React.Component {
                     className="appearance-none block w-1/2 bg-gray-200 text-gray-700 border border-gray-200 py-3 px-4 mb-3 ml-1 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                     id="grid-password"
                     type="number"
+                    max="59"
+                    min="0"
                     value={this.state.minutes}
                     name="minutes"
                     onChange={(event) => this.handleChange(event, 'minutes')}

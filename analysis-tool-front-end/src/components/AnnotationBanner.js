@@ -53,7 +53,7 @@ export default function AnnotationBanner({
   if (Object.entries(currentAnnotation).length > 0) {
     return (
       <>
-        <div className="bg-gray-300 w-banner h-14 grid place-content-center text-2xl animate-fade-in-down rounded-sm">
+        <div id="banner" className="bg-yellow-300 w-banner h-14 grid place-content-center text-green-700 font-bold pb-1 text-2xl animate-fade-in-down rounded-none">
           {text}
         </div>
       </>

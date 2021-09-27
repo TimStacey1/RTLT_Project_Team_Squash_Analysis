@@ -115,7 +115,7 @@ export default function AnnotationControls({
             .filter((component) => component.type === 'game')
             .map((game) => (
               <li
-                className="w-full h-full col-span-2"
+                className="w-full h-full col-span-2 text-white font-semibold"
                 onClick={() => updateSelectedAnnotation(game)}
               >
                 <AnnotationButton
@@ -131,7 +131,7 @@ export default function AnnotationControls({
             .filter((component) => component.type === 'player')
             .map((player) => (
               <li
-                className="w-full h-full col-span-2"
+                className="w-full h-full col-span-2 text-white font-semibold"
                 onClick={() => updateSelectedPlayer(player)}
               >
                 <AnnotationButton
