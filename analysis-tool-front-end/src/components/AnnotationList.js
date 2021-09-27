@@ -144,8 +144,22 @@ export default function AnnotationList({
         timeTextS: seconds,
       });
     }
+    else {
+      const hours = 0;
+      const minutes = 0;
+      const seconds = 0;
+
+      setModalContent({
+        annotation: annotation,
+        shotText: shotText,
+        timeTextH: hours,
+        timeTextM: minutes,
+        timeTextS: seconds,
+      });
+    }
     setShow(!show);
   };
+    
 
   const handleTimeChange = (event, timeTextX) => {
     let newTime = modalContent;
