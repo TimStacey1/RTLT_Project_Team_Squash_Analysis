@@ -1,9 +1,10 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 .bg-green-700 {
-  background-color: #006f3A;
+  background-color: #006f3a;
 }
 
 .tooltip {
@@ -64,9 +65,27 @@
 }
 
 #banner {
-    text-shadow:
-    -0.75px -0.75px 0 whitesmoke,  
-     0.75px -0.75px 0 whitesmoke,
-     -0.75px 0.75px 0 whitesmoke,
-      0.75px 0.75px 0 whitesmoke;  
+  text-shadow: -0.75px -0.75px 0 whitesmoke, 0.75px -0.75px 0 whitesmoke,
+    -0.75px 0.75px 0 whitesmoke, 0.75px 0.75px 0 whitesmoke;
+}
+
+.tooltip-container {
+  position: relative;
+  z-index: 10;
+}
+
+.tooltip {
+  position: absolute;
+  top: -20px;
+  left: 0px;
+  display: none;
+  width: 175px;
+}
+
+.tooltip-container:hover {
+  z-index: 20;
+}
+
+.tooltip-container:hover .tooltip {
+  display: block;
 }

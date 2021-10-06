@@ -143,8 +143,7 @@ export default function AnnotationList({
         timeTextM: minutes,
         timeTextS: seconds,
       });
-    }
-    else {
+    } else {
       const hours = 0;
       const minutes = 0;
       const seconds = 0;
@@ -159,7 +158,6 @@ export default function AnnotationList({
     }
     setShow(!show);
   };
-    
 
   const handleTimeChange = (event, timeTextX) => {
     let newTime = modalContent;
@@ -390,52 +388,52 @@ export default function AnnotationList({
               {filterAnnotations.map((annotation) => {
                 return (
                   <>
-                    <tr className="text-center border-t-2 border-fuchsia-600">
-                      <div className="has-tooltip">
-                        <span className="tooltip shadow-lg px-3 py-1 bg-blue-600 text-white -mt-8">
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              showModal(
-                                annotation.components.id,
-                                annotation.timestamp,
-                                annotation
-                              );
-                            }}
-                          >
-                            <FontAwesomeIcon className="pr-1" icon={faEdit} />
-                            Edit{' '}
-                          </button>{' '}
-                          |
-                          <button
-                            type="button"
-                            className="pl-2"
-                            onClick={() => removeAnnotation(annotation)}
-                          >
-                            <FontAwesomeIcon icon={faTrash} /> Remove
-                          </button>
-                        </span>
-                        <td className="w-1/2">
-                          {annotation.components.id === 'New Game' && (
-                            <span className="grid place-items-center text-red-600 font-bold overflow-x-hidden w-full px-2">
-                              {annotation.components.id}
-                            </span>
-                          )}
-                          {annotation.components.id !== 'New Game' && (
-                            <span className="grid place-items-center overflow-x-hidden w-full px-2">
-                              {annotation.components.id}
-                            </span>
-                          )}
-                        </td>
-                      </div>
-                      <td>
-                        <button
+                    <tr className="hasTooltip text-center border-t-2 border-fuchsia-600">
+                      <td className="w-1/2">
+                        <div class="tooltip-container has-tooltip">
+                          <div class="overflow-hidden text-center">
+                            {annotation.components.id === 'New Game' && (
+                              <span className="grid place-items-center text-red-600 font-bold overflow-x-hidden w-full px-2">
+                                {annotation.components.id}
+                              </span>
+                            )}
+                            {annotation.components.id !== 'New Game' && (
+                              <span className="grid place-items-center overflow-x-hidden w-full px-2">
+                                {annotation.components.id}
+                              </span>
+                            )}
+                          </div>
+                          <div class="tooltip shadow-lg px-3 py-1 bg-blue-600 text-white">
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                showModal(
+                                  annotation.components.id,
+                                  annotation.timestamp,
+                                  annotation
+                                );
+                              }}
+                            >
+                              <FontAwesomeIcon className="pr-1" icon={faEdit} />
+                              Edit{' '}
+                            </button>{' '}
+                            |
+                            <button
+                              type="button"
+                              className="pl-2"
+                              onClick={() => removeAnnotation(annotation)}
+                            >
+                              <FontAwesomeIcon icon={faTrash} /> Remove
+                            </button>
+                          </div>
+                        </div>
+                      </td>
+                      <button
                           className="hover:text-blue-500"
                           onClick={() => jumpToAnnotation(annotation.timestamp)}
                         >
                           {convertSecondsToMS(annotation.timestamp)}
                         </button>
-                      </td>
                     </tr>
                   </>
                 );
