@@ -67,8 +67,8 @@ export default function AnnotationInterface({ baseUrl }) {
     if (controlsAreOpen && !pausedState) {
       setVideoPaused(true);
     } else if (!controlsAreOpen && videoPaused) {
-      setSeekTime(currentVideoTime);
       setVideoPaused(false);
+      setSeekTime(currentVideoTime);
     }
   };
 
@@ -87,10 +87,10 @@ export default function AnnotationInterface({ baseUrl }) {
         <div className="col-span-13 h-desktop relative mr-12">
           <AnnotationVideo
             videoUrl={videoUrl}
+            videoPaused={videoPaused}
             seekTime={seekTime}
             updateCurrentVideoTime={updateCurrentVideoTime}
             updateCurrentPausedState={updateCurrentPausedState}
-            videoPaused={videoPaused}
           />
           <div className="absolute top-3 left-3">
             <AnnotationBanner
