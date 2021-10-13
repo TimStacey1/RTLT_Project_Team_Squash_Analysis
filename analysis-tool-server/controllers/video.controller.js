@@ -1,10 +1,13 @@
 const path = require('path');
-const util = require('./util');
 const fs = require("fs");
+const util = require('./util');
 
 // upload video
 const upload = async (req, res, next) => {
-  const _path = path.join(__dirname + '../../videos/' + req.params.match_id + '.mp4');
+  const _path =
+    path.join(
+      `${__dirname}../../videos/${req.params.match_id}.${util.getVideoFileFormat(req.files.video.mimetype)}`
+    );
 
   const [result, err] = await util.handleFileUpload(req.files.video, _path);
 
@@ -20,40 +23,48 @@ const stream = async (req, res, next) => {
     res.status(400).send("Requires Range header");
   }
 
-  const videoPath = path.join(__dirname + '../../videos/' + req.params.match_id + '.mp4');
+  const videoFileFormats = ['mp4', 'mov', 'avi'];
 
-  // ensure that the video file exists
-  fs.stat(videoPath, (err, stat) => {
+  const findVideoFile = async () => {
+    for (let videoFileFormat of videoFileFormats) {
+      let _path =
+        path.join(
+          `${__dirname}../../videos/${req.params.match_id}.${videoFileFormat}`
+        );
 
-    // file exists
-    if (err == null) {
-      const videoSize = fs.statSync(videoPath).size;
-
-      // parse range
-      const CHUNK_SIZE = 10 ** 6; // 1MB
-      const start = Number(range.replace(/\D/g, ""));
-      const end = Math.min(start + CHUNK_SIZE, videoSize - 1);
-
-      const contentLength = end - start + 1;
-      const headers = {
-        "Content-Range": `bytes ${start}-${end}/${videoSize}`,
-        "Accept-Ranges": "bytes",
-        "Content-Length": contentLength,
-        "Content-Type": "video/mp4",
-      };
-
-      res.writeHead(206, headers);
-
-      const videoStream = fs.createReadStream(videoPath, { start, end });
-
-      videoStream.pipe(res);
-    } else if (err.code === 'ENOENT') {
-      // file does not exist
-      res.status(404).json('');
-    } else {
-      res.status(400).json(err.message);
+      // ensure that the video file exists
+      if (fs.existsSync(_path)) return _path;
     }
-  });
+
+    return '';
+  }
+
+  const videoFilePath = await findVideoFile();
+
+  if (videoFilePath !== '') {
+    const videoSize = fs.statSync(videoFilePath).size;
+
+    // parse range
+    const CHUNK_SIZE = 10 ** 6; // 1MB
+    const start = Number(range.replace(/\D/g, ""));
+    const end = Math.min(start + CHUNK_SIZE, videoSize - 1);
+
+    const contentLength = end - start + 1;
+    const headers = {
+      "Content-Range": `bytes ${start}-${end}/${videoSize}`,
+      "Accept-Ranges": "bytes",
+      "Content-Length": contentLength,
+      "Content-Type": "video/mp4",
+    };
+
+    res.writeHead(206, headers);
+
+    const videoStream = fs.createReadStream(videoFilePath, { start, end });
+
+    videoStream.pipe(res);
+  } else {
+    res.status(404).json('');
+  }
 };
 
 module.exports = {

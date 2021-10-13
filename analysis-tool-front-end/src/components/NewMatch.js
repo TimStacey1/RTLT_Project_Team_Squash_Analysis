@@ -42,9 +42,9 @@ class NewMatch extends React.Component {
   };
 
   formValidation = () => {
-    var regex = /^[^\s][a-zA-Z\s]+$/;
-    var title_regex = /^[\w\-\s]+$/;
-    var error = false;
+    let regex = /^[^\s][a-zA-Z\s]+$/;
+    let title_regex = /^[\w\-\s]+$/;
+    let error = false;
 
     // Testing player names
 
@@ -370,7 +370,7 @@ class NewMatch extends React.Component {
                         id="upload"
                         className="hidden"
                         type="file"
-                        accept="video/mp4"
+                        accept="video/mp4, video/mov, video/avi"
                         onChange={this.onFileChange}
                       />
                     </div>
@@ -391,4 +391,5 @@ class NewMatch extends React.Component {
     );
   }
 }
+
 export default withRouter(NewMatch);
