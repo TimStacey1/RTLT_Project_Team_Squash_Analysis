@@ -89,3 +89,7 @@
 .tooltip-container:hover .tooltip {
   display: block;
 }
+
+::-webkit-file-upload-button {
+  display: none;
+}
