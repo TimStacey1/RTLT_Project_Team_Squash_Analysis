@@ -8,7 +8,7 @@ import {
   TimeDivider,
   PlaybackRateMenuButton,
   VolumeMenuButton,
-  BigPlayButton
+  BigPlayButton,
 } from 'video-react';
 import 'video-react/dist/video-react.css';
 
@@ -18,9 +18,16 @@ export default function AnnotationVideo(props) {
     seekTime,
     updateCurrentVideoTime,
     updateCurrentPausedState,
-    videoPaused
+    videoPaused,
   } = props;
   const playerRef = useRef();
+
+  const handleStateChange = (state, prevState) => {
+    updateCurrentVideoTime(state.currentTime);
+    updateCurrentPausedState(state.paused);
+  };
+
+  playerRef.current?.subscribeToStateChange(handleStateChange);
 
   useEffect(() => {
     if (videoPaused) {
@@ -29,15 +36,9 @@ export default function AnnotationVideo(props) {
       playerRef.current.actions.seek(seekTime);
       playerRef.current.actions.play();
     }
-    playerRef.current.subscribeToStateChange(handleStateChange);
     // overload video player full screen toggle to disable fullscreen
     playerRef.current.actions.toggleFullscreen = () => {};
   }, [seekTime, videoPaused]);
-
-  const handleStateChange = (state, prevState) => {
-    updateCurrentVideoTime(state.currentTime);
-    updateCurrentPausedState(state.paused);
-  };
 
   return (
     <div className="w-full h-full">

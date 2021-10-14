@@ -37,7 +37,7 @@ class NewMatch extends React.Component {
     this.setState({ [field]: event.target.value });
     if (field === 'hours' || field === 'minutes') {
       this.setState({
-        ['durationError']: '',
+        durationError: '',
       });
     } else {
       this.setState({

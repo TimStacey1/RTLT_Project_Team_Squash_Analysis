@@ -100,7 +100,13 @@ export default function AnnotationControls({
         .then(setSelectedAnnotation({}))
         .then(annotationsUpdated());
     }
-  }, [selectedAnnotation, match]);
+  }, [
+    selectedAnnotation,
+    match,
+    annotationComponents,
+    annotationsUpdated,
+    baseUrl,
+  ]);
 
   return (
     <>
@@ -117,6 +123,7 @@ export default function AnnotationControls({
               <li
                 className="w-full h-full col-span-2 text-white font-semibold"
                 onClick={() => updateSelectedAnnotation(game)}
+                key={game.id}
               >
                 <AnnotationButton
                   key={game.id}
@@ -133,6 +140,7 @@ export default function AnnotationControls({
               <li
                 className="w-full h-full col-span-2 text-white font-semibold"
                 onClick={() => updateSelectedPlayer(player)}
+                key={player.id}
               >
                 <AnnotationButton
                   key={player.id}
@@ -149,6 +157,7 @@ export default function AnnotationControls({
               <li
                 className="w-full h-full"
                 onClick={() => updateSelectedAnnotation(shot)}
+                key={shot.id}
               >
                 <AnnotationButton
                   key={shot.id}

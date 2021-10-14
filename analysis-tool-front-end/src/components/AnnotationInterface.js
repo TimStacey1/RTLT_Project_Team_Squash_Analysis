@@ -36,7 +36,7 @@ export default function AnnotationInterface({ baseUrl }) {
             .then(setAnnotationsChanged(!annotationsChanged))
         );
     }
-  }, [annotationsChanged]);
+  }, [annotationsChanged, baseUrl, matchId]);
 
   const annotationsUpdated = () => {
     setAnnotationsChanged(!annotationsChanged);

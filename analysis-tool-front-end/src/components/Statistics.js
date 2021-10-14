@@ -8,12 +8,12 @@ export default function Statistics(props) {
   const matchId = window.location.pathname.substring(7);
   console.log(matchId);
   const [annotations, setAnnotations] = useState([]);
-  var unique_shots = [
+  let unique_shots = [
     ...new Set(
       annotations
         .filter((annotation) => annotation.components.type === 'shot')
         .map((annotation) => annotation.components.id)
-    )
+    ),
   ];
 
   useEffect(() => {
@@ -21,10 +21,10 @@ export default function Statistics(props) {
       .get(baseUrl + '/annotate/' + matchId + '/all')
       .then((res) => res.data)
       .then((annotations) => setAnnotations(annotations));
-  }, []);
+  }, [baseUrl, matchId]);
 
   let shotCount = [];
-  for (var i = 0; i < unique_shots.length; i++) {
+  for (let i = 0; i < unique_shots.length; i++) {
     shotCount[i] = annotations.filter(
       (item) => item.components.id === unique_shots[i]
     ).length;
@@ -32,7 +32,7 @@ export default function Statistics(props) {
 
   const handLabels = ['BH', 'FH'];
   let handCount = [0, 0];
-  for (var i = 0; i < handCount.length; i++) {
+  for (let i = 0; i < handCount.length; i++) {
     handCount[i] = annotations.filter((item) =>
       item.components.id.includes(handLabels[i])
     ).length;
@@ -49,7 +49,7 @@ export default function Statistics(props) {
     'rgb(13, 32, 47)',
     'rgb(229, 226, 209)',
     'rgb(193, 61, 229)',
-    'rgb(186, 252, 193)'
+    'rgb(186, 252, 193)',
   ];
 
   const shotCountChart = {
@@ -57,14 +57,13 @@ export default function Statistics(props) {
     datasets: [
       {
         label: 'No. of Shots',
-        backgroundColor: '#006f3a',
         borderColor: '#ffffff',
         borderWidth: 0,
         data: shotCount,
-        backgroundColor: backgroundColors
-      }
+        backgroundColor: backgroundColors,
+      },
     ],
-    title: 'Shot Count'
+    title: 'Shot Count',
   };
 
   const handCountChart = {
@@ -72,14 +71,13 @@ export default function Statistics(props) {
     datasets: [
       {
         label: 'No. of Shots',
-        backgroundColor: '#006f3a',
         borderColor: '#ffffff',
         borderWidth: 5,
         data: handCount,
-        backgroundColor: backgroundColors
-      }
+        backgroundColor: backgroundColors,
+      },
     ],
-    title: 'Backhand vs Forehand'
+    title: 'Backhand vs Forehand',
   };
 
   // Find the times where user clicked "New Game"
@@ -91,8 +89,8 @@ export default function Statistics(props) {
   let labelData = [];
 
   // Find all annotations within each game & create labels
-  for (var i = 0; i < newGameTimes.length + 1; i++) {
-    if (i == 0) {
+  for (let i = 0; i < newGameTimes.length + 1; i++) {
+    if (i === 0) {
       shotGameData[i] = annotations
         .filter(
           (annotation) =>
@@ -100,7 +98,7 @@ export default function Statistics(props) {
             (annotation.timestamp < newGameTimes[0])
         )
         .map((annotation) => annotation.components.id);
-    } else if (i == newGameTimes.length) {
+    } else if (i === newGameTimes.length) {
       shotGameData[i] = annotations
         .filter(
           (annotation) =>
@@ -132,16 +130,16 @@ export default function Statistics(props) {
   let fullGamesDataset = [];
 
   // Create array full of the number of occurences in each shot
-  for (var i = 0; i < newGameTimes.length + 1; i++) {
-    for (var k = 0; k < unique_shots.length; k++) {
+  for (let i = 0; i < newGameTimes.length + 1; i++) {
+    for (let k = 0; k < unique_shots.length; k++) {
       temp.push(countOccurrences(shotGameData[i], unique_shots[k]));
     }
   }
 
   // Rearrange array so it can be passed into chartjs, puts all the shot occurrences for each shot across all games
-  for (var k = 0; k < unique_shots.length; k++) {
+  for (let k = 0; k < unique_shots.length; k++) {
     let temp2 = [];
-    for (var i = 0; i < newGameTimes.length + 1; i++) {
+    for (let i = 0; i < newGameTimes.length + 1; i++) {
       temp2.push(temp[k + i * unique_shots.length]);
     }
     gameData.push(temp2);
@@ -150,7 +148,7 @@ export default function Statistics(props) {
       label: unique_shots[k],
       data: gameData[k],
       backgroundColor: backgroundColors[k],
-      borderWidth: 0
+      borderWidth: 0,
     };
     fullGamesDataset.push(data);
   }
@@ -166,7 +164,7 @@ export default function Statistics(props) {
             data={shotCountChart}
             options={{
               legend: {
-                display: false
+                display: false,
               },
               scales: {
                 yAxes: [
@@ -174,16 +172,16 @@ export default function Statistics(props) {
                     ticks: {
                       max: shotCount.maxY,
                       min: 0,
-                      stepSize: 1
-                    }
-                  }
-                ]
+                      stepSize: 1,
+                    },
+                  },
+                ],
               },
               title: {
                 display: true,
                 text: shotCountChart.title,
-                fontSize: 18
-              }
+                fontSize: 18,
+              },
             }}
           />
         </div>
@@ -193,14 +191,14 @@ export default function Statistics(props) {
             data={handCountChart}
             options={{
               legend: {
-                display: false
+                display: false,
               },
 
               title: {
                 display: true,
                 text: handCountChart.title,
-                fontSize: 18
-              }
+                fontSize: 18,
+              },
             }}
           />
         </div>
@@ -209,13 +207,13 @@ export default function Statistics(props) {
           <Bar
             data={{
               labels: labelData,
-              datasets: fullGamesDataset
+              datasets: fullGamesDataset,
             }}
             options={{
               title: {
                 display: true,
                 text: 'Shot Count per Game',
-                fontSize: 18
+                fontSize: 18,
               },
               scales: {
                 xAxes: [
@@ -225,23 +223,23 @@ export default function Statistics(props) {
                       display: true,
                       color: 'red',
                       lineWidth: 5,
-                      drawBorder: false
+                      drawBorder: false,
                     },
                     ticks: {
-                      padding: 5
-                    }
-                  }
+                      padding: 5,
+                    },
+                  },
                 ],
                 yAxes: [
                   {
                     ticks: {
                       max: shotCount.maxY,
                       min: 0,
-                      stepSize: 1
-                    }
-                  }
-                ]
-              }
+                      stepSize: 1,
+                    },
+                  },
+                ],
+              },
             }}
           />
         </div>

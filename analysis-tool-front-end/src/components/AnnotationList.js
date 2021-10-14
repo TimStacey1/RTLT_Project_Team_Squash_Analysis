@@ -72,7 +72,14 @@ export default function AnnotationList({
           annotationsUpdated();
         });
     }
-  }, [annotationToRemove, annotationToEdit, annotations]);
+  }, [
+    annotationToRemove,
+    annotationToEdit,
+    annotations,
+    annotationsUpdated,
+    baseUrl,
+    match,
+  ]);
 
   const clearFilters = () => {
     const updatedCheckedState = new Array(12).fill(false);
@@ -202,15 +209,17 @@ export default function AnnotationList({
               {unique_shots.map((shot, index) => {
                 return (
                   <>
-                    <label className="block">
-                      <input
-                        type="checkbox"
-                        class="form-checkbox"
-                        checked={checkedState[index]}
-                        onChange={() => shotFilterChange(index, shot)}
-                      />
-                      <span className="ml-2">{shot}</span>
-                    </label>
+                    <div key={shot.id}>
+                      <label className="block">
+                        <input
+                          type="checkbox"
+                          className="form-checkbox"
+                          checked={checkedState[index]}
+                          onChange={() => shotFilterChange(index, shot)}
+                        />
+                        <span className="ml-2">{shot}</span>
+                      </label>
+                    </div>
                   </>
                 );
               })}
@@ -387,55 +396,58 @@ export default function AnnotationList({
               </Modal>
               {filterAnnotations.map((annotation) => {
                 return (
-                  <>
-                    <tr className="hasTooltip text-center border-t-2 border-fuchsia-600">
-                      <td className="w-1/2">
-                        <div class="tooltip-container has-tooltip">
-                          <div class="overflow-hidden text-center">
-                            {annotation.components.id === 'New Game' && (
-                              <span className="grid place-items-center text-red-600 font-bold overflow-x-hidden w-full px-2">
-                                {annotation.components.id}
-                              </span>
-                            )}
-                            {annotation.components.id !== 'New Game' && (
-                              <span className="grid place-items-center overflow-x-hidden w-full px-2">
-                                {annotation.components.id}
-                              </span>
-                            )}
-                          </div>
-                          <div class="tooltip shadow-lg px-3 py-1 bg-blue-600 text-white">
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                showModal(
-                                  annotation.components.id,
-                                  annotation.timestamp,
-                                  annotation
-                                );
-                              }}
-                            >
-                              <FontAwesomeIcon className="pr-1" icon={faEdit} />
-                              Edit{' '}
-                            </button>{' '}
-                            |
-                            <button
-                              type="button"
-                              className="pl-2"
-                              onClick={() => removeAnnotation(annotation)}
-                            >
-                              <FontAwesomeIcon icon={faTrash} /> Remove
-                            </button>
-                          </div>
+                  <tr
+                    className="hasTooltip text-center border-t-2 border-fuchsia-600"
+                    key={annotation.id}
+                  >
+                    <td className="w-1/2">
+                      <div className="tooltip-container has-tooltip">
+                        <div className="overflow-hidden text-center">
+                          {annotation.components.id === 'New Game' && (
+                            <span className="grid place-items-center text-red-600 font-bold overflow-x-hidden w-full px-2">
+                              {annotation.components.id}
+                            </span>
+                          )}
+                          {annotation.components.id !== 'New Game' && (
+                            <span className="grid place-items-center overflow-x-hidden w-full px-2">
+                              {annotation.components.id}
+                            </span>
+                          )}
                         </div>
-                      </td>
+                        <div className="tooltip shadow-lg px-3 py-1 bg-blue-600 text-white">
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              showModal(
+                                annotation.components.id,
+                                annotation.timestamp,
+                                annotation
+                              );
+                            }}
+                          >
+                            <FontAwesomeIcon className="pr-1" icon={faEdit} />
+                            Edit{' '}
+                          </button>{' '}
+                          |
+                          <button
+                            type="button"
+                            className="pl-2"
+                            onClick={() => removeAnnotation(annotation)}
+                          >
+                            <FontAwesomeIcon icon={faTrash} /> Remove
+                          </button>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
                       <button
-                          className="hover:text-blue-500"
-                          onClick={() => jumpToAnnotation(annotation.timestamp)}
-                        >
-                          {convertSecondsToMS(annotation.timestamp)}
-                        </button>
-                    </tr>
-                  </>
+                        className="hover:text-blue-500"
+                        onClick={() => jumpToAnnotation(annotation.timestamp)}
+                      >
+                        {convertSecondsToMS(annotation.timestamp)}
+                      </button>
+                    </td>
+                  </tr>
                 );
               })}
             </tbody>
