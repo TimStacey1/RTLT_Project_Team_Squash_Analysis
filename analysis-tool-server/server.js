@@ -3,30 +3,39 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-const helmet = require('helmet');
 const cors = require('cors');
-const router = require('./routes/index');
-const mongoose = require('mongoose');
+const helmet = require('helmet');
 const fileUpload = require('express-fileupload');
+const mongoose = require('mongoose');
+
+const indexRouter = require('./routes/index');
+
+const app = express();
 
 require('dotenv').config();
 
-var app = express();
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'jade');
 
 // middleware setup
-app.use(
-    fileUpload({
-        createParentPath: true,
-        limits: {
-            fileSize: 1024 * 1024 * 1024 // ~1.07 Gb
-        },
-        abortOnLimit: true,
-        responseOnLimit: 'File size is too large.'
-    })
-);
 app.use(logger('dev'));
-app.use(helmet());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
+app.use(helmet());
+app.use(
+  fileUpload({
+      createParentPath: true,
+      limits: {
+          fileSize: 5 * 1024 * 1024 * 1024 // ~5.37 Gb
+      },
+      abortOnLimit: true,
+      responseOnLimit: 'File size is too large.'
+  })
+);
 
 // db connection
 mongoose.set('useFindAndModify', false);
@@ -35,16 +44,7 @@ mongoose.connect(process.env.MONGO_URI, {
   useUnifiedTopology: true
 })
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
-
-app.use(router);
+app.use('/', indexRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

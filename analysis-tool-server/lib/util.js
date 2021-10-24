@@ -43,6 +43,7 @@ const handleFileUpload = (_file, path) => {
   );
 };
 
+
 const handleFileRemoval = (path) => {
   return handle(
     new Promise((resolve, reject) => {
@@ -58,6 +59,15 @@ const getVideoFileFormat = (mimetype) => {
   return mimetype.slice(-3, mimetype.length)
 }
 
+/**
+ * Returns a random number between min (inclusive) and max (inclusive)
+ */
+const between = (min, max) => {
+  return Math.floor(
+    Math.random() * (max - min + 1) + min
+  )
+}
+
 module.exports = {
   handle,
   transformMatches,
@@ -65,4 +75,5 @@ module.exports = {
   handleFileUpload,
   handleFileRemoval,
   getVideoFileFormat,
+  between,
 };

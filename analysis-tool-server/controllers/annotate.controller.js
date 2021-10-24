@@ -1,4 +1,4 @@
-const util = require('./util');
+const util = require('../lib/util');
 
 const { Match } = require('../models/Match');
 const { Annotation } = require('../models/Annotation');

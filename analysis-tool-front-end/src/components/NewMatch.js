@@ -51,62 +51,62 @@ class NewMatch extends React.Component {
   };
 
   formValidation = () => {
-    let regex = /^[^\s][a-zA-Z\s]+$/;
-    let title_regex = /^[\w\-\s]+$/;
+    let nameRegex = /^[a-zA-Z][a-zA-Z,.'-\s]*$/;
+    let titleRegex = /^[\w\-\s]+$/;
     let error = false;
 
     // Testing player names
 
-    if (!regex.test(this.state.player1FName)) {
+    if (!nameRegex.test(this.state.player1FName)) {
       this.setState({
         player1FNameError: 'Invalid characters in name, please try again.',
       });
       error = true;
     }
 
-    if (this.state.player1FName.length > 30) {
+    if (this.state.player1FName.length > 50) {
       this.setState({
         player1FNameError: 'Name is too long, please try again.',
       });
       error = true;
     }
 
-    if (!regex.test(this.state.player1LName)) {
+    if (!nameRegex.test(this.state.player1LName)) {
       this.setState({
         player1LNameError: 'Invalid characters in name, please try again.',
       });
       error = true;
     }
 
-    if (this.state.player1LName.length > 30) {
+    if (this.state.player1LName.length > 50) {
       this.setState({
         player1LNameError: 'Name is too long, please try again.',
       });
       error = true;
     }
 
-    if (!regex.test(this.state.player2FName)) {
+    if (!nameRegex.test(this.state.player2FName)) {
       this.setState({
         player2FNameError: 'Invalid characters in name, please try again.',
       });
       error = true;
     }
 
-    if (this.state.player2FName.length > 30) {
+    if (this.state.player2FName.length > 50) {
       this.setState({
         player2FNameError: 'Name is too long, please try again.',
       });
       error = true;
     }
 
-    if (!regex.test(this.state.player2LName)) {
+    if (!nameRegex.test(this.state.player2LName)) {
       this.setState({
         player2LNameError: 'Invalid characters in name, please try again.',
       });
       error = true;
     }
 
-    if (this.state.player2LName.length > 30) {
+    if (this.state.player2LName.length > 50) {
       this.setState({
         player2LNameError: 'Name is too long, please try again.',
       });
@@ -115,14 +115,14 @@ class NewMatch extends React.Component {
 
     // Testing match title
 
-    if (!title_regex.test(this.state.title)) {
+    if (!titleRegex.test(this.state.title)) {
       this.setState({
         titleError: 'Invalid characters in match title, please try again.',
       });
       error = true;
     }
 
-    if (this.state.title.length > 30) {
+    if (this.state.title.length > 100) {
       this.setState({
         titleError: 'Match title is too long, please try again.',
       });
@@ -138,7 +138,7 @@ class NewMatch extends React.Component {
 
     // Testing match description
 
-    if (this.state.description.length > 200) {
+    if (this.state.description.length > 250) {
       this.setState({
         descriptionError: 'Match description is too long, please try again.',
       });

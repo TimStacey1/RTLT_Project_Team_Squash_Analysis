@@ -1,60 +1,49 @@
-
 const router = require('express').Router();
-
+const handle = require('../validators/handle');
+const validate = require('../validators/validate');
 const {
-    createMatchSchema,
-    updateMatchSchema,
-    matchIdSchema
-} = require('./validators/match.schemas');
-
-const handle = require('./validators/handle');
-
-const validate = require('./validators/validate');
-
+  matchIdSchema,
+  createMatchSchema,
+  updateMatchSchema,
+} = require('../validators/match.schemas');
 const matchController = require('../controllers/match.controller');
-
 
 // route for the creation of a new match
 router.post('/new',
-    handle(
-        validate.body(createMatchSchema)
-    ),
-    matchController.create
+  handle(
+    validate.body(createMatchSchema)
+  ),
+  matchController.create
 );
-
 
 // route for getting a single match
 router.get('/:match_id/get',
-    handle(
-        validate.params(matchIdSchema)
-    ),
-    matchController.get
+  handle(
+    validate.params(matchIdSchema)
+  ),
+  matchController.get
 );
-
 
 // route for retrieving all matches
 router.get('/all',
-    matchController.getAll
+  matchController.getAll
 );
-
 
 // route for updating an existing match
 router.post('/:match_id/update',
-    handle(
-        validate.params(matchIdSchema),
-        validate.body(updateMatchSchema)
-    ),
-    matchController.update
+  handle(
+    validate.params(matchIdSchema),
+    validate.body(updateMatchSchema)
+  ),
+  matchController.update
 );
-
 
 // route for removing an existing match
 router.post('/:match_id/remove',
-    handle(
-        validate.params(matchIdSchema)
-    ),
-    matchController.remove
+  handle(
+    validate.params(matchIdSchema)
+  ),
+  matchController.remove
 );
-
 
 module.exports = router;

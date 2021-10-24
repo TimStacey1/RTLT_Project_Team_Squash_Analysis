@@ -1,4 +1,5 @@
 const path = require('path');
+const fs = require('fs');
 const util = require('./util');
 
 const { Match } = require('../models/Match');
@@ -39,7 +40,7 @@ const update = async (req, res, next) => {
   const [result, err] = await util.handle(Match.updateOne({ _id: req.params.match_id },
     {
       $set: {
-        duration: req.params.duration,
+        duration: req.body.duration,
         players: req.body.players
       }
     }
@@ -47,7 +48,7 @@ const update = async (req, res, next) => {
 
   if (err || result.nModified === 0) return res.status(400).json('Failed to update match.');
 
-  return res.status(200).json('Successfully updated the match.');
+  return res.status(200).json('Successfully updated match.');
 };
 
 // remove match
@@ -56,13 +57,33 @@ const remove = async (req, res, next) => {
 
   if (err || result.deletedCount === 0) return res.status(400).json('Failed to remove match.');
 
-  const _path = path.join(__dirname + '../videos/' + req.params.match_id);
+  const videoFileFormats = ['mp4', 'mov', 'avi'];
 
-  [result, err] = await util.handleFileRemoval(_path);
+  const findVideoFile = async () => {
+    for (let videoFileFormat of videoFileFormats) {
+      let _path =
+        path.join(
+          `${__dirname}../../videos/${req.params.match_id}.${videoFileFormat}`
+        );
 
-  if (err) return res.status(400).json(err.message);
+      // ensure that the video file exists
+      if (fs.existsSync(_path)) return _path;
+    }
 
-  return res.status(200).json('Successfully removed the match.');
+    return '';
+  }
+
+  const videoFilePath = await findVideoFile();
+
+  if (videoFilePath !== '') {
+    [result, err] = await util.handleFileRemoval(videoFilePath);
+
+    if (err) return res.status(400).json(err.message);
+
+    return res.status(200).json('Successfully removed match.');
+  } else {
+    return res.status(200).json('Could not find video file to remove.')
+  }
 };
 
 module.exports = {
