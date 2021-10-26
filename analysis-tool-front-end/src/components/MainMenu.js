@@ -21,10 +21,12 @@ export default function MainMenu(props) {
   };
 
   useEffect(() => {
-    axios
+    if (matches.length === 0) {
+      axios
       .get(baseUrl + '/match/all')
       .then((res) => res.data)
       .then((matches) => setMatches(matches.reverse()));
+    }
   }, [baseUrl, matches]);
 
   return (
