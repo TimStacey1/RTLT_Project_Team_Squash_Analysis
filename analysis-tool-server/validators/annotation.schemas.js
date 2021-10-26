@@ -13,8 +13,8 @@ const createAnnotationSchema = annotationSchema.options({ presence: 'required' }
 const updateAnnotationSchema = annotationSchema.options({ presence: 'optional' }).empty('', null).default(undefined);
 
 module.exports = {
-    annotationSchema,
-    createAnnotationSchema,
-    updateAnnotationSchema,
-    annotationIdSchema
+  annotationSchema,
+  createAnnotationSchema,
+  updateAnnotationSchema,
+  annotationIdSchema
 };

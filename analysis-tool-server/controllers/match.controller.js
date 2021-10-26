@@ -82,7 +82,7 @@ const remove = async (req, res, next) => {
 
     return res.status(200).json('Successfully removed match.');
   } else {
-    return res.status(200).json('Could not find video file to remove.')
+    return res.status(200).json('Successfully removed match. Failed to remove match video.')
   }
 };
 

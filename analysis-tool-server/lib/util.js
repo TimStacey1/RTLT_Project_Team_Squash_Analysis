@@ -7,7 +7,7 @@ const handle = (promise) => {
 }
 
 const transformMatches = (matches) => {
-  return matches.map(match => {
+  return matches.map((match) => {
     return {
       id: match._id,
       title: match.title,
@@ -21,13 +21,19 @@ const transformMatches = (matches) => {
   });
 };
 
+const getAnnotation = (annotations, annotationIdToGet) => {
+  return transformAnnotations(annotations.filter((annotation) => {
+    return annotation._id.toString() === annotationIdToGet
+  }))[0];
+}
+
 const transformAnnotations = (annotations) => {
-  return annotations.map(item => {
+  return annotations.map((annotation) => {
     return {
-      id: item._id,
-      timestamp: item.timestamp,
-      playerNumber: item.playerNumber,
-      components: item.components
+      id: annotation._id,
+      timestamp: annotation.timestamp,
+      playerNumber: annotation.playerNumber,
+      components: annotation.components
     };
   });
 };
@@ -72,6 +78,7 @@ module.exports = {
   handle,
   transformMatches,
   transformAnnotations,
+  getAnnotation,
   handleFileUpload,
   handleFileRemoval,
   getVideoFileFormat,

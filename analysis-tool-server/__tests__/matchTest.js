@@ -15,7 +15,9 @@ const DESCRIPTION_MAX_CHARS = 250;
 const NAME_MIN_CHARS = 1;
 const NAME_MAX_CHARS = 50;
 const DURATION_MIN_NUM = 0;
-const DURATION_MAx_NUM = 7200;
+const DURATION_MAX_NUM = 7200;
+
+let validMatchId = '';
 
 const getValidMatch = () => {
   return {
@@ -31,10 +33,9 @@ const getValidMatch = () => {
         lastName: WORDS.substring(0, between(NAME_MIN_CHARS, NAME_MAX_CHARS)),
       },
     },
-    duration: between(DURATION_MIN_NUM, DURATION_MAx_NUM),
+    duration: between(DURATION_MIN_NUM, DURATION_MAX_NUM),
   }
 }
-let validMatchId = '';
 
 https.globalAgent.options.rejectUnauthorized = false;
 const instance = axios.create({
