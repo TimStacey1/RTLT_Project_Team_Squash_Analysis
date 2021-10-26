@@ -7,12 +7,25 @@ export default function MainMenu(props) {
   const { baseUrl } = props;
   const [matches, setMatches] = useState([]);
 
+  const removeMatch = (matchId) => {
+    const confirmed = window.confirm(
+      'Are you sure you want to remove this match?'
+    );
+
+    if (confirmed) {
+      axios
+        .post(`${baseUrl}/match/${matchId}/remove`)
+        .then((res) => alert(res.data))
+        .then(setMatches([]));
+    }
+  };
+
   useEffect(() => {
     axios
       .get(baseUrl + '/match/all')
       .then((res) => res.data)
       .then((matches) => setMatches(matches.reverse()));
-  }, [baseUrl]);
+  }, [baseUrl, matches]);
 
   return (
     <div className="container mx-auto mb-10">
@@ -60,16 +73,22 @@ export default function MainMenu(props) {
                   </p>
                   <p className="whitespace-normal">{match.description}</p>
                   <div className="pt-3 pb-2">
-                  <a href={'/view_video/' + match.id}>
-                    <button className="bg-green-700 hover:bg-green-600 text-white font-bold py-2 px-4 mx-1">
-                      View
-                    </button>
-                  </a>
+                    <a href={'/view_video/' + match.id}>
+                      <button className="bg-green-700 hover:bg-green-600 text-white font-bold py-2 px-4 mx-1">
+                        View
+                      </button>
+                    </a>
                     <a href={'/match/' + match.id}>
                       <button className="bg-blue-700 hover:bg-blue-600 text-white font-bold py-2 px-4 mx-1">
                         Edit
                       </button>
                     </a>
+                    <button
+                      onClick={() => removeMatch(match.id)}
+                      className="bg-red-700 hover:bg-blue-600 text-white font-bold py-2 px-4 mx-1"
+                    >
+                      Remove
+                    </button>
                   </div>
                 </div>
               </div>

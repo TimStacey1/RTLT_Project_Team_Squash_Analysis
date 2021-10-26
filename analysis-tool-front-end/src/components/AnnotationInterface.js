@@ -54,11 +54,11 @@ export default function AnnotationInterface({ baseUrl }) {
 
   const clearFilter = () => {
     setAnnotationsChanged(!annotationsChanged);
-  }
+  };
 
   const pauseVideo = () => {
     setVideoPaused(true);
-  }
+  };
 
   const getAnnotationTimestamp = () => {
     return currentVideoTime;

@@ -26,7 +26,7 @@ function App() {
           <AnnotationInterface baseUrl={baseUrl} />
         </Route>
         <Route path="/view_video/:id">
-          <ViewVideo baseUrl={baseUrl}/>
+          <ViewVideo baseUrl={baseUrl} />
           </Route>
         <Route path="/stats/:id">
           <Statistics baseUrl={baseUrl} />
