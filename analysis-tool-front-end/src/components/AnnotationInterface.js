@@ -42,14 +42,23 @@ export default function AnnotationInterface({ baseUrl }) {
     setAnnotationsChanged(!annotationsChanged);
   };
 
-  const jumpToAnnotation = (annotationTimeStamp) => {
+  const jumpToAnnotation = (annotationTimeStamp, filterAnnotations) => {
     setVideoPaused(false);
     setSeekTime(
       annotationTimeStamp > annotationRange
         ? annotationTimeStamp - annotationRange
         : 1
     );
+    setAnnotations(filterAnnotations);
   };
+
+  const clearFilter = () => {
+    setAnnotationsChanged(!annotationsChanged);
+  }
+
+  const pauseVideo = () => {
+    setVideoPaused(true);
+  }
 
   const getAnnotationTimestamp = () => {
     return currentVideoTime;
@@ -82,6 +91,8 @@ export default function AnnotationInterface({ baseUrl }) {
             annotations={annotations}
             annotationsUpdated={annotationsUpdated}
             jumpToAnnotation={jumpToAnnotation}
+            clearFilter={clearFilter}
+            pauseVideo={pauseVideo}
           />
         </div>
         <div className="col-span-13 h-desktop relative mr-12">

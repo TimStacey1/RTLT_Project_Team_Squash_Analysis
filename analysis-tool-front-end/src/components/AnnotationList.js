@@ -10,6 +10,8 @@ export default function AnnotationList({
   annotations,
   annotationsUpdated,
   jumpToAnnotation,
+  clearFilter,
+  pauseVideo
 }) {
   const [filterAnnotations, setFilterAnnotations] = useState([]);
   const [annotationToRemove, setAnnotationToRemove] = useState({});
@@ -84,6 +86,7 @@ export default function AnnotationList({
   const clearFilters = () => {
     const updatedCheckedState = new Array(12).fill(false);
     setCheckedState(updatedCheckedState);
+    clearFilter();
     setFilterAnnotations(annotations);
     setFilterTime({
       startTimeM: 0,
@@ -135,7 +138,10 @@ export default function AnnotationList({
     setFilterAnnotations(newAnnotations);
   };
 
-  const toggleFilter = () => setFilterShow(!showFilter);
+  const toggleFilter = () => {
+    setFilterShow(!showFilter);
+    pauseVideo();
+  }
 
   const showModal = (shotText, timeText, annotation) => {
     if (shotText && timeText) {
@@ -442,7 +448,7 @@ export default function AnnotationList({
                     <td>
                       <button
                         className="hover:text-blue-500"
-                        onClick={() => jumpToAnnotation(annotation.timestamp)}
+                        onClick={() => jumpToAnnotation(annotation.timestamp, filterAnnotations)}
                       >
                         {convertSecondsToMS(annotation.timestamp)}
                       </button>

@@ -60,9 +60,11 @@ export default function MainMenu(props) {
                   </p>
                   <p className="whitespace-normal">{match.description}</p>
                   <div className="pt-3 pb-2">
+                  <a href={'/view_video/' + match.id}>
                     <button className="bg-green-700 hover:bg-green-600 text-white font-bold py-2 px-4 mx-1">
                       View
                     </button>
+                  </a>
                     <a href={'/match/' + match.id}>
                       <button className="bg-blue-700 hover:bg-blue-600 text-white font-bold py-2 px-4 mx-1">
                         Edit

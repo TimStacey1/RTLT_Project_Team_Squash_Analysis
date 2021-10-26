@@ -4,6 +4,7 @@ import MainMenu from './components/MainMenu';
 import NewMatch from './components/NewMatch';
 import AnnotationInterface from './components/AnnotationInterface';
 import Statistics from './components/Statistics';
+import ViewVideo from './components/ViewVideo';
 
 function App() {
   const baseUrl = 'http://localhost:3001';
@@ -24,6 +25,9 @@ function App() {
         <Route path="/match/:id">
           <AnnotationInterface baseUrl={baseUrl} />
         </Route>
+        <Route path="/view_video/:id">
+          <ViewVideo baseUrl={baseUrl}/>
+          </Route>
         <Route path="/stats/:id">
           <Statistics baseUrl={baseUrl} />
         </Route>
