@@ -88,7 +88,7 @@ export default function MainMenu(props) {
                     </a>
                     <button
                       onClick={() => removeMatch(match.id)}
-                      className="bg-red-700 hover:bg-blue-600 text-white font-bold py-2 px-4 mx-1"
+                      className="bg-red-700 hover:bg-red-600 text-white font-bold py-2 px-4 mx-1"
                     >
                       Remove
                     </button>
