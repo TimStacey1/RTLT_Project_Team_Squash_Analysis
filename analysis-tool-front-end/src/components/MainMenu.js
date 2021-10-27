@@ -22,13 +22,13 @@ export default function MainMenu(props) {
   };
 
   useEffect(() => {
-    if (matches.length === 0 || history.location.state?.from === '/new/match') {
+    if (matches.length === 0 || history.location.state?.from === '/new/match/') {
       axios
         .get(baseUrl + '/match/all')
         .then((res) => res.data)
         .then((matches) => setMatches(matches.reverse()));
     }
-  }, [baseUrl, matches, history]);
+  }, [baseUrl, matches.length, history.location.state]);
 
   return (
     <div className="container mx-auto mb-10">
