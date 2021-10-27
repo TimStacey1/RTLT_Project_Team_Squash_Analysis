@@ -10,6 +10,7 @@ export default function AnnotationInterface({ baseUrl }) {
   const [annotationsChanged, setAnnotationsChanged] = useState(true);
   const [match, setMatch] = useState({});
   const [seekTime, setSeekTime] = useState(0);
+  const [seekTimeChanged, setSeekTimeChanged] = useState(false);
   const [currentVideoTime, setCurrentVideoTime] = useState(0);
   const [pausedState, setCurrentPausedState] = useState(true);
   const [videoPaused, setVideoPaused] = useState(null);
@@ -49,6 +50,7 @@ export default function AnnotationInterface({ baseUrl }) {
         ? annotationTimeStamp - annotationRange
         : 1
     );
+    setSeekTimeChanged(!seekTimeChanged);
     setAnnotations(filterAnnotations);
   };
 
@@ -100,6 +102,7 @@ export default function AnnotationInterface({ baseUrl }) {
             videoUrl={videoUrl}
             videoPaused={videoPaused}
             seekTime={seekTime}
+            seekTimeChanged={seekTimeChanged}
             updateCurrentVideoTime={updateCurrentVideoTime}
             updateCurrentPausedState={updateCurrentPausedState}
           />

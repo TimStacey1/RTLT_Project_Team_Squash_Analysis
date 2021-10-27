@@ -1,9 +1,10 @@
 import { React, useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 const axios = require('axios').default;
 
 export default function MainMenu(props) {
+  const history = useHistory();
   const { baseUrl } = props;
   const [matches, setMatches] = useState([]);
 
@@ -21,11 +22,11 @@ export default function MainMenu(props) {
   };
 
   useEffect(() => {
-    if (matches.length === 0) {
+    if (matches.length === 0 || history.location.state?.from === `new/match`) {
       axios
-      .get(baseUrl + '/match/all')
-      .then((res) => res.data)
-      .then((matches) => setMatches(matches.reverse()));
+        .get(baseUrl + '/match/all')
+        .then((res) => res.data)
+        .then((matches) => setMatches(matches.reverse()));
     }
   }, [baseUrl, matches]);
 

@@ -218,7 +218,14 @@ class NewMatch extends React.Component {
             formData
           );
         })
-        .then(this.props.history.push('/home'));
+        .then(
+          this.props.history.push({
+            pathname: '/home',
+            state: {
+              from: this.props.location.pathname,
+            },
+          })
+        );
     }
   };
 

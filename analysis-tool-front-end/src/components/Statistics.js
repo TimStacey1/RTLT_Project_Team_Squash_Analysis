@@ -6,7 +6,6 @@ import { Bar, Pie } from 'react-chartjs-2';
 export default function Statistics(props) {
   const { baseUrl } = props;
   const matchId = window.location.pathname.substring(7);
-  console.log(matchId);
   const [annotations, setAnnotations] = useState([]);
   let unique_shots = [
     ...new Set(

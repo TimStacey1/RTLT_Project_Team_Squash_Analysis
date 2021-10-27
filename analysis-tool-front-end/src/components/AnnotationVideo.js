@@ -16,6 +16,7 @@ export default function AnnotationVideo(props) {
   const {
     videoUrl,
     seekTime,
+    seekTimeChanged,
     updateCurrentVideoTime,
     updateCurrentPausedState,
     videoPaused,
@@ -38,7 +39,7 @@ export default function AnnotationVideo(props) {
     }
     // overload video player full screen toggle to disable fullscreen
     playerRef.current.actions.toggleFullscreen = () => {};
-  }, [seekTime, videoPaused]);
+  }, [seekTime, videoPaused, seekTimeChanged]);
 
   return (
     <div className="w-full h-full">
