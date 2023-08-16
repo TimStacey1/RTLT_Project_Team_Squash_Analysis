@@ -44,6 +44,8 @@ const annotationComponents = [
   { type: 'game', id: 'New Game' },
 ];
 
+//test commit
+
 const Annotation = model('Annotation', annotationSchema);
 
 module.exports = {
