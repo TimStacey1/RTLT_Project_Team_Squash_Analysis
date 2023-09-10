@@ -10,6 +10,12 @@ const annotationSchema = new Schema({
     min: 1,
     max: 2,
   },
+  playerPos:{
+    type: Number
+  },
+  opponentPos:{
+    type: Number
+  },
   components: {
     type: {
       type: String,

@@ -1,11 +1,21 @@
 const util = require('../lib/util');
 
+const { spawnSync } = require('child_process');
+
 const { Match } = require('../models/Match');
 const { Annotation } = require('../models/Annotation');
 
 // create annotation
 const create = async (req, res, next) => {
-  const _new = new Annotation(req.body);
+
+  const new_body = req.body;
+  const python_test = spawnSync('python',['./controllers/Frame_function.py',req.body.timestamp, req.params.match_id,5,[174, 166, 185],req.body.playerNumber]);
+  const positions = python_test.stdout.toString().split(" ")
+  new_body['playerPos'] = parseInt(positions[0]);
+  new_body['opponentPos'] = parseInt(positions[1]);
+  console.log(python_test.stderr.toString());
+
+  const _new = new Annotation(new_body);
 
   const [result, err] = await util.handle(Match.updateOne(
     { _id: req.params.match_id },
