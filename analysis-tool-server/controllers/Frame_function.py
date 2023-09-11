@@ -1,5 +1,3 @@
-#! C:\Users\ysont\miniconda3\envs\cab420\python.exe
-
 import numpy as np
 import cv2
 import os
