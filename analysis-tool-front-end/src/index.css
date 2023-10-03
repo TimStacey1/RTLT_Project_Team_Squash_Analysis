@@ -1,0 +1,95 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.bg-green-700 {
+  background-color: #006f3a;
+}
+
+.tooltip {
+  @apply invisible absolute;
+}
+
+.has-tooltip:hover .tooltip {
+  @apply visible z-50;
+}
+
+.modal {
+  position: absolute;
+  top: 100px;
+  right: 45%;
+  width: 400px;
+  background: white;
+  border: 1px solid #ccc;
+  transition: 1.1s ease-out;
+  box-shadow: -2rem 2rem 2rem rgba(0, 0, 0, 0.2);
+  filter: blur(0);
+  transform: scale(1);
+  opacity: 1;
+  z-index: 99;
+  visibility: visible;
+}
+.modal.off {
+  opacity: 0;
+  visibility: hidden;
+  filter: blur(8px);
+  transform: scale(0.33);
+  box-shadow: 1rem 0 0 rgba(0, 0, 0, 0.2);
+}
+@supports (offset-rotation: 0deg) {
+  offset-rotation: 0deg;
+  offset-path: path("M 250,100 S -300,500 -700,-200");
+  .modal.off {
+    offset-distance: 100%;
+  }
+}
+@media (prefers-reduced-motion) {
+  .modal {
+    offset-path: none;
+  }
+}
+.modal h2 {
+  border-bottom: 1px solid #ccc;
+  padding: 1rem;
+  margin: 0;
+  font-size: 1.5rem;
+}
+.modal .content {
+  padding: 1rem;
+}
+.modal .actions {
+  border-top: 1px solid #ccc;
+  background: #eee;
+  padding: 0.5rem 1rem;
+}
+
+#banner {
+  text-shadow: -0.75px -0.75px 0 whitesmoke, 0.75px -0.75px 0 whitesmoke,
+    -0.75px 0.75px 0 whitesmoke, 0.75px 0.75px 0 whitesmoke;
+}
+
+.tooltip-container {
+  position: relative;
+  z-index: 10;
+}
+
+.tooltip {
+  position: absolute;
+  top: -30px;
+  left: 0px;
+  display: none;
+  width: 175px;
+}
+
+.tooltip-container:hover {
+  z-index: 20;
+}
+
+.tooltip-container:hover .tooltip {
+  display: block;
+}
+
+::-webkit-file-upload-button {
+  display: none;
+}

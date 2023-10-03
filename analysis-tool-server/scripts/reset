@@ -1,0 +1,7 @@
+
+
+/**
+*  Clear the console.
+*/
+
+process.stdout.write('\033c');
