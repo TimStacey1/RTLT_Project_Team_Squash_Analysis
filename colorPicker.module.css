@@ -1,0 +1,223 @@
+h5 {
+  font-size: 1rem;
+  color: #000000;
+}
+  
+footer {
+    text-align: center;
+}
+
+.wrapper {
+  display: grid;
+  grid-template-columns: 900px 1fr;
+  min-height: 100vh;
+
+  color: blue;
+}
+
+/* Left column */
+.leftColumn {
+  width: 100%;
+  height: 100vh;
+
+  /* background: #22232b; */
+  padding: 1.6rem;
+
+  position: sticky;
+  top: 0;
+}
+
+.headingText {
+  margin: 0;
+  margin-bottom: 1.6rem;
+}
+
+.formSectionImage {
+  position: absolute; /*or fixed*/
+  right: 0px;
+}
+
+.formSectionText {
+  font-size: 1rem;
+  margin-bottom: 0.6rem;
+  color: #ededf1;
+  right: 10px
+}
+
+.formSection2 > p {
+  font-size: 1rem;
+  margin-bottom: 0.6rem;
+  color: #ededf1;
+}
+
+.openPickerButton {
+  width: 100%;
+  height: 25px;
+
+  background: #6c738b;
+  color: white;
+  border: none;
+
+  font-size: 1rem;
+  /* padding: 0.8em 0.8em; */
+  /* border-radius: 0.2rem; */
+
+  cursor: pointer;
+
+  /* transition: 0.2s background; */
+}
+
+.openPickerButton:hover {
+  background: #46495e;
+}
+
+.selectedColor {
+  width: 100%;
+  height: 25px;
+
+  background: #6c738b;
+  color: white;
+  border: none;
+
+  font-size: 1rem;
+  /* padding: 0.8em 0.8em; */
+  /* border-radius: 0.2rem; */
+
+  cursor: pointer;
+
+  /* transition: 0.2s background; */
+}
+
+.NextButtonColour {
+  width: 100%;
+  height: 100%;
+
+  background:#52cc72;
+  color: white;
+  border: none;
+
+  font-size: 3rem;
+  font-weight: bold;
+  /* padding: 0.8em 0.8em; */
+  /* border-radius: 0.2rem; */
+
+  cursor: pointer;
+
+  /* transition: 0.2s background; */
+}
+
+.shoutout {
+  color: #6c738b;
+
+  position: absolute;
+  bottom: 1.6rem;
+  left: 1.6rem;
+}
+
+.shoutout > a {
+  color: #b59cfd;
+}
+
+/* Right column */
+.rightColumn {
+  /* background: #363844; */
+  /* padding: 2.4rem; */
+  display: grid;
+  place-content: rightColumn;
+
+  position: right;
+  overflow: hidden;
+}
+
+.rightColumn > img {
+  width: 900px;
+  height: 375px;
+  /* max-width: 900px; */
+  /* margin: auto; */
+
+  /* box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.15); */
+
+  /* position: right;
+  z-index: 10; */
+}
+
+/* .rightColumn > div {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+
+  background-size: cover;
+  background-position: center;
+  scale: 1.2;
+
+  filter: blur(4px);
+  opacity: 0.5;
+} */
+
+.bigHeadererFile {
+    font-size: 40px;
+}
+
+.absoluteDiv1 {
+    position: absolute;
+    top: 150px;
+    right: 0;
+    width: 300px;
+    height: 100px;
+    border: 3px solid #006F3A;
+}
+
+.absoluteDiv2 {
+  position: absolute;
+  top: 250px;
+  right: 0;
+  width: 300px;
+  height: 100px;
+  border: 3px solid #006F3A;
+}
+
+.absoluteDiv3 {
+  position: absolute;
+  top: 50px;
+  right: 0;
+  width: 300px;
+  height: 100px;
+  border: 3px solid #006F3A;
+}
+
+.absoluteDiv5 {
+  position: absolute;
+  top: 350px;
+  right: 0;
+  width: 300px;
+  height: 100px;
+  border: 3px solid #006F3A;
+}
+
+.absoluteDiv4 {
+  position: absolute;
+  top: 60px;
+  right: 1;
+  width: 900px;
+  height: 380px;
+  border: 3px solid #006F3A;
+}
+
+.relativeDiv {
+    position: absolute;
+    top: 100px;
+    width: 1260px;
+    height: 1800px;
+    border: 3px solid #006F3A;
+  } 
+
+  .GFG {
+    background-color: white;
+    border: 2px solid black;
+    color: green;
+    padding: 5px 10px;
+    text-align: center;
+    display: inline-block;
+    font-size: 20px;
+    margin: 10px 30px;
+    cursor: pointer;}
