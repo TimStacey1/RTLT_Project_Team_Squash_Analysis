@@ -1,5 +1,3 @@
-#! C:\Users\ysont\miniconda3\envs\cab420\python.exe
-
 import numpy as np
 import cv2
 import os
@@ -37,6 +35,11 @@ def maybe_final_mask(timestamp,fileName,bounds):
     save_frame(f'./videos/{fileName}.mp4', 10000,'./temp_images/master_image.PNG')
     save_frame(f'./videos/{fileName}.mp4', millieseconds,'./temp_images/pos_image.PNG')
     
+    cap = cv2.VideoCapture(f'./videos/{fileName}.mp4')
+    if not cap.isOpened():
+        return
+    x = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
+    y = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
     #Carrara Court 2 Video.MP4
     
     # loads the saved images into memory
@@ -47,8 +50,8 @@ def maybe_final_mask(timestamp,fileName,bounds):
     # DON'T BE DUMB.
     # MAKE ANOTHER COPY SO THIS DOESN'T GET BLOATED WITH RAMMBALING COMMENTS
     image_sub = cv2.subtract(master_image, pos_image)
-    court = np.zeros((1080,1920,1), dtype='uint8')
-    shape = np.array([[703,503],[1214,503],[1580,1075],[333,1075]])
+    court = np.zeros((int(y),int(x),1), dtype='uint8')
+    shape = np.array([bounds[0],bounds[1],bounds[3],bounds[2]])
     # shape = np.array([[419,315],[837,319],[1090,706],[145,696]])
     cv2.fillPoly(court, pts=[shape],color=(255))
     court_mask = cv2.bitwise_and(image_sub, image_sub, mask=court)
@@ -71,15 +74,15 @@ def pixel_coords(mask):
             rgb = mask[x,y]
             if rgb[0] > 50 or rgb[1] > 50 or rgb[2] > 50:
 #            if rgb[0] != 255:
-                mask[x,y] = [0,0,255]
-                if 200 < x+1 < w-200:
-                    mask[x+1,y] = [0,0,255]
-                if 200 < x-1 < w-200:
-                    mask[x-1,y] = [0,0,255]
-                if 0 < y+1 < h-1:
-                    mask[x,y+1] = [0,0,255]
-                if 0 < y-1 < h-1:
-                    mask[x,y-1] = [0,0,255]
+#                mask[x,y] = [0,0,255]
+#                if 200 < x+1 < w-200:
+#                    mask[x+1,y] = [0,0,255]
+#                if 200 < x-1 < w-200:
+#                    mask[x-1,y] = [0,0,255]
+#                if 0 < y+1 < h-1:
+#                    mask[x,y+1] = [0,0,255]
+#                if 0 < y-1 < h-1:
+#                    mask[x,y-1] = [0,0,255]
 #                print(f"It has been found that at height {x} width {y}, the lowest point occurs.")
                 xcoord = y
                 ycoord = x
@@ -89,17 +92,17 @@ def pixel_coords(mask):
             break
     return (xcoord, ycoord)   
 
-def findSecondPlayerLocations(mask, a):
+def findSecondPlayerLocations(mask, a, b):
     # Create variables for the first player width
     f_width = a
-    
+    f_height = b
     # Get our Original Mask
     
     # Getting length and width of mask image
     h, w, _ = mask.shape
 
     # Create copy of Blue Mask called Second Player Position Mask for the lowest location after the first player's
-
+    f_range = round(h*0.25)
     # Find the lowest point and give it the colour of red
     break_out_flag = False     
     for x in range(h-1,0,-1):
@@ -108,22 +111,25 @@ def findSecondPlayerLocations(mask, a):
             #if rgb[0] != 255:
             if rgb[0] > 50 or rgb[1] > 50 or rgb[2] > 50:
                 mask[x,y] = [0,0,255]
-                
-                if not((f_width - 100) < y < (f_width + 100)):
-                    if 200 < x+1 < w-200:
-                        mask[x+1,y] = [0,0,255]
-                    if 200 < x-1 < w-200:
-                        mask[x-1,y] = [0,0,255]
-                    if 0 < y+1 < h-1:
-                        mask[x,y+1] = [0,0,255]
-                    if 0 < y-1 < h-1:
-                        mask[x,y-1] = [0,0,255]
+                if not((f_width - f_range) < y < (f_width + f_range)):
+#                    if 200 < x+1 < w-200:
+#                        mask[x+1,y] = [0,0,255]
+#                    if 200 < x-1 < w-200:
+#                        mask[x-1,y] = [0,0,255]
+#                    if 0 < y+1 < h-1:
+#                        mask[x,y+1] = [0,0,255]
+#                    if 0 < y-1 < h-1:
+#                        mask[x,y-1] = [0,0,255]
                     break_out_flag = True
                     s_width = y
                     s_height = x
                     break
         if break_out_flag:
             break
+        
+    if (break_out_flag == False):
+        s_width=f_width
+        s_height=f_height
     return (s_width,s_height)
     
 
@@ -136,10 +142,13 @@ def countColourMatches(location1,location2,colors):
     except:
         print("Unable to obtain original image.")  
     
+    splitColors = str(colors).split(',')
+    
+    
     # Obtain Player 1 colours
-    p1_r = int(colors[0])
-    p1_g = int(colors[1])
-    p1_b = int(colors[2])
+    p1_r = int(splitColors[0])
+    p1_g = int(splitColors[1])
+    p1_b = int(splitColors[2])
 
     # Getting length and width of master image
     h, w, _ = master_image.shape    
@@ -223,26 +232,15 @@ def location(p_coords,bounds):
     
     # these points will be what the couch selects in the final
     # might to standarise what corners they pick first
-    shape = np.array([[703,503],[1214,503],[1580,1075],[333,1075]])
+    shape = np.array([bounds[0],bounds[1],bounds[3],bounds[2],bounds[4],bounds[5]])
     #shape = np.array([[419,315],[837,319],[1090,706],[145,696]])
-    short_line_y = (shape[3][1]+shape[0][1])*0.45
+    short_line_y = shape[4][1]
     sec_1_lower = short_line_y - (((shape[3][1]+shape[0][1])*0.5)-short_line_y)
     half_line = (shape[2][0]+shape[3][0])/2
     
+    l_t_zone = (shape[5][0]- shape[4][0]) * 0.375 + shape[4][0]
     
-    a1 = abs(shape[0][0]-shape[3][0])
-    a2 = abs(shape[1][0]-shape[2][0])
-    b1 = abs(shape[0][1]-shape[3][1])
-    b2 = abs(shape[1][1]-shape[2][1])
-    
-    
-    l_short_line_x = shape[0][0] - ((short_line_y - shape[0][1]) / math.tan(math.atan(b1 / a1)))
-    
-    r_short_line_x = shape[1][0] + ((short_line_y - shape[1][1]) / math.tan(math.atan(b2 / a2)))
-    
-    l_t_zone = (r_short_line_x - l_short_line_x) * 0.375 + l_short_line_x
-    
-    r_t_zone = (r_short_line_x - l_short_line_x) * 0.625 + l_short_line_x
+    r_t_zone = (shape[5][0]- shape[4][0]) * 0.625 + shape[4][0]
     
     sec_2_lower = sec_1_lower + abs(l_t_zone - r_t_zone)
     
@@ -275,29 +273,54 @@ def location(p_coords,bounds):
 #print(coords)
 #maybe_final_mask(12)
 
-def playerLocations(timeStamp,fileName,courtBounds,color,player_num): 
-    playerMask = maybe_final_mask(timeStamp,fileName, courtBounds)
-    pixelLocation = pixel_coords(playerMask)
-    second_player = findSecondPlayerLocations(playerMask, pixelLocation[0])
+def boundsConverter(bounds,video_path):
     
+    # write the bounds sorting algorithm
+    # will only be 6^2 since it will be size of six always
+    fixed_bounds = str(bounds).split(',')
+
+    cap = cv2.VideoCapture(video_path)
+    if not cap.isOpened():
+        return
+    x = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
+    y = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
+    
+    ratio_x = x/1280
+    ratio_y = y/720
+
+    new_bounds = np.array([[math.floor(float(fixed_bounds[0])*ratio_x),math.floor(float(fixed_bounds[1])*ratio_y)],
+                          [math.floor(float(fixed_bounds[2])*ratio_x),math.floor(float(fixed_bounds[3])*ratio_y)],
+                          [math.floor(float(fixed_bounds[4])*ratio_x),math.floor(float(fixed_bounds[5])*ratio_y)],
+                          [math.floor(float(fixed_bounds[6])*ratio_x),math.floor(float(fixed_bounds[7])*ratio_y)],
+                          [math.floor(float(fixed_bounds[8])*ratio_x),math.floor(float(fixed_bounds[9])*ratio_y)],
+                          [math.floor(float(fixed_bounds[10])*ratio_x),math.floor(float(fixed_bounds[11])*ratio_y)]])
+    
+    return new_bounds
+
+
+def playerLocations(timeStamp,fileName,courtBounds,color,player_num): 
+    current_bounds = boundsConverter(courtBounds, f'./videos/{fileName}.mp4')
+    playerMask = maybe_final_mask(timeStamp, fileName, current_bounds)
+    pixelLocation = pixel_coords(playerMask)
+    second_player = findSecondPlayerLocations(playerMask, pixelLocation[0], pixelLocation[1])
     order = countColourMatches(pixelLocation[0], second_player[0], color)
     if player_num == 1:
         if (order[0]>order[1]):
-            player1 = location(pixelLocation,courtBounds)
-            player2 = location(second_player,courtBounds)
+            player1 = location(pixelLocation,current_bounds)
+            player2 = location(second_player,current_bounds)
             return f"{player1} {player2}"
         else:
-            player1 = location(pixelLocation,courtBounds)
-            player2 = location(second_player,courtBounds)
+            player1 = location(pixelLocation,current_bounds)
+            player2 = location(second_player,current_bounds)
             return f"{player2} {player1}"
     else:
-        if (order[0]>order[1]):
-            player1 = location(pixelLocation,courtBounds)
-            player2 = location(second_player,courtBounds)
+        if (order[0]<order[1]):
+            player1 = location(pixelLocation,current_bounds)
+            player2 = location(second_player,current_bounds)
             return f"{player2} {player1}"
         else:
-            player1 = location(pixelLocation,courtBounds)
-            player2 = location(second_player,courtBounds)
+            player1 = location(pixelLocation,current_bounds)
+            player2 = location(second_player,current_bounds)
             return f"{player1} {player2}"
 
 print(playerLocations(sys.argv[1], sys.argv[2], sys.argv[3], 

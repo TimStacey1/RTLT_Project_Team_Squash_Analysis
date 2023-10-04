@@ -46,11 +46,13 @@ export default function AnnotationControls({
       selectedAnnotationComponent.type === 'shot' &&
       Object.entries(selectedPlayer).length > 0
     ) {
+      
       setSelectedAnnotation({
         timestamp: getAnnotationTimestamp(),
         playerNumber: selectedPlayer.playerNumber,
         components: selectedAnnotationComponent,
       });
+      
     } else if (selectedAnnotationComponent.type === 'game') {
       setSelectedAnnotation({
         timestamp: getAnnotationTimestamp(),
