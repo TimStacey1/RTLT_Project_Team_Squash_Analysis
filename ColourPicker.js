@@ -2,27 +2,36 @@ import { useState } from "react";
 import React from "react";
 import styles from "./colorPicker.module.css";
 
+/*
+This file allows for the creation of a colourpicker in a html application, using style from colorPicker.module.css.
+*/
+
 const ColourPicker = () => { 
+  //Set initial colours for our two players, before eyedroppers are used.
   const [color1, setColor1] = useState("#006F3A");
   const [color2, setColor2] = useState("#EBC015");
   const [image, setImage] = useState(null);
 
+  //Create instance of an eye dropper to select player 1's colour.
   const openEyeDropper1 = async () => {
     let eyeDropper = new window.EyeDropper();
     const { sRGBHex } = await eyeDropper.open();
     setColor1(sRGBHex );
   };
 
+  //Create instance of another eye dropper to select player 2's colour.
   const openEyeDropper2 = async () => {
     let eyeDropper = new window.EyeDropper();
     const { sRGBHex } = await eyeDropper.open();
     setColor2(sRGBHex );
   };
 
+  //Function used when selecting an image. It provides the selected image with a url, which can be used in a html file.
   const handleFileInput = (e) => {
     setImage(URL.createObjectURL(e.target.files[0]));
   };
 
+  // Function used to grab a hexidecimal colour, convert it into a RGB value, and copy that value to the clipboard.
   const handleCopyColor1 = async () => {
     const sRGBHex = color1;
     
@@ -36,6 +45,7 @@ const ColourPicker = () => {
     alert(`Copied First Player RGB value: ${rgbString1} to clipboard!`);
   };
 
+  // Same as above
   const handleCopyColor2 = async () => {
     const sRGBHex = color2;
     
@@ -49,6 +59,7 @@ const ColourPicker = () => {
     alert(`Copied First Player RGB value: ${rgbString2} to clipboard!`);
   };
 
+  // The below returned code reders the html which will be displayed, using the functions defined above.
   return (
   <>
     <head>
@@ -75,7 +86,6 @@ const ColourPicker = () => {
           </div>
   
           <div className={styles.formSectionText}>
-            {/* <p>3. View selected</p> */}
             <button className={styles.selectedColor}
             style={{ background: color1 }}
             onClick={handleCopyColor1}
