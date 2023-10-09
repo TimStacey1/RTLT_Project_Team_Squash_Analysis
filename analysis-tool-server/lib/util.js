@@ -16,7 +16,8 @@ const transformMatches = (matches) => {
         player2: [match.players.player2.firstName, match.players.player2.lastName].join(' '),
       },
       description: match.description,
-      duration: match.duration
+        duration: match.duration,
+        annotations: match.annotations
     };
   });
 };
@@ -33,7 +34,9 @@ const transformAnnotations = (annotations) => {
       id: annotation._id,
       timestamp: annotation.timestamp,
       playerNumber: annotation.playerNumber,
-      components: annotation.components
+        components: annotation.components,
+        playerPos: annotation.playerPos,
+        opponentPos: annotation.opponentPos
     };
   });
 };

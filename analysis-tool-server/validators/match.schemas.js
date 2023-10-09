@@ -16,6 +16,8 @@ const matchSchema = Joi.object({
       lastName: Joi.string().min(1).max(50).regex(/^[a-zA-Z][a-zA-Z,.'-\s]*$/),
     }),
   }),
+    courtBounds: Joi.array().items(Joi.array().items(Joi.number().integer())),
+    playerRGB: Joi.array().items(Joi.number().integer()),
 }).options({ stripUnknown: true, abortEarly: false }).min(1);
 const createMatchSchema = matchSchema.options({ presence: 'required' });
 const updateMatchSchema = matchSchema;

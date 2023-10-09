@@ -5,6 +5,9 @@ import NewMatch from './components/NewMatch';
 import AnnotationInterface from './components/AnnotationInterface';
 import Statistics from './components/Statistics';
 import ViewVideo from './components/ViewVideo';
+import AllStatistics from './components/AllStatistics';
+import CourtBounds from './components/NewMatchCourtBounds';
+import ColourPicker from './components/ColourPicker';
 
 function App() {
   const baseUrl = 'http://localhost:3001';
@@ -22,6 +25,12 @@ function App() {
         <Route path="/new/match">
           <NewMatch baseUrl={baseUrl} />
         </Route>
+        <Route path="/new/court">
+          <CourtBounds baseUrl={baseUrl} />
+        </Route>
+        <Route path="/new/colourPick">
+          <ColourPicker baseUrl={baseUrl} />
+        </Route>
         <Route path="/match/:id">
           <AnnotationInterface baseUrl={baseUrl} />
         </Route>
@@ -30,6 +39,9 @@ function App() {
           </Route>
         <Route path="/stats/:id">
           <Statistics baseUrl={baseUrl} />
+              </Route>
+        <Route path="/all/stats">
+            <AllStatistics baseUrl={baseUrl} />
         </Route>
       </Router>
     </div>

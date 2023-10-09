@@ -10,6 +10,12 @@ const annotationSchema = new Schema({
     min: 1,
     max: 2,
   },
+  playerPos: {
+      type: Number
+  },
+  opponentPos: {
+      type: Number
+  },
   components: {
     type: {
       type: String,
@@ -41,7 +47,9 @@ const annotationComponents = [
   { type: 'shot', id: 'FH Volley Drop', hand: 'ForeHand', approach: 'Volley' },
   { type: 'shot', id: 'BH Kill', hand: 'Backhand' },
   { type: 'shot', id: 'FH Kill', hand: 'ForeHand' },
-  { type: 'game', id: 'New Game' },
+    { type: 'game', id: 'New Game' },
+    { type: 'rally', id: 'New Rally' },
+    { type: 'score', id: 'Point Won'}
 ];
 
 const Annotation = model('Annotation', annotationSchema);

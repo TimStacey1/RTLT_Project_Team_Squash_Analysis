@@ -43,7 +43,15 @@ export default function MainMenu(props) {
             >
               New Match
             </button>
-          </Link>
+                  </Link>
+
+            <Link to="/all/stats">
+                <button
+                    className="float-right text-xl hidden sm:block bg-green-700
+                        hover:bg-green-600 text-white font-bold py-2 px-4 mx-1">
+                    All Statistics
+                </button>
+            </Link>
           <button
             className="
               float-right text-xl block sm:hidden bg-green-700 hover:bg-green-600 text-white font-bold pb-2 px-4 mx-1

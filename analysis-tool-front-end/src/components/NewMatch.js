@@ -3,7 +3,6 @@ import { withRouter } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUpload } from '@fortawesome/free-solid-svg-icons';
 
-const axios = require('axios').default;
 
 class NewMatch extends React.Component {
   constructor(props) {
@@ -201,31 +200,19 @@ class NewMatch extends React.Component {
     const description = this.state.description;
 
     let form_error = this.formValidation();
-    const formData = new FormData();
-    formData.append('video', this.state.selectedFile);
-
+   
     if (!form_error) {
-      axios
-        .post(this.props.baseUrl + '/match/new', {
-          players,
-          title,
-          duration,
-          description,
-        })
-        .then((response) => {
-          axios.post(
-            this.props.baseUrl + '/video/' + response.data.match_id + '/upload',
-            formData
-          );
-        })
-        .then(
-          this.props.history.push({
-            pathname: '/home',
+        this.props.history.push({
+            pathname: '/new/court',
             state: {
-              from: this.props.location.pathname,
+                from: this.props.location.pathname,
+                player: players,
+                title: title,
+                duration: duration,
+                description: description,
+                video: this.state.selectedFile,
             },
-          })
-        );
+        })
     }
   };
 
@@ -461,7 +448,7 @@ class NewMatch extends React.Component {
                 className="shadow bg-green-700 hover:bg-green-600 focus:shadow-outline hover:cursor-pointer focus:outline-none text-white font-bold py-2 px-4"
               >
                 {' '}
-                Create Match{' '}
+                Next{' '}
               </button>
             </div>
           </form>
