@@ -15,12 +15,9 @@ footer {
   color: blue;
 }
 
-/* Left column */
 .leftColumn {
   width: 100%;
   height: 100vh;
-
-  /* background: #22232b; */
   padding: 1.6rem;
 
   position: sticky;
@@ -33,8 +30,7 @@ footer {
 }
 
 .formSectionImage {
-  position: absolute; /*or fixed*/
-  right: 0px;
+  position: absolute;
 }
 
 .formSectionText {
@@ -53,57 +49,45 @@ footer {
 .openPickerButton {
   width: 100%;
   height: 25px;
-
-  background: #6c738b;
+  background: #46495e;  
+  border: 3px solid #46495e;    
+  border-radius: 20px;
   color: white;
-  border: none;
-
   font-size: 1rem;
-  /* padding: 0.8em 0.8em; */
-  /* border-radius: 0.2rem; */
-
   cursor: pointer;
-
-  /* transition: 0.2s background; */
 }
 
 .openPickerButton:hover {
-  background: #46495e;
+  background: #46495e;  
+  border: 3px solid #46495e;    
+  border-radius: 20px;
 }
 
 .selectedColor {
   width: 100%;
-  height: 25px;
-
+  height: 20%;
   background: #6c738b;
-  color: white;
-  border: none;
-
+  color: white;  
+  border: 3px solid #006F3A;    
+  border-radius: 20px;
   font-size: 1rem;
-  /* padding: 0.8em 0.8em; */
-  /* border-radius: 0.2rem; */
-
   cursor: pointer;
-
-  /* transition: 0.2s background; */
 }
 
 .NextButtonColour {
   width: 100%;
   height: 100%;
+  text-align: center;
 
-  background:#52cc72;
+  background:#006F3A;
   color: white;
-  border: none;
+  border: 3px solid #006F3A;
+  border-radius: 10px;
 
   font-size: 3rem;
   font-weight: bold;
-  /* padding: 0.8em 0.8em; */
-  /* border-radius: 0.2rem; */
 
   cursor: pointer;
-
-  /* transition: 0.2s background; */
 }
 
 .shoutout {
@@ -120,8 +104,6 @@ footer {
 
 /* Right column */
 .rightColumn {
-  /* background: #363844; */
-  /* padding: 2.4rem; */
   display: grid;
   place-content: rightColumn;
 
@@ -132,83 +114,70 @@ footer {
 .rightColumn > img {
   width: 900px;
   height: 375px;
-  /* max-width: 900px; */
-  /* margin: auto; */
-
-  /* box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.15); */
-
-  /* position: right;
-  z-index: 10; */
 }
-
-/* .rightColumn > div {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-
-  background-size: cover;
-  background-position: center;
-  scale: 1.2;
-
-  filter: blur(4px);
-  opacity: 0.5;
-} */
 
 .bigHeadererFile {
     font-size: 40px;
 }
 
-.absoluteDiv1 {
+.ImageSelection {
+  position: absolute;
+  top: 0%;
+  left: 110%;
+  width: 30%;
+  height: 20%;
+  border: 3px solid #006F3A;    
+  border-radius: 20px;
+  text-align: center;
+}
+
+.Player1Selection {
     position: absolute;
-    top: 150px;
-    right: 0;
-    width: 300px;
-    height: 100px;
-    border: 3px solid #006F3A;
+    top: 20%;
+    left: 110%;
+    width: 30%;
+    height: 20%;
+    border: 3px solid #006F3A;    
+    border-radius: 20px;
+    text-align: center;
 }
 
-.absoluteDiv2 {
+.Player2Selection {
   position: absolute;
-  top: 250px;
-  right: 0;
-  width: 300px;
-  height: 100px;
-  border: 3px solid #006F3A;
+  top: 40%;
+  left: 110%;
+  width: 30%;
+  height: 20%;
+  border: 3px solid #006F3A;    
+  border-radius: 20px;
+  text-align: center;
 }
 
-.absoluteDiv3 {
+.ProcessDiv {
   position: absolute;
-  top: 50px;
-  right: 0;
-  width: 300px;
-  height: 100px;
-  border: 3px solid #006F3A;
-}
-
-.absoluteDiv5 {
-  position: absolute;
-  top: 350px;
-  right: 0;
-  width: 300px;
-  height: 100px;
-  border: 3px solid #006F3A;
+  top: 60%;
+  left: 110%;
+  width: 30%;
+  height: 20%;
+  border: 3px solid #006F3A;    
+  border-radius: 20px;
+  text-align: center;
 }
 
 .absoluteDiv4 {
   position: absolute;
   top: 60px;
-  right: 1;
   width: 900px;
   height: 380px;
   border: 3px solid #006F3A;
+  text-align: center;
 }
 
 .relativeDiv {
     position: absolute;
-    top: 100px;
-    width: 1260px;
-    height: 1800px;
-    border: 3px solid #006F3A;
+    top: 20%;
+    width: 70%;
+    height: 100%;
   } 
 
   .GFG {

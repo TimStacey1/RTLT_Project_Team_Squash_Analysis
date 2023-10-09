@@ -31,9 +31,9 @@ const ColourPicker = () => {
     const r = parseInt(hex.substring(0,2),16);
     const g = parseInt(hex.substring(2,4),16);
     const b = parseInt(hex.substring(4,6),16);
-    const rgbString = `${r}, ${g}, ${b}`;
-    await navigator.clipboard.writeText(rgbString);
-    alert(`Copied First Player RGB value: ${rgbString} to clipboard!`);
+    const rgbString1 = `${r}, ${g}, ${b}`;
+    await navigator.clipboard.writeText(rgbString1);
+    alert(`Copied First Player RGB value: ${rgbString1} to clipboard!`);
   };
 
   const handleCopyColor2 = async () => {
@@ -44,9 +44,9 @@ const ColourPicker = () => {
     const r = parseInt(hex.substring(0,2),16);
     const g = parseInt(hex.substring(2,4),16);
     const b = parseInt(hex.substring(4,6),16);
-    const rgbString = `${r}, ${g}, ${b}`;
-    await navigator.clipboard.writeText(rgbString);
-    alert(`Copied First Player RGB value: ${rgbString} to clipboard!`);
+    const rgbString2 = `${r}, ${g}, ${b}`;
+    await navigator.clipboard.writeText(rgbString2);
+    alert(`Copied First Player RGB value: ${rgbString2} to clipboard!`);
   };
 
   return (
@@ -59,8 +59,14 @@ const ColourPicker = () => {
 
     <body>          
       <div class={styles.relativeDiv}>
-        <h1 class={styles.bigHeadererFile}><b>Player Selection</b></h1>        
-        <div class={styles.absoluteDiv1}>
+        <h1 class={styles.bigHeadererFile}><b>Player Selection</b></h1> 
+        <div class={styles.ImageSelection}>
+          <h5><b>Choose Image By Selecting Below Text:</b></h5>
+          <div className={styles.formSectionImage}>
+            <input onChange={handleFileInput} type="file" accept="image/*" />
+          </div> 
+        </div>       
+        <div class={styles.Player1Selection}>
           <div className={styles.formSectionText}>
             <h5><b>Pick Player 1 Colour:</b></h5>
             <button className={styles.openPickerButton} onClick={openEyeDropper1}>
@@ -78,7 +84,7 @@ const ColourPicker = () => {
             </button>
           </div>
         </div>
-        <div class={styles.absoluteDiv2}>
+        <div class={styles.Player2Selection}>
         <div className={styles.formSectionText}>
             <h5><b>Pick Player 2 Colour:</b></h5>
             <button className={styles.openPickerButton} onClick={openEyeDropper2}>
@@ -95,13 +101,7 @@ const ColourPicker = () => {
             Copy Colour
             </button>
             </div>
-        </div>
-        <div class={styles.absoluteDiv3}>
-          <h5><b>Choose Image By Selecting Below Text:</b></h5>
-          <div className={styles.formSectionImage}>
-            <input onChange={handleFileInput} type="file" accept="image/*" />
-          </div> 
-        </div>  
+        </div>          
         <div class={styles.absoluteDiv4}>          
           <div className={styles.rightColumn}>
             {image ? (
@@ -129,7 +129,7 @@ const ColourPicker = () => {
             )}
             </div>
           </div>
-          <div class={styles.absoluteDiv5}>
+          <div class={styles.ProcessDiv}>
             <a href='https://www.dndbeyond.com/'>
             <button className={styles.NextButtonColour}>
               Process
