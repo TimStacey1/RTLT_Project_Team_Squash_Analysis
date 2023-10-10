@@ -1,79 +1,25 @@
 import { React, useState, useEffect } from 'react';
 import axios from 'axios';
-
-import { game } from './GameSessionClass';
 import { Bar, Pie } from 'react-chartjs-2';
-import { Player } from 'video-react';
+
+import { gameSession } from './GameSessionClass';
 //import { Player } from 'video-react';
 
-export default function Statistics(props) {
+export default function AllStatistics(props) {
     const { baseUrl } = props;
-    const matchId = window.location.pathname.substring(7);
-    const [annotations, setAnnotations] = useState([]);
+    const [matches, setMatches] = useState([]);
 
+    //const [annotations, setAnnotations] = useState([]);
     useEffect(() => {
         axios
-            .get(baseUrl + '/annotate/' + matchId + '/all')
+            .get(baseUrl + '/match/all')
             .then((res) => res.data)
-            .then((annotations) => setAnnotations(annotations));
-    }, [baseUrl, matchId]);
+            .then((matches) => setMatches(matches.reverse()));
+    }, [baseUrl]);
 
-    function getGameData(annotations) {
-        let gamesData = [];
-
-        let newGameAnnotations = annotations.filter((annotation) => annotation.components.type === 'game')
-            .map((annotation) => annotation.timestamp);
-
-        let gameShotAnnotations = [];
-
-        // Find all annotations within each game & assign to store
-        for (let i = 0; i < newGameAnnotations.length + 1; i++) {
-            if (i === 0) {
-                if (newGameAnnotations.length === 0) {
-                    gameShotAnnotations[i] = annotations;
-                } else {
-                    gameShotAnnotations[i] = annotations
-                        .filter((annotation) => (annotation.timestamp < newGameAnnotations[0]));
-                }
-            } else if (i === newGameAnnotations.length) {
-                gameShotAnnotations[i] = annotations
-                    .filter(
-                        (annotation) => (annotation.timestamp > newGameAnnotations[newGameAnnotations.length - 1])
-                    )
-            } else {
-                gameShotAnnotations[i] = annotations
-                    .filter(
-                        (annotation) => ((annotation.timestamp > newGameAnnotations[i - 1]) &
-                            (annotation.timestamp < newGameAnnotations[i]))
-                    )
-            }
-        }
-
-        for (var i = 0; i < gameShotAnnotations.length; i++) {
-            let tempGame = new game(gameShotAnnotations[i]);
-            gamesData.push(tempGame);
-        }
-
-        return gamesData;
-    }
-
-    // Get all annotations function
-    function getAllAnnotations(filteredGames) {
-        let matchAnnotations = [];
-        filteredGames.forEach((game) => {
-            let gameAnnotations = [];
-            game.gameAnnotations.forEach((annotation) => {
-                if (annotation.components.type === 'shot') {
-                    gameAnnotations.push(annotation);
-                }
-            })
-            matchAnnotations = matchAnnotations.concat(gameAnnotations);
-        })
-        return matchAnnotations;
-    }
-
-    // Filtered Annotations
-    const [filterGames, setFilterGames] = useState([]);
+    // Filtered Matches
+    const [filterMatches, setFilterMatches] = useState([]);
+    //const playerNums = [1, 2];
     const [filterLength, setFilterLength] = useState(false);
 
     const backgroundColors = [
@@ -91,34 +37,76 @@ export default function Statistics(props) {
         'rgb(186, 252, 193)',
     ];
 
-    let gamesData = getGameData(annotations);
+    // Collate unique player names
 
-    let gameLabels = [];
-    for (let i = 1; i <= gamesData.length; i++) {
-        gameLabels.push(i);
-    }
-        
-    const playerNums = [1, 2];
-    
+    let player1 = matches.map((match) => match.players.player1);
+    let player2 = matches.map((match) => match.players.player2);
+    let players = player1.concat(player2);
+
+    let uniquePlayers = [];
+    players.forEach(player => {
+        if (!uniquePlayers.includes(player)) {
+            uniquePlayers.push(player);
+        }
+    });
+
+    let gameTitles = matches.map((match) => match.title);
+
+    // Get unique shot types
+    let uniqueShots = [];
+    //Get unique shots from every match and concat them into one array
+    matches.forEach((match) => {
+        uniqueShots = uniqueShots.concat([
+            ...new Set(
+                match.annotations
+                    .filter((annotation) => annotation.components.type === 'shot')
+                    .map((annotation) => annotation.components.id)
+            )
+        ]);
+    });
+    // From the final array get the unique shots overall
+    uniqueShots = [...new Set(uniqueShots)];
+
+    // Create filter for player positions
     const gameZoneLabels = ['Front Left', 'Front Right', 'Back Left', 'Back Right', 'T-Zone'];
 
-    let uniqueShots = [
-        ...new Set(
-            annotations
-                .filter((annotation) => annotation.components.type === 'shot')
-                .map((annotation) => annotation.components.id)
-        )
-    ];
-
     const [tempUseState, setTempUseState] = useState(false);
-    const [filterStatus, setFilterStatus] = useState(new Array(playerNums.length).fill(false));
+    const [filterStatus, setFilterStatus] = useState(new Array(1).fill(false));
 
     const setLengthOfFilters = () => {
-        let neededFilterLength = gameLabels.length + uniqueShots.length + gameZoneLabels.length
-            + playerNums.length + playerNums.length;
+        let neededFilterLength = gameTitles.length + uniqueShots.length + gameZoneLabels.length
+            + uniquePlayers.length + uniquePlayers.length;
         while (filterStatus.length < neededFilterLength) {
             setFilterStatus(filterStatus.push(tempUseState));
         }
+    }
+
+    let matchDataBreakdown = [];
+    // Has all the data broken down to a individual game level
+    matches.forEach((match) => {
+        let tempMatchBreakdown = new gameSession(match);
+        matchDataBreakdown.push(tempMatchBreakdown);
+    })
+
+    // Get all annotations function
+
+    function getAllAnnotations(filteredMatches) {
+        let allAnnotations = [];
+        filteredMatches.forEach((match) => {
+            let matchAnnotations = [];
+            match.games.forEach((game) => {
+                let gameAnnotations = [];
+                game.gameAnnotations.forEach((annotation) => {
+                    if (annotation.components.type === 'shot') {
+                        gameAnnotations.push(annotation);
+                    }
+                })
+                matchAnnotations = matchAnnotations.concat(gameAnnotations);
+            })
+            allAnnotations = allAnnotations.concat(matchAnnotations);
+        })
+
+        return allAnnotations;
     }
 
     // SHOT COUNT GRAPH DATA
@@ -132,8 +120,10 @@ export default function Statistics(props) {
     }
 
     for (var i = 0; i < uniqueShots.length; i++) {
-        for (let z = 0; z < filterGames.length; z++) {
-            shotCount[i] = shotCount[i] + getShotCount(filterGames[z].gameAnnotations, uniqueShots[i]);
+        for (let x = 0; x < filterMatches.length; x++) {
+            for (let z = 0; z < filterMatches[x].games.length; z++) {
+                shotCount[i] = shotCount[i] + getShotCount(filterMatches[x].games[z].gameAnnotations, uniqueShots[i]);
+            }
         }
     }
 
@@ -151,19 +141,23 @@ export default function Statistics(props) {
         title: 'Shot Count',
     };
 
+
     // HAND COUNT GRAPH DATA
 
     function getHandCount(annotations, handLabel) {
         let handCount = annotations.filter((item) =>
             item.components.id.includes(handLabel)).length;
+
         return handCount;
     }
 
     const handLabels = ['BH', 'FH'];
     let handCount = [0, 0];
     for (let i = 0; i < handCount.length; i++) {
-        for (let z = 0; z < filterGames.length; z++) {
-            handCount[i] = handCount[i] + getHandCount(filterGames[z].gameAnnotations, handLabels[i]);
+        for (let x = 0; x < filterMatches.length; x++) {
+            for (let z = 0; z < filterMatches[x].games.length; z++) {
+                handCount[i] = handCount[i] + getHandCount(filterMatches[x].games[z].gameAnnotations, handLabels[i]);
+            }
         }
     }
 
@@ -184,21 +178,35 @@ export default function Statistics(props) {
     // PLAYERS SHOT COUNT GRAPH DATA
 
     function getPlayerCount(annotations, playerNum) {
-        let handCount = annotations.filter((item) => (item.playerNumber === playerNum
-        ) && item.components.type === 'shot').length;
-        return handCount;
+        let playerCount = annotations.filter((item) => (item.playerNumber === playerNum
+            ) && item.components.type === 'shot').length;
+        return playerCount;
     }
 
-    let playerShotCount = Array(playerNums.length).fill(0);
+    let playerShotCount = Array(uniquePlayers.length).fill(0);
     for (let i = 0; i < playerShotCount.length; i++) {
-        for (let x = 0; x < filterGames.length; x++) {
-            playerShotCount[i] = playerShotCount[i] +
-                getPlayerCount(filterGames[x].gameAnnotations, playerNums[i]);
+
+        let filteredMatches = filterMatches.filter((match) => (match.player1 === uniquePlayers[i])
+            || (match.player2 === uniquePlayers[i]));
+                
+        for (let x = 0; x < filteredMatches.length; x++) {
+
+            let filteredPlayers = 0;
+            if (filteredMatches[x].player1 === uniquePlayers[i]) {
+                filteredPlayers = 1;
+            } else {
+                filteredPlayers = 2;
+            }
+
+            for (let z = 0; z < filteredMatches[x].games.length; z++) {
+                playerShotCount[i] = playerShotCount[i] +
+                    getPlayerCount(filteredMatches[x].games[z].gameAnnotations, filteredPlayers);
+            }
         }
     }
 
     const playerShotsCountChart = {
-        labels: playerNums,
+        labels: uniquePlayers,
         datasets: [
             {
                 label: 'No. of Shots',
@@ -214,27 +222,37 @@ export default function Statistics(props) {
     //POINT WIN AND ERROR BY GRAPH DATA
 
     //need to get the shotCount for the annotations prior to a point won
-    filterGames.forEach((game) => {
-        game.gameAnnotations.sort((a, b) => a.timestamp - b.timestamp);
-    });
+    filterMatches.forEach((match) => {
+        match.games.forEach((game) => {
+            game.gameAnnotations.sort((a, b) => a.timestamp - b.timestamp);
+        })
+    
+    })
 
     let shotWin = [];
     let shotError = [];
 
-    filterGames.forEach((game) => {
-        let gameShotWin = [];
-        let gameShotError = [];
+    filterMatches.forEach((match) => {
+        let matchShotWin = [];
+        let matchShotError = [];
 
-        game.shotWin.forEach((annotation) => {
-            gameShotWin.push(annotation);
+        match.games.forEach((game) => {
+            let gameShotWin = [];
+            let gameShotError = [];
+
+            game.shotWin.forEach((annotation) => {
+                gameShotWin.push(annotation);
+            })
+
+            game.shotError.forEach((annotation) => {
+                gameShotError.push(annotation);
+            })
+            matchShotWin = matchShotWin.concat(gameShotWin);
+            matchShotError = matchShotError.concat(gameShotError);
+
         })
-
-        game.shotError.forEach((annotation) => {
-            gameShotError.push(annotation);
-        })
-        shotWin = shotWin.concat(gameShotWin);
-        shotError = shotError.concat(gameShotError);
-
+        shotWin = shotWin.concat(matchShotWin);
+        shotError = shotError.concat(matchShotError);
     })
 
     let shotWinCount = [];
@@ -273,16 +291,31 @@ export default function Statistics(props) {
         title: 'Error By Shot Type',
     };
 
-    // SHOT TYPE PER GAME GRAPH DATA
+    // SHOT TYPE PER MATCH GRAPH DATA
 
+    let allMatchAnnotations = [];
     let labelData = [];
 
+    filterMatches.forEach((match) => {
+        let matchAnnotations = [];
+        labelData.push(match.title);
+        match.games.forEach((game) => {
+            let gameAnnotations = [];
+            game.gameAnnotations.forEach((annotation) => {
+                if (annotation.components.type === 'shot') {
+                    gameAnnotations.push(annotation);
+                }
+            })
+            matchAnnotations = matchAnnotations.concat(gameAnnotations);
+        })
+        allMatchAnnotations.push(matchAnnotations);
+    })
+    
     let temp = [];
     // Create array full of the number of occurences in each shot
-    for (let i = 0; i < filterGames.length; i++) {
-        labelData.push("Game " + (i + 1));
+    for (let i = 0; i < allMatchAnnotations.length; i++) {
         for (let k = 0; k < uniqueShots.length; k++) {
-            temp.push(getShotCount(filterGames[i].gameAnnotations, uniqueShots[k]));
+            temp.push(getShotCount(allMatchAnnotations[i], uniqueShots[k]));
         }
     }
 
@@ -291,7 +324,7 @@ export default function Statistics(props) {
     // Rearrange array so it can be passed into chartjs, puts all the shot occurrences for each shot across all games
     for (let k = 0; k < uniqueShots.length; k++) {
         let temp2 = [];
-        for (let i = 0; i < filterGames.length + 1; i++) {
+        for (let i = 0; i < filterMatches.length + 1; i++) {
             temp2.push(temp[k + i * uniqueShots.length]);
         }
         gameData.push(temp2);
@@ -309,24 +342,32 @@ export default function Statistics(props) {
 
     // Find the unique opponent positions
     let uniqueOppoLoc = [];
-    filterGames.forEach((game) => {
-        game.gameAnnotations.forEach((annotation) => {
-            if (!uniqueOppoLoc.includes(annotation.opponentPos)) {
-                uniqueOppoLoc.push(annotation.opponentPos);
-            }
+
+    filterMatches.forEach((match) => {
+        match.games.forEach((game) => {
+            game.gameAnnotations.forEach((annotation) => {
+                if (!uniqueOppoLoc.includes(annotation.opponentPos)) {
+                    uniqueOppoLoc.push(annotation.opponentPos);
+                }
+            })
         })
     })
 
     // Get all annotations into one array
-    let matchAnnotations = [];
-    filterGames.forEach((game) => {
-        let gameAnnotations = [];
-        game.gameAnnotations.forEach((annotation) => {
-            if (annotation.components.type === 'shot') {
-                gameAnnotations.push(annotation);
-            }
+
+    let oneAllMatchAnnotations = [];
+    filterMatches.forEach((match) => {
+        let matchAnnotations = [];
+        match.games.forEach((game) => {
+            let gameAnnotations = [];
+            game.gameAnnotations.forEach((annotation) => {
+                if (annotation.components.type === 'shot') {
+                    gameAnnotations.push(annotation);
+                }
+            })
+            matchAnnotations = matchAnnotations.concat(gameAnnotations);
         })
-        matchAnnotations = matchAnnotations.concat(gameAnnotations);
+        oneAllMatchAnnotations = oneAllMatchAnnotations.concat(matchAnnotations);
     })
 
     // Find all shots made with each opponent position and create labels
@@ -334,7 +375,7 @@ export default function Statistics(props) {
     let opponentPositionLabels = [];
     for (let i = 0; i < uniqueOppoLoc.length; i++) {
 
-        opponentPositionData[i] = matchAnnotations
+        opponentPositionData[i] = oneAllMatchAnnotations
             .filter((annotation) => (annotation.opponentPos === uniqueOppoLoc[i])
                 & annotation.components.type === 'shot');
 
@@ -368,7 +409,7 @@ export default function Statistics(props) {
             temp2.push(temp[k + (i * uniqueShots.length)]);
         }
         positionData.push(temp2);
-
+        
         // Create datasets for each shot type, label them as the shot id
         let data = {
             label: uniqueShots[k],
@@ -384,8 +425,8 @@ export default function Statistics(props) {
 
         var sortedHeatMapData = [gameZoneLabels.length];
         for (let i = 0; i < gameZoneLabels.length; i++) {
-            sortedHeatMapData[i] = allAnnotations.filter(((annotation) => annotation.playerPos === (i + 1))).length;
-                //+ allAnnotations.filter(((annotation) => annotation.opponentPos === (i + 1))).length;
+            sortedHeatMapData[i] = allAnnotations.filter(((annotation) => annotation.playerPos === (i + 1))).length
+                + allAnnotations.filter(((annotation) => annotation.opponentPos === (i + 1))).length;
         }
 
         var heatMapOpacity = [];
@@ -529,19 +570,6 @@ export default function Statistics(props) {
         }
     }
 
-    //This is the points won numeral
-    let pointsWon = [0,0];
-    //This is the games won numeral
-    let gamesWon = [];
-    for (let i = 0; i < playerNums.length; i++) {
-        filterGames.forEach((game) => {
-            pointsWon[i] = pointsWon[i] + ((game.gameAnnotations.filter((annotation) =>
-                (annotation.components.type === 'score') && (annotation.playerNumber === i + 1))
-            ).length)
-        })
-        gamesWon.push(filterGames.filter((game) => game.winner === i+1).length);
-    }
-    
     //Style for the square that contains the Points Won display
     var squareStyle = {
         margin: 'auto',
@@ -559,19 +587,19 @@ export default function Statistics(props) {
             index === position ? !item : item);
         setFilterStatus(updatedFilterStatus);
 
-        const playerFilterStatus = updatedFilterStatus.slice(0, playerNums.length);
-        const gameFilterStatus = updatedFilterStatus.slice(playerNums.length, playerNums.length + gameLabels.length);
-        const shotFilterStatus = updatedFilterStatus.slice(playerNums.length + gameLabels.length,
-            playerNums.length + gameLabels.length + uniqueShots.length);
-        const zoneFilterStatus = updatedFilterStatus.slice(playerNums.length + gameLabels.length + uniqueShots.length,
-            playerNums.length + gameLabels.length + uniqueShots.length + gameZoneLabels.length);
-        const gameWonByFilterStatus = updatedFilterStatus.slice(playerNums.length + gameLabels.length + uniqueShots.length + gameZoneLabels.length,
-            playerNums.length + gameLabels.length + uniqueShots.length + gameZoneLabels.length + playerNums.length);
+        const playerFilterStatus = updatedFilterStatus.slice(0, uniquePlayers.length);
+        const matchFilterStatus = updatedFilterStatus.slice(uniquePlayers.length, uniquePlayers.length + gameTitles.length);
+        const shotFilterStatus = updatedFilterStatus.slice(uniquePlayers.length + gameTitles.length,
+            uniquePlayers.length + gameTitles.length + uniqueShots.length);
+        const zoneFilterStatus = updatedFilterStatus.slice(uniquePlayers.length + gameTitles.length + uniqueShots.length,
+            uniquePlayers.length + gameTitles.length + uniqueShots.length + gameZoneLabels.length);
+        const gameWonByFilterStatus = updatedFilterStatus.slice(uniquePlayers.length + gameTitles.length + uniqueShots.length + gameZoneLabels.length,
+            uniquePlayers.length + gameTitles.length + uniqueShots.length + gameZoneLabels.length + uniquePlayers.length);
 
         const playerIndices = playerFilterStatus.reduce(
             (out, bool, index) => (bool ? out.concat(index) : out),
             []);
-        const gameIndices = gameFilterStatus.reduce(
+        const matchIndices = matchFilterStatus.reduce(
             (out, bool, index) => (bool ? out.concat(index) : out),
             []);
         const shotIndices = shotFilterStatus.reduce(
@@ -586,11 +614,11 @@ export default function Statistics(props) {
 
         var playerData = [];
         for (var i = 0; i < playerIndices.length; i++) {
-            playerData.push(playerNums[playerIndices[i]]);
+            playerData.push(uniquePlayers[playerIndices[i]]);
         }
-        var gameData = [];
-        for (i = 0; i < gameIndices.length; i++) {
-            gameData.push(gameLabels[gameIndices[i]]);
+        var matchData = [];
+        for (i = 0; i < matchIndices.length; i++) {
+            matchData.push(gameTitles[matchIndices[i]]);
         }
         var shotData = [];
         for (i = 0; i < shotIndices.length; i++) {
@@ -602,97 +630,131 @@ export default function Statistics(props) {
         }
         let gameWonByData = [];
         for (i = 0; i < gameWonByIndices.length; i++) {
-            gameWonByData.push(playerNums[gameWonByIndices[i]]);
+            gameWonByData.push(uniquePlayers[gameWonByIndices[i]]);
         }
 
 
-        let playerChecker = (filterStatus) => filterStatus.slice(0, playerNums.length).every((v) => v === false);
+        let playerChecker = (filterStatus) => filterStatus.slice(0, uniquePlayers.length).every((v) => v === false);
 
-        let gameChecker = (filterStatus) => filterStatus.slice(playerNums.length, playerNums.length + gameLabels.length).every((v) => v === false);
+        let gameChecker = (filterStatus) => filterStatus.slice(uniquePlayers.length, uniquePlayers.length + gameTitles.length).every((v) => v === false);
 
-        let shotChecker = (filterStatus) => filterStatus.slice(playerNums.length + gameLabels.length,
-            playerNums.length + gameLabels.length + uniqueShots.length).every((v) => v === false);
+        let shotChecker = (filterStatus) => filterStatus.slice(uniquePlayers.length + gameTitles.length,
+            uniquePlayers.length + gameTitles.length + uniqueShots.length).every((v) => v === false);
 
-        let zoneChecker = (filterStatus) => filterStatus.slice(playerNums.length + gameLabels.length + uniqueShots.length,
-            playerNums.length + gameLabels.length + uniqueShots.length + gameZoneLabels.length).every((v) => v === false);
+        let zoneChecker = (filterStatus) => filterStatus.slice(uniquePlayers.length + gameTitles.length + uniqueShots.length,
+            uniquePlayers.length + gameTitles.length + uniqueShots.length + gameZoneLabels.length).every((v) => v === false);
 
-        let wonByChecker = (filterStatus) => filterStatus.slice(playerNums.length + gameLabels.length + uniqueShots.length + gameZoneLabels.length,
-            playerNums.length + gameLabels.length + uniqueShots.length + gameZoneLabels.length + playerNums.length).every((v) => v === false);
+        let wonByChecker = (filterStatus) => filterStatus.slice(uniquePlayers.length + gameTitles.length + uniqueShots.length + gameZoneLabels.length,
+            uniquePlayers.length + gameTitles.length + uniqueShots.length + gameZoneLabels.length + uniquePlayers.length).every((v) => v === false);
 
         let allChecker = (filterStatus) => filterStatus.every((v) => v === false);
 
-        let filteredGames = [];
+        let filteredMatches = [];
         //check to see if no filters are active
         if (allChecker(updatedFilterStatus)) {
-            setFilterGames(gamesData);
+            setFilterMatches(matchDataBreakdown);
 
             // THIS IS WHAT DRAWS THE HEAT MAP
             // first put all the annotations into one array
-            let matchAnnotations = getAllAnnotations(gamesData);
+            let allAnnotations = getAllAnnotations(matchDataBreakdown);
             // then draw the actual heat map
-            drawHeatMap(matchAnnotations);
+            drawHeatMap(allAnnotations);
 
         } else {
-            filteredGames = gamesData;
-            //check if the game filter is active
+            filteredMatches = matchDataBreakdown;
+            //check if the game filter is active 
             if (!gameChecker(updatedFilterStatus)) {
-                filteredGames = filteredGames.filter((match) => (gameData.includes(filteredGames.indexOf(match)+1)));
+                filteredMatches = filteredMatches.filter((match) => (matchData.includes(match.title)));
             }
 
             if (!playerChecker(updatedFilterStatus)) {
+                //filter the matches by the selected players
+                filteredMatches = filteredMatches.filter((match) => (playerData.includes(match.player1)
+                    || playerData.includes(match.player2)));
+
                 //filter the matches annotations by the selected players
-                for (i = 0; i < filteredGames.length; i++) {
-                    filteredGames[i].gameAnnotations = filteredGames[i].gameAnnotations.filter((annotation) => (playerData.includes(annotation.playerNumber)
-                        || annotation.components.type === "game" || annotation.components.type === "rally"));
+                for (i = 0; i < filteredMatches.length; i++) {
+                    let filteredPlayers = [];
+                    if (playerData.includes(filteredMatches[i].player1)) {
+                        filteredPlayers.push(1);
+                    }
+                    if (playerData.includes(filteredMatches[i].player2)) {
+                        filteredPlayers.push(2);
+                    }
+                    for (let x = 0; x < filteredMatches[i].games.length; x++) {
+                        filteredMatches[i].games[x].gameAnnotations = filteredMatches[i].games[x].gameAnnotations.filter((annotation) => (filteredPlayers.includes(annotation.playerNumber)
+                            || annotation.components.type === "game" || annotation.components.type === "rally"));
 
-                    filteredGames[i].shotWin = filteredGames[i].shotWin.filter((annotation) => (playerData.includes(annotation.playerNumber)
-                        || annotation.components.type === "game" || annotation.components.type === "rally"));
+                        filteredMatches[i].games[x].shotWin = filteredMatches[i].games[x].shotWin.filter((annotation) => (filteredPlayers.includes(annotation.playerNumber)
+                            || annotation.components.type === "game" || annotation.components.type === "rally"));
 
-                    filteredGames[i].shotError = filteredGames[i].shotError.filter((annotation) => (playerData.includes(annotation.playerNumber)
-                        || annotation.components.type === "game" || annotation.components.type === "rally"));
+                        filteredMatches[i].games[x].shotError = filteredMatches[i].games[x].shotError.filter((annotation) => (filteredPlayers.includes(annotation.playerNumber)
+                            || annotation.components.type === "game" || annotation.components.type === "rally"));
+                    }
+
                 }
             }
 
             //check if the shot filter is active
             if (!shotChecker(updatedFilterStatus)) {
-                for (let x = 0; x < filteredGames.length; x++) {
-                    filteredGames[x].gameAnnotations = filteredGames[x].gameAnnotations.filter((annotation) =>
-                    (shotData.includes(annotation.components.id) || annotation.components.type === "game"
-                        || annotation.components.type === "rally" || annotation.components.type === "score"));
+                for (i = 0; i < filteredMatches.length; i++) {
+                    for (let x = 0; x < filteredMatches[i].games.length; x++) {
+                        filteredMatches[i].games[x].gameAnnotations = filteredMatches[i].games[x].gameAnnotations.filter((annotation) =>
+                        (shotData.includes(annotation.components.id) || annotation.components.type === "game"
+                            || annotation.components.type === "rally" || annotation.components.type === "score"));
 
-                    filteredGames[x].shotWin = filteredGames[x].shotWin.filter((annotation) =>
-                        (shotData.includes(annotation.components.id)));
+                        filteredMatches[i].games[x].shotWin = filteredMatches[i].games[x].shotWin.filter((annotation) =>
+                            (shotData.includes(annotation.components.id)));
 
-                    filteredGames[x].shotError = filteredGames[x].shotError.filter((annotation) =>
-                        (shotData.includes(annotation.components.id)));
+                        filteredMatches[i].games[x].shotError = filteredMatches[i].games[x].shotError.filter((annotation) =>
+                            (shotData.includes(annotation.components.id)));
+
+
+
+                    }
                 }
             }
-
             //check if the won by filter is active
             if (!wonByChecker(updatedFilterStatus)) {
+                //filter the matches by the selected players
+                filteredMatches = filteredMatches.filter((match) => (gameWonByData.includes(match.player1)
+                    || gameWonByData.includes(match.player2)));
+
                 //filter the matches annotations by the selected players
-                filteredGames = filteredGames.filter((game) => (gameWonByData.includes(game.winner)));
+                for (i = 0; i < filteredMatches.length; i++) {
+
+                    let filteredPlayers = [];
+                    if (gameWonByData.includes(filteredMatches[i].player1)) {
+                        filteredPlayers.push(1);
+                    }
+                    if (gameWonByData.includes(filteredMatches[i].player2)) {
+                        filteredPlayers.push(2);
+                    }
+                    filteredMatches[i].games = filteredMatches[i].games.filter((game) =>
+                        (filteredPlayers.includes(game.winner)));
+                }
             }
             //check if the position filter is active
             if (!zoneChecker(updatedFilterStatus)) {
-                for (let x = 0; x < filteredGames.length; x++) {
-                    filteredGames[x].gameAnnotations = filteredGames[x].gameAnnotations.filter((annotation) =>
+                for (i = 0; i < filteredMatches.length; i++) {
+                    for (let x = 0; x < filteredMatches[i].games.length; x++) {
+                        filteredMatches[i].games[x].gameAnnotations = filteredMatches[i].games[x].gameAnnotations.filter((annotation) =>
                         (zoneData.includes(annotation.playerPos) || annotation.components.type === "game"
                             || annotation.components.type === "rally"));
 
-                    filteredGames[x].shotWin = filteredGames[x].shotWin.filter((annotation) =>
-                        (zoneData.includes(annotation.playerPos)));
+                        filteredMatches[i].games[x].shotWin = filteredMatches[i].games[x].shotWin.filter((annotation) =>
+                            (zoneData.includes(annotation.playerPos)));
 
-                    filteredGames[x].shotError = filteredGames[x].shotError.filter((annotation) =>
-                        (zoneData.includes(annotation.playerPos)));
+                        filteredMatches[i].games[x].shotError = filteredMatches[i].games[x].shotError.filter((annotation) =>
+                            (zoneData.includes(annotation.playerPos)));
                     }
+                }
             }
-            setFilterGames(filteredGames);
+            setFilterMatches(filteredMatches);
 
             // THIS IS WHAT DRAWS THE HEAT MAP
             // first put all the annotations into one array
-            let allAnnotations = getAllAnnotations(filteredGames);
-            console.log(allAnnotations);
+            let allAnnotations = getAllAnnotations(filteredMatches);
             // then draw the actual heat map
             drawHeatMap(allAnnotations);
         }
@@ -705,12 +767,12 @@ export default function Statistics(props) {
                 <span className="align-middle">Match Statistics</span>
             </h2>
             <div className="grid grid-cols-16">
-                <div className="col-span-2">
+                <div className="col-span-3">
                     <h3 className="font-bold text-lg mb-1 text-left">
                         Filter by Player
                     </h3>
 
-                    {playerNums.map((player, index) => {
+                    {uniquePlayers.map((player, index) => {
                         return (
                             <>
                                 <div key={player}>
@@ -721,37 +783,37 @@ export default function Statistics(props) {
                                             checked={filterStatus[index]}
                                             onChange={() => filterChange(index, player)}
                                         />
-                                        <span className="ml-2">Player {player}</span>
+                                        <span className="ml-2">{player}</span>
                                     </label>
                                 </div>
                             </>
                         );
                     })}
                 </div>
-                <div className="col-span-2">
+                <div className="col-span-3">
                     <h3 className="font-bold text-lg mb-1 text-left">
-                        Filter by Game 
+                        Filter by Game Session
                     </h3>
 
-                    {gameLabels.map((game, index) => {
+                    {gameTitles.map((title, index) => {
                         return (
                             <>
-                                <div key={game}>
+                                <div key={title}>
                                     <label className="block">
                                         <input
                                             type="checkbox"
                                             className="form-checkbox"
-                                            checked={filterStatus[index + playerNums.length]}
-                                            onChange={() => filterChange(index + playerNums.length, game)}
+                                            checked={filterStatus[index + uniquePlayers.length]}
+                                            onChange={() => filterChange(index + uniquePlayers.length, title)}
                                         />
-                                        <span className="ml-2">Game {game}</span>
+                                        <span className="ml-2">{title}</span>
                                     </label>
                                 </div>
                             </>
                         );
                     })}
                 </div>
-                <div className="col-span-2">
+                <div className="col-span-3">
                     <h3 className="font-bold text-lg mb-1 text-left">
                         Filter by Shot Type
                     </h3>
@@ -764,8 +826,8 @@ export default function Statistics(props) {
                                         <input
                                             type="checkbox"
                                             className="form-checkbox"
-                                            checked={filterStatus[index + playerNums.length + gameLabels.length]}
-                                            onChange={() => filterChange(index + playerNums.length + gameLabels.length, shot)}
+                                            checked={filterStatus[index + uniquePlayers.length + gameTitles.length]}
+                                            onChange={() => filterChange(index + uniquePlayers.length + gameTitles.length, shot)}
                                         />
                                         <span className="ml-2">{shot}</span>
                                     </label>
@@ -774,7 +836,7 @@ export default function Statistics(props) {
                         );
                     })}
                 </div>
-                <div className="col-span-2">
+                <div className="col-span-3">
                     <h3 className="font-bold text-lg mb-1 text-left">
                         Filter by Player Position
                     </h3>
@@ -787,8 +849,8 @@ export default function Statistics(props) {
                                         <input
                                             type="checkbox"
                                             className="form-checkbox"
-                                            checked={filterStatus[index + playerNums.length + gameLabels.length + uniqueShots.length]}
-                                            onChange={() => filterChange(index + playerNums.length + gameLabels.length + uniqueShots.length, zone)}
+                                            checked={filterStatus[index + uniquePlayers.length + gameTitles.length + uniqueShots.length]}
+                                            onChange={() => filterChange(index + uniquePlayers.length + gameTitles.length + uniqueShots.length, zone)}
                                         />
                                         <span className="ml-2">{zone}</span>
                                     </label>
@@ -797,12 +859,12 @@ export default function Statistics(props) {
                         );
                     })}
                 </div>
-                <div className="col-span-2">
+                <div className="col-span-3">
                     <h3 className="font-bold text-lg mb-1 text-left">
                         Filter by Game Won By
                     </h3>
 
-                    {playerNums.map((player, index) => {
+                    {uniquePlayers.map((player, index) => {
                         return (
                             <>
                                 <div key={player}>
@@ -810,48 +872,19 @@ export default function Statistics(props) {
                                         <input
                                             type="checkbox"
                                             className="form-checkbox"
-                                            checked={filterStatus[index + playerNums.length + gameLabels.length + uniqueShots.length
+                                            checked={filterStatus[index + uniquePlayers.length + gameTitles.length + uniqueShots.length
                                                 + gameZoneLabels.length]}
-                                            onChange={() => filterChange(index + playerNums.length + gameLabels.length + uniqueShots.length
+                                            onChange={() => filterChange(index + uniquePlayers.length + gameTitles.length + uniqueShots.length
                                                 + gameZoneLabels.length, player)}
                                         />
-                                        <span className="ml-2">Player {player}</span>
+                                        <span className="ml-2">{player}</span>
                                     </label>
                                 </div>
                             </>
                         );
                     })}
                 </div>
-
-                <div className="col-span-2" id="PointsWon" >
-                    <h3 className="font-bold text-lg mb-1 text-left">
-                        Points Won:
-                    </h3>
-                    <div className="grid grid-cols-2">
-                        <div className="col-span-1">
-                            Player 1: {pointsWon[0]}
-                        </div>
-                    </div>
-
-                    <div className="col-span-1">
-                        Player 2: {pointsWon[1]}
-                    </div>
-                </div>
-
-                <div className="col-span-2" >
-                    <h3 className="font-bold text-lg mb-1 text-left">
-                        Games Won:
-                    </h3>
-                    <div className="col-span-1">
-                        Player 1: {gamesWon[0]}
-                    </div>
-
-                    <div className="col-span-1">
-                        Player 2: {gamesWon[1]}
-                    </div>
-                </div>
-
-                <div className="col-span-7">
+                <div className="col-span-8">
                     <Bar
                         data={shotCountChart}
                         options={{
@@ -878,7 +911,7 @@ export default function Statistics(props) {
                     />
                 </div>
 
-                <div className="col-span-7">
+                <div className="col-span-8">
                     <Pie
                         data={handCountChart}
                         options={{
@@ -895,7 +928,7 @@ export default function Statistics(props) {
                     />
                 </div>
 
-                <div className="col-span-7">
+                <div className="col-span-8">
                     <Pie
                         data={playerShotsCountChart}
                         options={{
@@ -912,7 +945,7 @@ export default function Statistics(props) {
                     />
                 </div>
 
-                <div className="col-span-7">
+                <div className="col-span-8">
                     <Pie
                         data={shotWinCountChart}
                         options={{
@@ -929,7 +962,7 @@ export default function Statistics(props) {
                     />
                 </div>
 
-                <div className="col-span-7">
+                <div className="col-span-8">
                     <Pie
                         data={shotErrorCountChart}
                         options={{
@@ -945,14 +978,15 @@ export default function Statistics(props) {
                         }}
                     />
                 </div>
-                <div className="col-span-7" style={squareStyle}>
+
+                <div className="col-span-8" style={squareStyle}>
                     <h3 className="font-bold text-lg mb-1 text-left">
                         Heat Map: Shots by Location
                     </h3>
                     <canvas id="canvas" width="300" height="400"></canvas>
                 </div>
 
-                <div className="col-span-7 mt-10">
+                <div className="col-span-12 mt-10">
                     <Bar
                         data={{
                             labels: labelData,
@@ -993,7 +1027,7 @@ export default function Statistics(props) {
                     />
                 </div>
 
-                <div className="col-span-7 mt-10">
+                <div className="col-span-12 mt-10">
                     <Bar
                         data={{
                             labels: opponentPositionLabels,

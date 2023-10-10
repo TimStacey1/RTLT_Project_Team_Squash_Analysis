@@ -1,0 +1,71 @@
+
+.body{
+    margin-left: 10px;
+}
+
+.selectSection{
+    position: relative;
+    top:8%;
+}
+
+.input{
+    position: relative;
+    top:0%;
+}
+
+.btn{
+  width: 150px;
+  height: 45px;
+  background: #006f3a;  
+  border: 3px solid #006f3a;    
+  border-radius: 20px;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+
+}
+
+.submitBtn{
+    width: 150px;
+    height: 50px;
+    background: #006f3a;  
+    border: 3px solid #006f3a;    
+    border-radius: 20px;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.confirm{
+    position: relative;
+    bottom: 33px;
+    left: 160px;
+    background-color: red;
+}
+
+.submit{
+    position: relative;
+    top: 470px;
+}
+
+.content{
+    grid-area: content;
+}
+
+.sidebar{
+    grid-area: sidebar;
+}
+
+.wrapper {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: auto;
+    grid-template-areas: "content sidebar";
+    grid-gap: 10px;
+}
+.box{
+    border-radius: 5px;
+    padding: 20px;
+}
+

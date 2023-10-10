@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-
+// Pop up on video screen at timestamp of annotation
 export default function AnnotationBanner({
   match,
   annotations,
@@ -31,13 +31,13 @@ export default function AnnotationBanner({
           currentVideoTime <= annotation.timestamp + bannerRange
         ) {
           updateCurrentAnnotation(annotation);
-          if (annotation.components.type === 'shot') {
+            if (annotation.components.type === 'shot' || annotation.components.type === 'score') {
             setText(
               match.players['player' + annotation.playerNumber.toString()] +
                 ' | ' +
                 annotation.components.id
             );
-          } else if (annotation.components.type === 'game') {
+          } else if (annotation.components.type === 'game' || annotation.components.type === 'rally') {
             setText(annotation.components.id);
           }
           break;

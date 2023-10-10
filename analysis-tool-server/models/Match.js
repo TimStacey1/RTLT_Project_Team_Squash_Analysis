@@ -36,6 +36,12 @@ const matchSchema = new Schema({
     type: Number,
     required: true
   },
+  courtBounds:{
+    type: Object,
+  },
+  playerRGB: {
+    type: Object,
+  },
   annotations: [annotationSchema]
 });
 

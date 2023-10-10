@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUpload } from '@fortawesome/free-solid-svg-icons';
 
-const axios = require('axios').default;
+//const axios = require('axios').default;
 
 class NewMatch extends React.Component {
   constructor(props) {
@@ -18,6 +18,7 @@ class NewMatch extends React.Component {
       title: '',
       hours: '',
       minutes: '',
+      seconds: '',
       description: '',
       selectedFile: '',
 
@@ -35,7 +36,7 @@ class NewMatch extends React.Component {
 
   handleChange = (event, field) => {
     this.setState({ [field]: event.target.value });
-    if (field === 'hours' || field === 'minutes') {
+    if (field === 'hours' || field === 'minutes' || field === 'seconds') {
       this.setState({
         durationError: '',
       });
@@ -196,41 +197,29 @@ class NewMatch extends React.Component {
     const title = this.state.title;
     const duration = this.convertHMToSeconds(
       this.state.hours,
-      this.state.minutes
+      this.state.minutes,
+      this.state.seconds,
     );
     const description = this.state.description;
 
     let form_error = this.formValidation();
-    const formData = new FormData();
-    formData.append('video', this.state.selectedFile);
-
     if (!form_error) {
-      axios
-        .post(this.props.baseUrl + '/match/new', {
-          players,
-          title,
-          duration,
-          description,
-        })
-        .then((response) => {
-          axios.post(
-            this.props.baseUrl + '/video/' + response.data.match_id + '/upload',
-            formData
-          );
-        })
-        .then(
-          this.props.history.push({
-            pathname: '/home',
-            state: {
-              from: this.props.location.pathname,
-            },
-          })
-        );
+      this.props.history.push({
+        pathname: '/new/court',
+        state: {
+          from: this.props.location.pathname,
+          player: players,
+          title: title,
+          duration: duration,
+          description: description,
+          video: this.state.selectedFile,
+        },
+      })
     }
   };
 
-  convertHMToSeconds = (numHours, numMinutes) => {
-    return numHours * 60 * 60 + numMinutes * 60;
+  convertHMToSeconds = (numHours, numMinutes, numSeconds) => {
+    return numHours * 60 * 60 + numMinutes * 60 + numSeconds;
   };
 
   render() {
@@ -399,13 +388,13 @@ class NewMatch extends React.Component {
                   className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
                   for="grid-password"
                 >
-                  Match Duration
+                  Empty Court Time
                 </label>
                 <p className="text-xs text-red-700 mb-2">
                   {this.state.durationError}
                 </p>
                 <div className="flex">
-                  <input
+                <input
                     className="appearance-none block w-1/2 bg-gray-200 text-gray-700 border border-gray-200 py-3 px-4 mb-3 mr-1 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                     id="grid-password"
                     type="number"
@@ -418,7 +407,7 @@ class NewMatch extends React.Component {
                     required
                   />
                   <input
-                    className="appearance-none block w-1/2 bg-gray-200 text-gray-700 border border-gray-200 py-3 px-4 mb-3 ml-1 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                    className="appearance-none block w-1/2 bg-gray-200 text-gray-700 border border-gray-200 py-3 px-4 mb-3 mr-1 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                     id="grid-password"
                     type="number"
                     max="59"
@@ -429,8 +418,21 @@ class NewMatch extends React.Component {
                     placeholder="minutes"
                     required
                   />
+                  <input
+                    className="appearance-none block w-1/2 bg-gray-200 text-gray-700 border border-gray-200 py-3 px-4 mb-3 ml-1 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                    id="grid-password"
+                    type="number"
+                    max="59"
+                    min="0"
+                    value={this.state.seconds}
+                    name="seconds"
+                    onChange={(event) => this.handleChange(event, 'seconds')}
+                    placeholder="seconds"
+                    required
+                  />
                 </div>
               </div>
+
             </div>
             <div className="col-span-12 sm:col-span-6 pr-2 ml-2 sm:ml-4 pl-2">
               <h4 className="text-1xl sm:text-2xl font-bold leading-7 mb-3 text-gray-900">
@@ -461,7 +463,7 @@ class NewMatch extends React.Component {
                 className="shadow bg-green-700 hover:bg-green-600 focus:shadow-outline hover:cursor-pointer focus:outline-none text-white font-bold py-2 px-4"
               >
                 {' '}
-                Create Match{' '}
+                Next{' '}
               </button>
             </div>
           </form>

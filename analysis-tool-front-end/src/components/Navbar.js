@@ -44,14 +44,22 @@ export default function Navbar({ fixed }) {
                   <span className="lg:mr-5 lg:ml-5">Home</span>
                 </a>
               </li>
-              <li className="nav-item sm:pb-5 lg:pb-0">
+                          <li className="nav-item lg:border-r border-white">
                 <a
                   className="lg:px-3 py-2 flex items-center text-lg uppercase font-bold leading-snug text-white hover:text-yellow-300"
                   href="/new/match"
                 >
                   <span className="lg:mr-5 lg:ml-5">New Match</span>
                 </a>
-              </li>
+                </li>
+                <li className="nav-item sm:pb-5 lg:pb-0">
+                    <a
+                        className="lg:px-3 py-2 flex items-center text-lg uppercase font-bold leading-snug text-white hover:text-yellow-300"
+                                  href="/all/stats"
+                    >
+                        <span className="lg:mr-5 lg:ml-5">All Statistics</span>
+                    </a>
+                </li>
             </ul>
           </div>
         </div>
