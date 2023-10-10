@@ -18,6 +18,7 @@ class NewMatch extends React.Component {
       title: '',
       hours: '',
       minutes: '',
+      seconds: '',
       description: '',
       selectedFile: '',
 
@@ -35,7 +36,7 @@ class NewMatch extends React.Component {
 
   handleChange = (event, field) => {
     this.setState({ [field]: event.target.value });
-    if (field === 'hours' || field === 'minutes') {
+    if (field === 'hours' || field === 'minutes' || field === 'seconds') {
       this.setState({
         durationError: '',
       });
@@ -196,7 +197,8 @@ class NewMatch extends React.Component {
     const title = this.state.title;
     const duration = this.convertHMToSeconds(
       this.state.hours,
-      this.state.minutes
+      this.state.minutes,
+      this.state.seconds,
     );
     const description = this.state.description;
 
@@ -216,8 +218,8 @@ class NewMatch extends React.Component {
     }
   };
 
-  convertHMToSeconds = (numHours, numMinutes) => {
-    return numHours * 60 * 60 + numMinutes * 60;
+  convertHMToSeconds = (numHours, numMinutes, numSeconds) => {
+    return numHours * 60 * 60 + numMinutes * 60 + numSeconds;
   };
 
   render() {
@@ -386,13 +388,13 @@ class NewMatch extends React.Component {
                   className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
                   for="grid-password"
                 >
-                  Match Duration
+                  Empty Court Time
                 </label>
                 <p className="text-xs text-red-700 mb-2">
                   {this.state.durationError}
                 </p>
                 <div className="flex">
-                  <input
+                <input
                     className="appearance-none block w-1/2 bg-gray-200 text-gray-700 border border-gray-200 py-3 px-4 mb-3 mr-1 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                     id="grid-password"
                     type="number"
@@ -405,7 +407,7 @@ class NewMatch extends React.Component {
                     required
                   />
                   <input
-                    className="appearance-none block w-1/2 bg-gray-200 text-gray-700 border border-gray-200 py-3 px-4 mb-3 ml-1 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                    className="appearance-none block w-1/2 bg-gray-200 text-gray-700 border border-gray-200 py-3 px-4 mb-3 mr-1 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                     id="grid-password"
                     type="number"
                     max="59"
@@ -414,6 +416,18 @@ class NewMatch extends React.Component {
                     name="minutes"
                     onChange={(event) => this.handleChange(event, 'minutes')}
                     placeholder="minutes"
+                    required
+                  />
+                  <input
+                    className="appearance-none block w-1/2 bg-gray-200 text-gray-700 border border-gray-200 py-3 px-4 mb-3 ml-1 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                    id="grid-password"
+                    type="number"
+                    max="59"
+                    min="0"
+                    value={this.state.seconds}
+                    name="seconds"
+                    onChange={(event) => this.handleChange(event, 'seconds')}
+                    placeholder="seconds"
                     required
                   />
                 </div>

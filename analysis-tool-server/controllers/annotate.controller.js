@@ -8,27 +8,19 @@ const { Annotation } = require('../models/Annotation');
 const axios = require('axios').default;
 
 // create annotation
-// run the python before the setSelectedAnnotation and set two variables 
-// takes in the player colours and timestamp
-// the first being the shot position
-// the second be the second player
-// playerPos: shot taker's position
-// opponentPos: opponent's position
-// splitting the position is going to be scuffed
-// it should be fine
-// like idk um the output of the python has to be a print statement so i will need to split the string in javascript
-// there is probably a better option but idk it is all i can think of. 
 const create = async (req, res, next) => {
   const new_body = req.body;
   const [rst, error] = await util.handle(Match.findById(req.params.match_id));
-  const python_test = spawnSync('python',['./controllers/Frame_function.py',req.body.timestamp, req.params.match_id, rst.courtBounds, rst.playerRGB, req.body.playerNumber]);
+  const python_test = spawnSync('python',['./controllers/Frame_function.py',req.body.timestamp, req.params.match_id, rst.courtBounds, rst.playerRGB, req.body.playerNumber, rst.duration]);
   const positions = python_test.stdout.toString().split(" ");
   console.log(python_test.stdout.toString());
   new_body['playerPos'] = parseInt(positions[0]);
   new_body['opponentPos'] = parseInt(positions[1]);
   console.log(python_test.stderr.toString());
 
+
   const _new = new Annotation(new_body);
+
 
   const [result, err] = await util.handle(Match.updateOne(
     { _id: req.params.match_id },
@@ -74,7 +66,9 @@ const edit = async (req, res, next) => {
       $set: {
         'annotations.$.timestamp': req.body.timestamp,
         'annotations.$.playerNumber': req.body.playerNumber,
-        'annotations.$.components': req.body.components
+        'annotations.$.components': req.body.components,
+        'annotations.$.playerPos': req.body.playerPos,
+        'annotations.$.opponentPos': req.body.opponentPos,
       }
     }
   ).setOptions({ omitUndefined: true }));
