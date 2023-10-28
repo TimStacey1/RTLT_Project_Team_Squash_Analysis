@@ -13,7 +13,10 @@ export default function AnnotationControls({
   annotationsUpdated,
   getAnnotationTimestamp,
 }) {
-  const [annotationComponents, setAnnotationComponents] = useState([
+    const [annotationComponents, setAnnotationComponents] = useState([
+
+        { type: 'score', id: 'Point Won' },
+        { type: 'rally', id: 'New Rally' },
     { type: 'game', id: 'New Game' },
     { type: 'shot', id: 'BH Drive', hand: 'Backhand' },
     { type: 'shot', id: 'FH Drive', hand: 'ForeHand' },
@@ -43,17 +46,15 @@ export default function AnnotationControls({
 
   const updateSelectedAnnotation = (selectedAnnotationComponent) => {
     if (
-      selectedAnnotationComponent.type === 'shot' &&
+        (selectedAnnotationComponent.type === 'shot' || selectedAnnotationComponent.type === 'score') &&
       Object.entries(selectedPlayer).length > 0
     ) {
-      
       setSelectedAnnotation({
         timestamp: getAnnotationTimestamp(),
         playerNumber: selectedPlayer.playerNumber,
         components: selectedAnnotationComponent,
       });
-      
-    } else if (selectedAnnotationComponent.type === 'game') {
+    } else if (selectedAnnotationComponent.type === 'game' || selectedAnnotationComponent.type === 'rally') {
       setSelectedAnnotation({
         timestamp: getAnnotationTimestamp(),
         components: selectedAnnotationComponent,
@@ -136,6 +137,23 @@ export default function AnnotationControls({
                 />
               </li>
             ))}
+            {annotationComponents
+                .filter((component) => component.type === 'rally')
+                .map((rally) => (
+                    <li
+                        className="w-full h-full col-span-2 text-white font-semibold"
+                        onClick={() => updateSelectedAnnotation(rally)}
+                        key={rally.id}
+                    >
+                        <AnnotationButton
+                            key={rally.id}
+                            name={rally.id}
+                            type={rally.type}
+                            selected={selectedAnnotation.id === rally.id}
+                            disabled={false}
+                        />
+                    </li>
+                ))}
           {annotationComponents
             .filter((component) => component.type === 'player')
             .map((player) => (
@@ -170,6 +188,23 @@ export default function AnnotationControls({
                 />
               </li>
             ))}
+            {annotationComponents
+                .filter((component) => component.type === 'score')
+                      .map((score) => (
+                    <li
+                        className="w-full h-full col-span-2 text-black font-semibold"
+                        onClick={() => updateSelectedAnnotation(score)}
+                        key={score.id}
+                    >
+                    <AnnotationButton
+                        key={score.id}
+                        type={score.type}
+                        name={score.id}
+                        selected={selectedAnnotation.id === score.id}
+                        disabled={!(Object.entries(selectedPlayer).length > 0)}
+                        />
+                    </li>
+                ))}
         </ul>
       </div>
     </>

@@ -7,6 +7,8 @@ import Statistics from './components/Statistics';
 import ViewVideo from './components/ViewVideo';
 import CourtBounds from './components/NewMatchCourtBounds';
 import ColourPicker from './components/ColourPicker';
+import AllStatistics from './components/AllStatistics';
+
 
 //<Route path="/new/canvas">
 //<CanvasTest baseUrl={baseUrl} />
@@ -41,6 +43,9 @@ function App() {
         </Route>
         <Route path="/stats/:id">
           <Statistics baseUrl={baseUrl} />
+        </Route>
+        <Route path="/all/stats">
+            <AllStatistics baseUrl={baseUrl} />
         </Route>
       </Router>
     </div>

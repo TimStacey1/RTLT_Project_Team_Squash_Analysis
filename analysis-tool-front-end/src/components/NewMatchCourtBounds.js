@@ -1,6 +1,7 @@
 import React from 'react';
 import { useRef,useEffect} from 'react';
 import { withRouter } from 'react-router-dom';
+import styles from './courtBounds.module.css';
 //import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 //import { faUpload } from '@fortawesome/free-solid-svg-icons';
 
@@ -17,26 +18,44 @@ function Canvas(props) {
     };
 
     function frontLeftbtn(){
+      const confirm = document.getElementById("fL").getContext("2d");
+      confirm.fillStyle = 'red';
+      confirm.fillRect(0,0,25,25)
       coordRef.current = 1;
     };
 
     function frontRightbtn(){
+      const confirm = document.getElementById("fR").getContext("2d");
+      confirm.fillStyle = 'red';
+      confirm.fillRect(0,0,25,25)
       coordRef.current = 2;
     };
 
     function backLeftbtn(){
       coordRef.current = 3;
+      const confirm = document.getElementById("bL").getContext("2d");
+      confirm.fillStyle = 'red';
+      confirm.fillRect(0,0,25,25)
     };
 
     function backRightbtn(){
+      const confirm = document.getElementById("bR").getContext("2d");
+      confirm.fillStyle = 'red';
+      confirm.fillRect(0,0,25,25)
       coordRef.current = 4;
     };
 
     function midLeftbtn(){
+      const confirm = document.getElementById("mL").getContext("2d");
+      confirm.fillStyle = 'red';
+      confirm.fillRect(0,0,25,25)
       coordRef.current = 5;
     };
 
     function midRightbtn(){
+      const confirm = document.getElementById("mR").getContext("2d");
+      confirm.fillStyle = 'red';
+      confirm.fillRect(0,0,25,25)
       coordRef.current = 6;
     };
     
@@ -55,31 +74,49 @@ function Canvas(props) {
         if (coordRef.current === 1){
           props.court_bounds[0] = [Math.floor(event.clientX - rect.left), Math.floor(event.clientY - rect.top)];
           coordRef.current = 0;
+          const confirm = document.getElementById("fL").getContext("2d");
+          confirm.fillStyle = 'lime';
+          confirm.fillRect(0,0,25,25)
           console.log(1);
         }
         else if (coordRef.current === 2){
           props.court_bounds[1] = [Math.floor(event.clientX - rect.left), Math.floor(event.clientY - rect.top)];
           coordRef.current = 0;
+          const confirm = document.getElementById("fR").getContext("2d");
+          confirm.fillStyle = 'lime';
+          confirm.fillRect(0,0,25,25)
           console.log(2);
         }
         else if (coordRef.current === 3){
           props.court_bounds[2] = [Math.floor(event.clientX - rect.left), Math.floor(event.clientY - rect.top)];
           coordRef.current = 0;
+          const confirm = document.getElementById("bL").getContext("2d");
+          confirm.fillStyle = 'lime';
+          confirm.fillRect(0,0,25,25)
           console.log(3);
         }
         else if (coordRef.current === 4){
           props.court_bounds[3] = [Math.floor(event.clientX - rect.left), Math.floor(event.clientY - rect.top)];
           coordRef.current = 0;
+          const confirm = document.getElementById("bR").getContext("2d");
+          confirm.fillStyle = 'lime';
+          confirm.fillRect(0,0,25,25)
           console.log(4);
         }
         else if (coordRef.current === 5){
           props.court_bounds[4] = [Math.floor(event.clientX - rect.left), Math.floor(event.clientY - rect.top)];
           coordRef.current = 0;
+          const confirm = document.getElementById("mL").getContext("2d");
+          confirm.fillStyle = 'lime';
+          confirm.fillRect(0,0,25,25)
           console.log(5);
         }
         else if (coordRef.current === 6){
           props.court_bounds[5] = [Math.floor(event.clientX - rect.left), Math.floor(event.clientY - rect.top)];
           coordRef.current = 0;
+          const confirm = document.getElementById("mR").getContext("2d");
+          confirm.fillStyle = 'lime';
+          confirm.fillRect(0,0,25,25)
           console.log(6);
         }
         else {
@@ -94,31 +131,37 @@ function Canvas(props) {
     }, []);
   
     return (<>
-            <div>
-                <p>1. Select an image</p>
-                <input onChange={handleFileInput} type="file" accept="image/*" />
-            </div>
-            <div>
+            <div class={styles.content}>
                 <canvas ref={canvasRef} width={props.width} height={props.height}/>
             </div>
-            <div>
-              <button type="button" className="shadow bg-green-700 hover:bg-green-600 focus:shadow-outline hover:cursor-pointer focus:outline-none text-white font-bold py-2 px-4" 
-              onClick={frontLeftbtn}>frontLeft</button>
-              <p>     </p>
-              <button type="button" className="shadow bg-green-700 hover:bg-green-600 focus:shadow-outline hover:cursor-pointer focus:outline-none text-white font-bold py-2 px-4" 
-              onClick={frontRightbtn}>frontRight</button>
-              <p>     </p>
-              <button type="button" className="shadow bg-green-700 hover:bg-green-600 focus:shadow-outline hover:cursor-pointer focus:outline-none text-white font-bold py-2 px-4" 
-              onClick={backLeftbtn}>backLeft</button>
-              <p>     </p>
-              <button type="button" className="shadow bg-green-700 hover:bg-green-600 focus:shadow-outline hover:cursor-pointer focus:outline-none text-white font-bold py-2 px-4" 
-              onClick={backRightbtn}>backRight</button>
-              <p>     </p>
-              <button type="button" className="shadow bg-green-700 hover:bg-green-600 focus:shadow-outline hover:cursor-pointer focus:outline-none text-white font-bold py-2 px-4" 
-              onClick={midLeftbtn}>midLeft</button>
-              <p>     </p>
-              <button type="button" className="shadow bg-green-700 hover:bg-green-600 focus:shadow-outline hover:cursor-pointer focus:outline-none text-white font-bold py-2 px-4" 
-              onClick={midRightbtn}>midRight</button>
+            <div class={styles.sidebar}>
+              <div class={styles.input}>
+                <p>Select an image</p>
+                <input onChange={handleFileInput} type="file" accept="image/*" />
+              </div>
+            </div>
+
+            <div class={styles.sidebar}>
+              <div class={styles.selectSection}>
+              <button type="button" class={styles.btn} onClick={frontLeftbtn}>Front Left</button>
+              <canvas id="fL" width={25} height={25} class={styles.confirm}></canvas>
+
+              <button type="button" class={styles.btn} onClick={frontRightbtn}>Front Right</button>
+              <canvas id="fR" width={25} height={25} class={styles.confirm}></canvas>
+
+              <button type="button" class={styles.btn} onClick={backLeftbtn}>Back Left</button>
+              <canvas id="bL" width={25} height={25} class={styles.confirm}></canvas>
+
+              <button type="button" class={styles.btn} onClick={backRightbtn}>Back Right</button>
+              <canvas id="bR" width={25} height={25} class={styles.confirm}></canvas>
+
+              <button type="button" class={styles.btn} onClick={midLeftbtn}>Short Line Left</button>
+              <canvas id="mL" width={25} height={25} class={styles.confirm}></canvas>
+
+              <button type="button" class={styles.btn} onClick={midRightbtn}>Short Line Right</button>
+              <canvas id="mR" width={25} height={25} class={styles.confirm}></canvas>
+
+              </div>
             </div>
               </>);
 }
@@ -180,18 +223,20 @@ class CourtBounds extends React.Component {
     render() {
         return (
             <>
-            <div>
+            <body class={styles.body}>
+            <div class={styles.wrapper}>
                 <Canvas width={1280} height={720} court_bounds={this.state.courtBounds}></Canvas>
-            </div>
-            <div>
-                <br/>
-                <br/>
-                <form className="w-full grid grid-cols-12" onSubmit={this.handleSubmit}>
-                    <button type="submit" className="shadow bg-green-700 hover:bg-green-600 focus:shadow-outline hover:cursor-pointer focus:outline-none text-white font-bold py-2 px-4">
+                <form onSubmit={this.handleSubmit} class={styles.sidebar}>
+                  <div class={styles.sidebar}>
+                    <div class={styles.submit}>
+                    <button type="submit" class={styles.submitBtn}>
                         Next
                     </button>
+                    </div>
+                  </div>
                 </form>
-            </div>
+              </div>
+              </body>
             </>
         );
     }

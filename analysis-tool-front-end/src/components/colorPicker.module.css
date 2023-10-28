@@ -1,0 +1,140 @@
+/* h5 is used for many text based elements of the html.*/
+h5 {
+  font-size: 1rem;
+  color: #000000;
+}
+
+/* Defines the position of our request for an image (i.e. No file chosen)*/
+.formSectionImage {
+  position: absolute;
+}
+
+/* Defines the layout of text within the colour picker div windows.*/
+.formSectionText {
+  font-size: 1rem;
+  margin-bottom: 0.6rem;
+  color: #ededf1;
+  right: 10px
+}
+
+/* Defines the style of our colour picker buttons.*/
+.openPickerButton {
+  width: 100%;
+  height: 25px;
+  background: #46495e;  
+  border: 3px solid #46495e;    
+  border-radius: 20px;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+/* Defines the style of our copy colour buttons.*/
+.selectedColor {
+  width: 100%;
+  height: 20%;
+  background: #6c738b;
+  color: white;  
+  border: 3px solid #006F3A;    
+  border-radius: 20px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+/* Defines the style of out next button, located in the process div. */
+.NextButtonColour {
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  background:#006F3A;
+  color: white;
+  border: 3px solid #006F3A;
+  border-radius: 10px;
+  font-size: 3rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Right column is used to set up the space for the image to be displayed. */
+.rightColumn {
+  display: grid;
+  place-content: rightColumn;
+  position: absolute;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;  
+}
+.rightColumn > img {
+  width: 100%;
+  height: 75%;
+}
+
+/* Here we simply set the size of the font in our header.*/
+.bigHeadererFile {
+    font-size: 40px;
+}
+
+/* Here we define the layout and style of our image selection div.*/
+.ImageSelection {
+  position: absolute;
+  top: 0%;
+  left: 110%;
+  width: 30%;
+  height: 20%;
+  border: 3px solid #006F3A;    
+  border-radius: 20px;
+  text-align: center;
+}
+
+/* Here we define the layout and style of our player 1 colour selection div.*/
+.Player1Selection {
+    position: absolute;
+    top: 20%;
+    left: 110%;
+    width: 30%;
+    height: 20%;
+    border: 3px solid #006F3A;    
+    border-radius: 20px;
+    text-align: center;
+}
+
+/* Here we define the layout and style of our player 2 colour selection div.*/
+.Player2Selection {
+  position: absolute;
+  top: 40%;
+  left: 110%;
+  width: 30%;
+  height: 20%;
+  border: 3px solid #006F3A;    
+  border-radius: 20px;
+  text-align: center;
+}
+
+/* Here we define the layout and style of our player 1 colour selection div.*/
+.ProcessDiv {
+  position: absolute;
+  top: 60%;
+  left: 110%;
+  width: 30%;
+  height: 20%;
+  border: 3px solid #006F3A;    
+  border-radius: 20px;
+  text-align: center;
+}
+
+/* AbsoluteDiv4 is the div in which out image is displayed. Its just called this because we're submitting tomorrow.*/
+.absoluteDiv4 {
+  position: absolute;
+  top: 10%;
+  width: 100%;
+  height: 65%;
+  border: 3px solid #006F3A;
+  text-align: center;
+}
+
+.relativeDiv {
+    position: absolute;
+    top: 20%;
+    width: 70%;
+    height: 100%;
+  } 

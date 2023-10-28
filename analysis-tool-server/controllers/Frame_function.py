@@ -26,13 +26,14 @@ def save_frame(video_path, timestamp, result_path):
         cv2.imwrite(result_path, frame)
         
 
-def maybe_final_mask(timestamp,fileName,bounds):
+def player_mask(timestamp,fileName,bounds,empty_time):
     # calls the function that saves frames as images
     # saves the first frame in the video 
     # and the frame at the supplied timestamp
 
     millieseconds = int(timestamp)*1000
-    save_frame(f'./videos/{fileName}.mp4', 10000,'./temp_images/master_image.PNG')
+    empty = int(empty_time)*1000
+    save_frame(f'./videos/{fileName}.mp4', empty,'./temp_images/master_image.PNG')
     save_frame(f'./videos/{fileName}.mp4', millieseconds,'./temp_images/pos_image.PNG')
     
     cap = cv2.VideoCapture(f'./videos/{fileName}.mp4')
@@ -135,7 +136,7 @@ def findSecondPlayerLocations(mask, a, b):
 
 
 
-def countColourMatches(location1,location2,colors):
+def countColourMatches(location1, location2, colors, player_num):
     #save_frame('C:/Users/lbken/OneDrive/Desktop/Semester 8/IFB399/Initial_Code/Masking_Function/prototype/Carrara Court 2 Video.MP4', 0,'./sample_image/test_image.PNG')
     try:
         master_image = cv2.imread('./temp_images/pos_image.PNG')
@@ -146,9 +147,14 @@ def countColourMatches(location1,location2,colors):
     
     
     # Obtain Player 1 colours
-    p1_r = int(splitColors[0])
-    p1_g = int(splitColors[1])
-    p1_b = int(splitColors[2])
+    if (int(player_num) == 1):
+        p1_r = int(splitColors[0])
+        p1_g = int(splitColors[1])
+        p1_b = int(splitColors[2])
+    else:
+        p1_r = int(splitColors[3])
+        p1_g = int(splitColors[4])
+        p1_b = int(splitColors[5])
 
     # Getting length and width of master image
     h, w, _ = master_image.shape    
@@ -298,13 +304,17 @@ def boundsConverter(bounds,video_path):
     return new_bounds
 
 
-def playerLocations(timeStamp,fileName,courtBounds,color,player_num): 
+def playerLocations(timeStamp,fileName,courtBounds,color,player_num, empty_court): 
     current_bounds = boundsConverter(courtBounds, f'./videos/{fileName}.mp4')
-    playerMask = maybe_final_mask(timeStamp, fileName, current_bounds)
+    playerMask = player_mask(timeStamp, fileName, current_bounds, empty_court)
     pixelLocation = pixel_coords(playerMask)
     second_player = findSecondPlayerLocations(playerMask, pixelLocation[0], pixelLocation[1])
-    order = countColourMatches(pixelLocation[0], second_player[0], color)
-    if player_num == 1:
+    if (pixelLocation[0]==second_player[0] and pixelLocation[1]==second_player[1]): 
+        player1 = location(pixelLocation,current_bounds)
+        player2 = location(second_player,current_bounds)
+        return f"{player1} {player2}"
+    else:
+        order = countColourMatches(pixelLocation[0], second_player[0], color,player_num)
         if (order[0]>order[1]):
             player1 = location(pixelLocation,current_bounds)
             player2 = location(second_player,current_bounds)
@@ -313,17 +323,9 @@ def playerLocations(timeStamp,fileName,courtBounds,color,player_num):
             player1 = location(pixelLocation,current_bounds)
             player2 = location(second_player,current_bounds)
             return f"{player2} {player1}"
-    else:
-        if (order[0]<order[1]):
-            player1 = location(pixelLocation,current_bounds)
-            player2 = location(second_player,current_bounds)
-            return f"{player2} {player1}"
-        else:
-            player1 = location(pixelLocation,current_bounds)
-            player2 = location(second_player,current_bounds)
-            return f"{player1} {player2}"
+
 
 print(playerLocations(sys.argv[1], sys.argv[2], sys.argv[3], 
-                      sys.argv[4], sys.argv[5]))
+                      sys.argv[4], sys.argv[5], sys.argv[6]))
 
 sys.stdout.flush()
