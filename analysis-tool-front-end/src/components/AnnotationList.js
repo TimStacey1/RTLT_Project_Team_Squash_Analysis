@@ -237,9 +237,9 @@ export default function AnnotationList({
         });
     };
 
-    const handleNewChange = (event) => {
+    const handleNewChange = (event, newText) => {
         let newChange = modalContent;
-        newChange.playerPosition = event.target.value;
+        newChange[newText] = event.target.value;
 
         setModalContent({
             annotation: newChange['annotation'],
@@ -498,7 +498,7 @@ export default function AnnotationList({
                                                 min="1"
                                                 value={modalContent.playerPosition}
                                                 onChange={(event) =>
-                                                    handleNewChange(event)
+                                                    handleNewChange(event, 'playerPosition')
                                                 }
                                                 className="w-1/5 ml-1 form-text border-2 pl-1"
                                             />   
