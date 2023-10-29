@@ -5,6 +5,8 @@ The application consists of an Express server (analysis-tool-server) and a React
 ## Prerequisites:
 * The server requires a .env environment file with a single variable, 'MONGO_URI', to which a MongoDB application URI is required to be assigned. Ex: MONGO_URI='your_mongo_db_uri'.
 * The server has been configured to run on port 3001 and the client on port 3000. These ports would need to be free of any other process in order to run the applications. Alternatively, both applications can be configured to run on a custom port.
+* The server requires certain python libraries to be installed due to a python file being run as a subprocess. The libraries being numpy and opencv. run the command 'py -m pip install --user numpy' and 'py -m pip install --user py -m pip install --user numpy'.
+* Having the latest version of python installed.
 
 ## Installation steps:
 * Clone the repository onto your device.
